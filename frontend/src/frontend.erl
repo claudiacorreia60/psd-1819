@@ -36,29 +36,38 @@ server(Investidores, Empresas) ->
 
 client_acceptor(LSock, Investidores, Empresas) ->
   {ok, Sock} = gen_tcp:accept(LSock),
-  io:fwrite("Conexão nova!\n"),
+  io:fwrite("Nova conexão\n"),
   spawn(fun() -> client_acceptor(LSock, Investidores, Empresas) end),
   receive
-    {line, Data} ->
-      Tokens = string:split(Data, ":", all),
-      case lists:nth(1,Tokens) of
-        "authentication" ->
-          Username = lists:nth(2, Tokens),
-          Password = lists:nth(3, Tokens),
-          case maps:is_key(Username, Investidores) and maps:get(Username, Investidores) == Password of
-            false -> gen_tcp:send(Sock, "authentication:fail");
-            true ->
-              gen_tcp:send(Sock, "authentication:client:success"),
-              client_handler(Sock, Username)
-          end,
-          case maps:is_key(Username, Empresas) and maps:get(Username, Empresas) == Password of
-            false -> gen_tcp:send(Sock, "authentication:fail");
-            true ->
-              gen_tcp:send(Sock, "authentication:company:success"),
-              client_handler(Sock, Username)
-          end;
-        _ -> io:fwrite("Protocolo desconhecido")
-      end
+    {tcp, Sock, Data} ->
+      Msg = #{result=>true, entity=>"client"},
+      gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result')),
+
+      Msg = clientProtos:decode_msg(Data, 'Authentication'),
+      Username = maps:get(username, Msg),
+      Password = maps:get(password, Msg),
+      case maps:is_key(Username, Investidores) and string:equal(maps:get(Username, Investidores), Password) of
+        true ->
+          Msg = #{result=>true, entity=>"client"},
+          gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result')),
+          client_handler(Sock, Username);
+        false ->
+          Msg = #{result=>false},
+          gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result'))
+      end,
+      case maps:is_key(Username, Empresas) and maps:get(Username, Empresas) == Password of
+        false ->
+          Msg = #{result=>false},
+          gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result'));
+        true ->
+          Msg = #{result=>true, entity=>"company"},
+          gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result')),
+          client_handler(Sock, Username)
+      end;
+    false ->
+      Msg = #{result=>false},
+      gen_tcp:send(Sock, clientProtos:encode_msg(Msg, 'Result')),
+      io:fwrite("Protocolo desconhecido\n")
   end.
 
 client_handler(Sock, Username) ->
