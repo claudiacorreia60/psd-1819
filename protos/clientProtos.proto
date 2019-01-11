@@ -1,13 +1,13 @@
 syntax = "proto2";
 
 message Message {
-    optional Authentication auth = 1;
-    optional Bid bid = 2;
-    optional Subscription subs = 3;
-    optional Auction auct = 4;
-    optional Emission emi = 5;
+    optional string type = 1; // Bid, Subscription, Auction, Emission 
+    optional int32 amount = 2;
+    optional int32 interest = 3; 
+    optional Authentication auth = 4
+    optional Result res = 5
     optional Notification not = 6;
-    optional bytes pid = 3;
+    optional bytes pid = 7;
 }
 
 message Authentication {
@@ -18,31 +18,9 @@ message Authentication {
 message Result {
     optional bool result = 1;
     optional string entity = 2;
-    optional bytes pid = 3;
-}
-
-message Bid {
-  optional string company = 1;
-  optional int32 amount = 2;
-  optional int32 interest = 3; 
-}
-
-message Subscription {
-  optional string company = 1;
-  optional int32 amount = 2;
-}
-
-message Auction {
-  optional int32 amount = 1;
-  optional int32 interest = 2;
-}
-
-message Emission {
-  optional int32 amount = 1;
 }
 
 message Notification {
 	optional string status = 1;
 	optional string action = 2;
-	repeated string company = 3;
 }
