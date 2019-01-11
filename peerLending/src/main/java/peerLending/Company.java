@@ -1,11 +1,10 @@
 package peerLending;
 
+import org.zeromq.ZMQ;
 import peerLendingClient.ClientProtos;
-
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 
 public class Company {
     private String username;
@@ -13,8 +12,13 @@ public class Company {
     private InputStream in;
     private OutputStream out;
     private BufferedReader reader;
+    private Map<String, List<String>> enabledNotifications; // Auction/Emission, List<company_name>
+    private ZMQ.Socket subscriber;
     private Map<Integer, Auction> auctionHistory; // auctions that are over
     private Map<Integer, Emission> emissionHistory; // emissions that are over
+
+
+    // TODO: Pensar no caso em que o cliente vai abaixo antes das notificações serem guardadas?
 
     public Company(String username, String password) {
         this.username = username;
@@ -23,12 +27,17 @@ public class Company {
         this.emissionHistory = new HashMap<Integer, Emission>();
     }
 
-    public Company(String username, String password, InputStream in, OutputStream out, BufferedReader reader) {
+    public Company(String username, String password, InputStream in, OutputStream out, BufferedReader reader, ZMQ.Socket subscriber) {
         this.username = username;
         this.password = password;
         this.in = in;
         this.out = out;
         this.reader = reader;
+        this.subscriber = subscriber;
+        /* TODO: Ir buscar as notificações ativas às exchanges
+                 Fazer enable dessas notificações */
+        //enableNotifications("auction", enabledNotifications.get("auction"));
+        //enableNotifications("emission", enabledNotifications.get("emission"));
         this.auctionHistory = new HashMap<Integer, Auction>();
         this.emissionHistory = new HashMap<Integer, Emission>();
     }
@@ -57,6 +66,14 @@ public class Company {
         this.password = password;
     }
 
+    public Map<String, List<String>> getEnabledNotifications() {
+        return enabledNotifications;
+    }
+
+    public void setEnabledNotifications (Map<String, List<String>> enabledNotifications) {
+        this.enabledNotifications = enabledNotifications;
+    }
+
     public Map<Integer, Auction> getAuctionHistory() {
         return auctionHistory;
     }
@@ -75,7 +92,7 @@ public class Company {
 
 
     public void handleCompany() throws IOException {
-        System.out.println("\n######### COMPANY MENU #########");
+        System.out.println("\n############# COMPANY MENU ############");
         System.out.println("(1) Create an auction   |   (2) Issue fixed fee   |   (3) Enable/Disable Notifications");
         System.out.print("\nChoose an option: ");
         String chosenOption = "0";
@@ -100,15 +117,21 @@ public class Company {
         System.out.print("Interest: ");
         int interest = Integer.parseInt(this.reader.readLine());
 
-        ClientProtos.Auction auction = ClientProtos.Auction.newBuilder()
+        ClientProtos.Message msg = ClientProtos.Message.newBuilder()
+                .setType("Auction")
                 .setAmount(amount)
+                .setCompany(this.username)
                 .setInterest(interest)
                 .build();
 
-        auction.writeDelimitedTo(this.out);
+        this.out.write(msg.toByteArray());
+        this.out.flush();
 
-        ClientProtos.Result ans = ClientProtos.Result.parseDelimitedFrom(in);
-        boolean result = ans.getResult();
+        byte [] response = this.recv();
+        ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
+        ClientProtos.Result res = ans.getRes();
+
+        boolean result = res.getResult();
         if (!result)
             System.out.println("\nERROR: Auction creation failed!");
         else
@@ -116,19 +139,25 @@ public class Company {
     }
 
     public void handleEmission() throws IOException {
-        System.out.println("\n######### EMISSION MENU #########");
+        System.out.println("\n############ EMISSION MENU ############");
         System.out.println("Complete the following fields.");
         System.out.print("Amount: ");
         int amount = Integer.parseInt(this.reader.readLine());
 
-        ClientProtos.Emission emission = ClientProtos.Emission.newBuilder()
+        ClientProtos.Message msg = ClientProtos.Message.newBuilder()
+                .setType("Emission")
                 .setAmount(amount)
+                .setCompany(this.username)
                 .build();
 
-        emission.writeDelimitedTo(this.out);
+        this.out.write(msg.toByteArray());
+        this.out.flush();
 
-        ClientProtos.Result ans = ClientProtos.Result.parseDelimitedFrom(in);
-        boolean result = ans.getResult();
+        byte [] response = this.recv();
+        ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
+        ClientProtos.Result res = ans.getRes();
+
+        boolean result = res.getResult();
         if (!result)
             System.out.println("\nERROR: Emission failed!");
         else
@@ -136,7 +165,7 @@ public class Company {
     }
 
     public void handleNotifications() throws IOException {
-        System.out.println("\n######### NOTIFICATIONS MENU #########");
+        System.out.println("\n########## NOTIFICATIONS MENU #########");
         System.out.println("(1) Auctions   |   (2) Emissions");
         System.out.print("\nChoose an option: ");
         String chosenOption = checkOption();
@@ -154,18 +183,25 @@ public class Company {
         else
             status = "cancel";
         System.out.print("\nInsert companies (separated by a comma): ");
-        Iterable<String> companies = Arrays.asList(this.reader.readLine().split(","));
+        List<String> companies = Arrays.asList(this.reader.readLine().split(","));
 
-        ClientProtos.Notification notification = ClientProtos.Notification.newBuilder()
-                .setStatus(status)
-                .setAction(action)
-                .addAllCompany(companies)
-                .build();
+        if (action.equals("auction") && status.equals("start")) {
+            enableNotifications(action, companies);
+        }
+        else if (action.equals("auction") && status.equals("cancel")) {
+            disableNotifications(action, companies);
+        }
+        else if (action.equals("emission") && status.equals("start")) {
+            enableNotifications(action, companies);
+        }
+        else {
+            disableNotifications(action, companies);
+        }
 
-        notification.writeDelimitedTo(this.out);
-
-        ClientProtos.Result ans = ClientProtos.Result.parseDelimitedFrom(in);
-        boolean result = ans.getResult();
+        byte [] response = this.recv();
+        ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
+        ClientProtos.Result res = ans.getRes();
+        boolean result = res.getResult();
         if (!result)
             System.out.println("\nERROR: Failed to save notifications' options!");
         else
@@ -180,6 +216,35 @@ public class Company {
                 System.out.print("\nInvalid option! Insert a valid one: ");
         }
         return chosenOption;
+    }
+
+    public void enableNotifications (String action, List<String> companies) {
+        for (String company : companies) {
+            this.subscriber.subscribe(action + ":" + company);
+        }
+    }
+
+    public void disableNotifications (String action, List<String> companies) {
+        for (String company : companies) {
+            this.subscriber.unsubscribe(action + ":" + company);
+        }
+    }
+
+    public byte[] recv(){
+        byte[] tmp = new byte[4096];
+        int len = 0;
+        try {
+            len = this.in.read(tmp);
+            byte[] response = new byte[len];
+
+            for(int i = 0; i < len; i++)
+                response[i] = tmp[i];
+            return response;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

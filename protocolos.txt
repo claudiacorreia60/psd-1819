@@ -2,8 +2,8 @@
 	-> Autenticação
 		authentication:username:password
 	-> Investidor
-		bid:client:company:amount:interest
-		subscription:client:company:amount
+		bid:investor:company:amount:interest
+		subscription:investor:company:amount
 	-> Empresa
 		auction:company:amount:interest
 		emission:company:amount
