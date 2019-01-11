@@ -4,10 +4,11 @@ message Message {
     optional string type = 1; // Bid, Subscription, Auction, Emission 
     optional int32 amount = 2;
     optional int32 interest = 3; 
-    optional Authentication auth = 4
-    optional Result res = 5
-    optional Notification not = 6;
-    optional bytes pid = 7;
+    optional string company = 4;
+    optional Authentication auth = 5;
+    optional Result res = 6;
+    optional Notification not = 7;
+    optional bytes pid = 8;
 }
 
 message Authentication {
