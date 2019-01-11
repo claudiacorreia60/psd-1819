@@ -1,14 +1,5 @@
 syntax = "proto2";
 
-message Message {
-    optional Authentication auth = 1;
-    optional Bid bid = 2;
-    optional Subscription subs = 3;
-    optional Auction auct = 4;
-    optional Emission emi = 5;
-    optional Notification not = 6;
-}
-
 message Authentication {
   optional string username = 1;
   optional string password = 2;
