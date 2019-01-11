@@ -8,7 +8,6 @@ message Message {
     optional Authentication auth = 5;
     optional Result res = 6;
     optional Notification not = 7;
-    optional bytes pid = 8;
 }
 
 message Authentication {
