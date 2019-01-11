@@ -46,9 +46,11 @@ public class Client {
                 .setPassword(this.password)
                 .build();
 
-        auth.writeDelimitedTo(out);
+        out.write(auth.toByteArray());
+        out.flush();
+        byte [] response = this.recv(in);
+        ClientProtos.Result ans = ClientProtos.Result.parseFrom(response);
 
-        ClientProtos.Result ans = ClientProtos.Result.parseDelimitedFrom(in);
         boolean result = ans.getResult();
         String entity = ans.getEntity();
         if (!result)
@@ -61,6 +63,22 @@ public class Client {
             Company company = new Company(username, password, in, out, reader);
             company.handleCompany();
         }
+    }
+
+    public byte[] recv(InputStream in){
+        byte[] tmp = new byte[4096];
+        int len = 0;
+        try {
+            len = in.read(tmp);
+            byte[] response = new byte[len];
+
+            for(int i = 0; i < len; i++)
+                response[i] = tmp[i];
+            return response;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void main (String[] args) throws IOException {
