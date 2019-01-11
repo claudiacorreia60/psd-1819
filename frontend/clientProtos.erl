@@ -34,6 +34,16 @@
 -export_type([]).
 
 %% message types
+-type 'Message'() ::
+      #{type                    => iolist(),        % = 1
+        amount                  => integer(),       % = 2, 32 bits
+        interest                => integer(),       % = 3, 32 bits
+        company                 => iolist(),        % = 4
+        auth                    => 'Authentication'(), % = 5
+        res                     => 'Result'(),      % = 6
+        'not'                   => 'Notification'() % = 7
+       }.
+
 -type 'Authentication'() ::
       #{username                => iolist(),        % = 1
         password                => iolist()         % = 2
@@ -41,42 +51,21 @@
 
 -type 'Result'() ::
       #{result                  => boolean() | 0 | 1, % = 1
-        entity                  => iolist()         % = 3
-       }.
-
--type 'Bid'() ::
-      #{company                 => iolist(),        % = 1
-        amount                  => integer(),       % = 2, 32 bits
-        interest                => integer()        % = 3, 32 bits
-       }.
-
--type 'Subscription'() ::
-      #{company                 => iolist(),        % = 1
-        amount                  => integer()        % = 2, 32 bits
-       }.
-
--type 'Auction'() ::
-      #{amount                  => integer(),       % = 1, 32 bits
-        interest                => integer()        % = 2, 32 bits
-       }.
-
--type 'Emission'() ::
-      #{amount                  => integer()        % = 1, 32 bits
+        entity                  => iolist()         % = 2
        }.
 
 -type 'Notification'() ::
       #{status                  => iolist(),        % = 1
-        action                  => iolist(),        % = 2
-        company                 => [iolist()]       % = 3
+        action                  => iolist()         % = 2
        }.
 
--export_type(['Authentication'/0, 'Result'/0, 'Bid'/0, 'Subscription'/0, 'Auction'/0, 'Emission'/0, 'Notification'/0]).
+-export_type(['Message'/0, 'Authentication'/0, 'Result'/0, 'Notification'/0]).
 
--spec encode_msg('Authentication'() | 'Result'() | 'Bid'() | 'Subscription'() | 'Auction'() | 'Emission'() | 'Notification'(), atom()) -> binary().
+-spec encode_msg('Message'() | 'Authentication'() | 'Result'() | 'Notification'(), atom()) -> binary().
 encode_msg(Msg, MsgName) when is_atom(MsgName) ->
     encode_msg(Msg, MsgName, []).
 
--spec encode_msg('Authentication'() | 'Result'() | 'Bid'() | 'Subscription'() | 'Auction'() | 'Emission'() | 'Notification'(), atom(), list()) -> binary().
+-spec encode_msg('Message'() | 'Authentication'() | 'Result'() | 'Notification'(), atom(), list()) -> binary().
 encode_msg(Msg, MsgName, Opts) ->
     case proplists:get_bool(verify, Opts) of
       true -> verify_msg(Msg, MsgName, Opts);
@@ -84,24 +73,82 @@ encode_msg(Msg, MsgName, Opts) ->
     end,
     TrUserData = proplists:get_value(user_data, Opts),
     case MsgName of
+      'Message' ->
+	  encode_msg_Message(id(Msg, TrUserData), TrUserData);
       'Authentication' ->
 	  encode_msg_Authentication(id(Msg, TrUserData),
 				    TrUserData);
       'Result' ->
 	  encode_msg_Result(id(Msg, TrUserData), TrUserData);
-      'Bid' ->
-	  encode_msg_Bid(id(Msg, TrUserData), TrUserData);
-      'Subscription' ->
-	  encode_msg_Subscription(id(Msg, TrUserData),
-				  TrUserData);
-      'Auction' ->
-	  encode_msg_Auction(id(Msg, TrUserData), TrUserData);
-      'Emission' ->
-	  encode_msg_Emission(id(Msg, TrUserData), TrUserData);
       'Notification' ->
 	  encode_msg_Notification(id(Msg, TrUserData), TrUserData)
     end.
 
+
+encode_msg_Message(Msg, TrUserData) ->
+    encode_msg_Message(Msg, <<>>, TrUserData).
+
+
+encode_msg_Message(#{} = M, Bin, TrUserData) ->
+    B1 = case M of
+	   #{type := F1} ->
+	       begin
+		 TrF1 = id(F1, TrUserData),
+		 e_type_string(TrF1, <<Bin/binary, 10>>, TrUserData)
+	       end;
+	   _ -> Bin
+	 end,
+    B2 = case M of
+	   #{amount := F2} ->
+	       begin
+		 TrF2 = id(F2, TrUserData),
+		 e_type_int32(TrF2, <<B1/binary, 16>>, TrUserData)
+	       end;
+	   _ -> B1
+	 end,
+    B3 = case M of
+	   #{interest := F3} ->
+	       begin
+		 TrF3 = id(F3, TrUserData),
+		 e_type_int32(TrF3, <<B2/binary, 24>>, TrUserData)
+	       end;
+	   _ -> B2
+	 end,
+    B4 = case M of
+	   #{company := F4} ->
+	       begin
+		 TrF4 = id(F4, TrUserData),
+		 e_type_string(TrF4, <<B3/binary, 34>>, TrUserData)
+	       end;
+	   _ -> B3
+	 end,
+    B5 = case M of
+	   #{auth := F5} ->
+	       begin
+		 TrF5 = id(F5, TrUserData),
+		 e_mfield_Message_auth(TrF5, <<B4/binary, 42>>,
+				       TrUserData)
+	       end;
+	   _ -> B4
+	 end,
+    B6 = case M of
+	   #{res := F6} ->
+	       begin
+		 TrF6 = id(F6, TrUserData),
+		 e_mfield_Message_res(TrF6, <<B5/binary, 50>>,
+				      TrUserData)
+	       end;
+	   _ -> B5
+	 end,
+    case M of
+      #{'not' := F7} ->
+	  begin
+	    TrF7 = id(F7, TrUserData),
+	    e_mfield_Message_not(TrF7, <<B6/binary, 58>>,
+				 TrUserData)
+	  end;
+      _ -> B6
+    end.
 
 encode_msg_Authentication(Msg, TrUserData) ->
     encode_msg_Authentication(Msg, <<>>, TrUserData).
@@ -142,97 +189,9 @@ encode_msg_Result(#{} = M, Bin, TrUserData) ->
       #{entity := F2} ->
 	  begin
 	    TrF2 = id(F2, TrUserData),
-	    e_type_string(TrF2, <<B1/binary, 26>>, TrUserData)
+	    e_type_string(TrF2, <<B1/binary, 18>>, TrUserData)
 	  end;
       _ -> B1
-    end.
-
-encode_msg_Bid(Msg, TrUserData) ->
-    encode_msg_Bid(Msg, <<>>, TrUserData).
-
-
-encode_msg_Bid(#{} = M, Bin, TrUserData) ->
-    B1 = case M of
-	   #{company := F1} ->
-	       begin
-		 TrF1 = id(F1, TrUserData),
-		 e_type_string(TrF1, <<Bin/binary, 10>>, TrUserData)
-	       end;
-	   _ -> Bin
-	 end,
-    B2 = case M of
-	   #{amount := F2} ->
-	       begin
-		 TrF2 = id(F2, TrUserData),
-		 e_type_int32(TrF2, <<B1/binary, 16>>, TrUserData)
-	       end;
-	   _ -> B1
-	 end,
-    case M of
-      #{interest := F3} ->
-	  begin
-	    TrF3 = id(F3, TrUserData),
-	    e_type_int32(TrF3, <<B2/binary, 24>>, TrUserData)
-	  end;
-      _ -> B2
-    end.
-
-encode_msg_Subscription(Msg, TrUserData) ->
-    encode_msg_Subscription(Msg, <<>>, TrUserData).
-
-
-encode_msg_Subscription(#{} = M, Bin, TrUserData) ->
-    B1 = case M of
-	   #{company := F1} ->
-	       begin
-		 TrF1 = id(F1, TrUserData),
-		 e_type_string(TrF1, <<Bin/binary, 10>>, TrUserData)
-	       end;
-	   _ -> Bin
-	 end,
-    case M of
-      #{amount := F2} ->
-	  begin
-	    TrF2 = id(F2, TrUserData),
-	    e_type_int32(TrF2, <<B1/binary, 16>>, TrUserData)
-	  end;
-      _ -> B1
-    end.
-
-encode_msg_Auction(Msg, TrUserData) ->
-    encode_msg_Auction(Msg, <<>>, TrUserData).
-
-
-encode_msg_Auction(#{} = M, Bin, TrUserData) ->
-    B1 = case M of
-	   #{amount := F1} ->
-	       begin
-		 TrF1 = id(F1, TrUserData),
-		 e_type_int32(TrF1, <<Bin/binary, 8>>, TrUserData)
-	       end;
-	   _ -> Bin
-	 end,
-    case M of
-      #{interest := F2} ->
-	  begin
-	    TrF2 = id(F2, TrUserData),
-	    e_type_int32(TrF2, <<B1/binary, 16>>, TrUserData)
-	  end;
-      _ -> B1
-    end.
-
-encode_msg_Emission(Msg, TrUserData) ->
-    encode_msg_Emission(Msg, <<>>, TrUserData).
-
-
-encode_msg_Emission(#{} = M, Bin, TrUserData) ->
-    case M of
-      #{amount := F1} ->
-	  begin
-	    TrF1 = id(F1, TrUserData),
-	    e_type_int32(TrF1, <<Bin/binary, 8>>, TrUserData)
-	  end;
-      _ -> Bin
     end.
 
 encode_msg_Notification(Msg, TrUserData) ->
@@ -248,32 +207,30 @@ encode_msg_Notification(#{} = M, Bin, TrUserData) ->
 	       end;
 	   _ -> Bin
 	 end,
-    B2 = case M of
-	   #{action := F2} ->
-	       begin
-		 TrF2 = id(F2, TrUserData),
-		 e_type_string(TrF2, <<B1/binary, 18>>, TrUserData)
-	       end;
-	   _ -> B1
-	 end,
     case M of
-      #{company := F3} ->
-	  TrF3 = id(F3, TrUserData),
-	  if TrF3 == [] -> B2;
-	     true ->
-		 e_field_Notification_company(TrF3, B2, TrUserData)
+      #{action := F2} ->
+	  begin
+	    TrF2 = id(F2, TrUserData),
+	    e_type_string(TrF2, <<B1/binary, 18>>, TrUserData)
 	  end;
-      _ -> B2
+      _ -> B1
     end.
 
-e_field_Notification_company([Elem | Rest], Bin,
-			     TrUserData) ->
-    Bin2 = <<Bin/binary, 26>>,
-    Bin3 = e_type_string(id(Elem, TrUserData), Bin2,
-			 TrUserData),
-    e_field_Notification_company(Rest, Bin3, TrUserData);
-e_field_Notification_company([], Bin, _TrUserData) ->
-    Bin.
+e_mfield_Message_auth(Msg, Bin, TrUserData) ->
+    SubBin = encode_msg_Authentication(Msg, <<>>,
+				       TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
+
+e_mfield_Message_res(Msg, Bin, TrUserData) ->
+    SubBin = encode_msg_Result(Msg, <<>>, TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
+
+e_mfield_Message_not(Msg, Bin, TrUserData) ->
+    SubBin = encode_msg_Notification(Msg, <<>>, TrUserData),
+    Bin2 = e_varint(byte_size(SubBin), Bin),
+    <<Bin2/binary, SubBin/binary>>.
 
 -compile({nowarn_unused_function,e_type_sint/3}).
 e_type_sint(Value, Bin, _TrUserData) when Value >= 0 ->
@@ -389,25 +346,352 @@ decode_msg_1_catch(Bin, MsgName, TrUserData) ->
     end.
 -endif.
 
+decode_msg_2_doit('Message', Bin, TrUserData) ->
+    id(decode_msg_Message(Bin, TrUserData), TrUserData);
 decode_msg_2_doit('Authentication', Bin, TrUserData) ->
     id(decode_msg_Authentication(Bin, TrUserData),
        TrUserData);
 decode_msg_2_doit('Result', Bin, TrUserData) ->
     id(decode_msg_Result(Bin, TrUserData), TrUserData);
-decode_msg_2_doit('Bid', Bin, TrUserData) ->
-    id(decode_msg_Bid(Bin, TrUserData), TrUserData);
-decode_msg_2_doit('Subscription', Bin, TrUserData) ->
-    id(decode_msg_Subscription(Bin, TrUserData),
-       TrUserData);
-decode_msg_2_doit('Auction', Bin, TrUserData) ->
-    id(decode_msg_Auction(Bin, TrUserData), TrUserData);
-decode_msg_2_doit('Emission', Bin, TrUserData) ->
-    id(decode_msg_Emission(Bin, TrUserData), TrUserData);
 decode_msg_2_doit('Notification', Bin, TrUserData) ->
     id(decode_msg_Notification(Bin, TrUserData),
        TrUserData).
 
 
+
+decode_msg_Message(Bin, TrUserData) ->
+    dfp_read_field_def_Message(Bin, 0, 0,
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData),
+			       id('$undef', TrUserData), TrUserData).
+
+dfp_read_field_def_Message(<<10, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_type(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<16, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_amount(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			   F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<24, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_interest(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			     F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<34, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_company(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			    F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<42, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_auth(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<50, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_res(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<58, Rest/binary>>, Z1, Z2,
+			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			   TrUserData) ->
+    d_field_Message_not(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			F@_4, F@_5, F@_6, F@_7, TrUserData);
+dfp_read_field_def_Message(<<>>, 0, 0, F@_1, F@_2, F@_3,
+			   F@_4, F@_5, F@_6, F@_7, _) ->
+    S1 = #{},
+    S2 = if F@_1 == '$undef' -> S1;
+	    true -> S1#{type => F@_1}
+	 end,
+    S3 = if F@_2 == '$undef' -> S2;
+	    true -> S2#{amount => F@_2}
+	 end,
+    S4 = if F@_3 == '$undef' -> S3;
+	    true -> S3#{interest => F@_3}
+	 end,
+    S5 = if F@_4 == '$undef' -> S4;
+	    true -> S4#{company => F@_4}
+	 end,
+    S6 = if F@_5 == '$undef' -> S5;
+	    true -> S5#{auth => F@_5}
+	 end,
+    S7 = if F@_6 == '$undef' -> S6;
+	    true -> S6#{res => F@_6}
+	 end,
+    if F@_7 == '$undef' -> S7;
+       true -> S7#{'not' => F@_7}
+    end;
+dfp_read_field_def_Message(Other, Z1, Z2, F@_1, F@_2,
+			   F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    dg_read_field_def_Message(Other, Z1, Z2, F@_1, F@_2,
+			      F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+dg_read_field_def_Message(<<1:1, X:7, Rest/binary>>, N,
+			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			  TrUserData)
+    when N < 32 - 7 ->
+    dg_read_field_def_Message(Rest, N + 7, X bsl N + Acc,
+			      F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			      TrUserData);
+dg_read_field_def_Message(<<0:1, X:7, Rest/binary>>, N,
+			  Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			  TrUserData) ->
+    Key = X bsl N + Acc,
+    case Key of
+      10 ->
+	  d_field_Message_type(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			       F@_5, F@_6, F@_7, TrUserData);
+      16 ->
+	  d_field_Message_amount(Rest, 0, 0, F@_1, F@_2, F@_3,
+				 F@_4, F@_5, F@_6, F@_7, TrUserData);
+      24 ->
+	  d_field_Message_interest(Rest, 0, 0, F@_1, F@_2, F@_3,
+				   F@_4, F@_5, F@_6, F@_7, TrUserData);
+      34 ->
+	  d_field_Message_company(Rest, 0, 0, F@_1, F@_2, F@_3,
+				  F@_4, F@_5, F@_6, F@_7, TrUserData);
+      42 ->
+	  d_field_Message_auth(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			       F@_5, F@_6, F@_7, TrUserData);
+      50 ->
+	  d_field_Message_res(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			      F@_5, F@_6, F@_7, TrUserData);
+      58 ->
+	  d_field_Message_not(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+			      F@_5, F@_6, F@_7, TrUserData);
+      _ ->
+	  case Key band 7 of
+	    0 ->
+		skip_varint_Message(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+				    F@_5, F@_6, F@_7, TrUserData);
+	    1 ->
+		skip_64_Message(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+				F@_5, F@_6, F@_7, TrUserData);
+	    2 ->
+		skip_length_delimited_Message(Rest, 0, 0, F@_1, F@_2,
+					      F@_3, F@_4, F@_5, F@_6, F@_7,
+					      TrUserData);
+	    3 ->
+		skip_group_Message(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
+				   F@_4, F@_5, F@_6, F@_7, TrUserData);
+	    5 ->
+		skip_32_Message(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+				F@_5, F@_6, F@_7, TrUserData)
+	  end
+    end;
+dg_read_field_def_Message(<<>>, 0, 0, F@_1, F@_2, F@_3,
+			  F@_4, F@_5, F@_6, F@_7, _) ->
+    S1 = #{},
+    S2 = if F@_1 == '$undef' -> S1;
+	    true -> S1#{type => F@_1}
+	 end,
+    S3 = if F@_2 == '$undef' -> S2;
+	    true -> S2#{amount => F@_2}
+	 end,
+    S4 = if F@_3 == '$undef' -> S3;
+	    true -> S3#{interest => F@_3}
+	 end,
+    S5 = if F@_4 == '$undef' -> S4;
+	    true -> S4#{company => F@_4}
+	 end,
+    S6 = if F@_5 == '$undef' -> S5;
+	    true -> S5#{auth => F@_5}
+	 end,
+    S7 = if F@_6 == '$undef' -> S6;
+	    true -> S6#{res => F@_6}
+	 end,
+    if F@_7 == '$undef' -> S7;
+       true -> S7#{'not' => F@_7}
+    end.
+
+d_field_Message_type(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+    when N < 57 ->
+    d_field_Message_type(Rest, N + 7, X bsl N + Acc, F@_1,
+			 F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+d_field_Message_type(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     _, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {id(unicode:characters_to_list(Utf8, unicode),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, NewFValue, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+d_field_Message_amount(<<1:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+		       TrUserData)
+    when N < 57 ->
+    d_field_Message_amount(Rest, N + 7, X bsl N + Acc, F@_1,
+			   F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+d_field_Message_amount(<<0:1, X:7, Rest/binary>>, N,
+		       Acc, F@_1, _, F@_3, F@_4, F@_5, F@_6, F@_7,
+		       TrUserData) ->
+    {NewFValue, RestF} = {begin
+			    <<Res:32/signed-native>> = <<(X bsl N +
+							    Acc):32/unsigned-native>>,
+			    id(Res, TrUserData)
+			  end,
+			  Rest},
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, NewFValue,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+d_field_Message_interest(<<1:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData)
+    when N < 57 ->
+    d_field_Message_interest(Rest, N + 7, X bsl N + Acc,
+			     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			     TrUserData);
+d_field_Message_interest(<<0:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData) ->
+    {NewFValue, RestF} = {begin
+			    <<Res:32/signed-native>> = <<(X bsl N +
+							    Acc):32/unsigned-native>>,
+			    id(Res, TrUserData)
+			  end,
+			  Rest},
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       NewFValue, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+d_field_Message_company(<<1:1, X:7, Rest/binary>>, N,
+			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			TrUserData)
+    when N < 57 ->
+    d_field_Message_company(Rest, N + 7, X bsl N + Acc,
+			    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			    TrUserData);
+d_field_Message_company(<<0:1, X:7, Rest/binary>>, N,
+			Acc, F@_1, F@_2, F@_3, _, F@_5, F@_6, F@_7,
+			TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {id(unicode:characters_to_list(Utf8, unicode),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       F@_3, NewFValue, F@_5, F@_6, F@_7, TrUserData).
+
+d_field_Message_auth(<<1:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+    when N < 57 ->
+    d_field_Message_auth(Rest, N + 7, X bsl N + Acc, F@_1,
+			 F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+d_field_Message_auth(<<0:1, X:7, Rest/binary>>, N, Acc,
+		     F@_1, F@_2, F@_3, F@_4, Prev, F@_6, F@_7, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(decode_msg_Authentication(Bs, TrUserData),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       F@_3, F@_4,
+			       if Prev == '$undef' -> NewFValue;
+				  true ->
+				      merge_msg_Authentication(Prev, NewFValue,
+							       TrUserData)
+			       end,
+			       F@_6, F@_7, TrUserData).
+
+d_field_Message_res(<<1:1, X:7, Rest/binary>>, N, Acc,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+    when N < 57 ->
+    d_field_Message_res(Rest, N + 7, X bsl N + Acc, F@_1,
+			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+d_field_Message_res(<<0:1, X:7, Rest/binary>>, N, Acc,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, Prev, F@_7, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(decode_msg_Result(Bs, TrUserData), TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       F@_3, F@_4, F@_5,
+			       if Prev == '$undef' -> NewFValue;
+				  true ->
+				      merge_msg_Result(Prev, NewFValue,
+						       TrUserData)
+			       end,
+			       F@_7, TrUserData).
+
+d_field_Message_not(<<1:1, X:7, Rest/binary>>, N, Acc,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
+    when N < 57 ->
+    d_field_Message_not(Rest, N + 7, X bsl N + Acc, F@_1,
+			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
+d_field_Message_not(<<0:1, X:7, Rest/binary>>, N, Acc,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, Prev, TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Bs:Len/binary, Rest2/binary>> = Rest,
+			   {id(decode_msg_Notification(Bs, TrUserData),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6,
+			       if Prev == '$undef' -> NewFValue;
+				  true ->
+				      merge_msg_Notification(Prev, NewFValue,
+							     TrUserData)
+			       end,
+			       TrUserData).
+
+skip_varint_Message(<<1:1, _:7, Rest/binary>>, Z1, Z2,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    skip_varint_Message(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			F@_4, F@_5, F@_6, F@_7, TrUserData);
+skip_varint_Message(<<0:1, _:7, Rest/binary>>, Z1, Z2,
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+skip_length_delimited_Message(<<1:1, X:7, Rest/binary>>,
+			      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			      TrUserData)
+    when N < 57 ->
+    skip_length_delimited_Message(Rest, N + 7,
+				  X bsl N + Acc, F@_1, F@_2, F@_3, F@_4, F@_5,
+				  F@_6, F@_7, TrUserData);
+skip_length_delimited_Message(<<0:1, X:7, Rest/binary>>,
+			      N, Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			      TrUserData) ->
+    Length = X bsl N + Acc,
+    <<_:Length/binary, Rest2/binary>> = Rest,
+    dfp_read_field_def_Message(Rest2, 0, 0, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+skip_group_Message(Bin, FNum, Z2, F@_1, F@_2, F@_3,
+		   F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    {_, Rest} = read_group(Bin, FNum),
+    dfp_read_field_def_Message(Rest, 0, Z2, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+skip_32_Message(<<_:32, Rest/binary>>, Z1, Z2, F@_1,
+		F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
+
+skip_64_Message(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
+		F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
 
 decode_msg_Authentication(Bin, TrUserData) ->
     dfp_read_field_def_Authentication(Bin, 0, 0,
@@ -568,7 +852,7 @@ dfp_read_field_def_Result(<<8, Rest/binary>>, Z1, Z2,
 			  F@_1, F@_2, TrUserData) ->
     d_field_Result_result(Rest, Z1, Z2, F@_1, F@_2,
 			  TrUserData);
-dfp_read_field_def_Result(<<26, Rest/binary>>, Z1, Z2,
+dfp_read_field_def_Result(<<18, Rest/binary>>, Z1, Z2,
 			  F@_1, F@_2, TrUserData) ->
     d_field_Result_entity(Rest, Z1, Z2, F@_1, F@_2,
 			  TrUserData);
@@ -597,7 +881,7 @@ dg_read_field_def_Result(<<0:1, X:7, Rest/binary>>, N,
       8 ->
 	  d_field_Result_result(Rest, 0, 0, F@_1, F@_2,
 				TrUserData);
-      26 ->
+      18 ->
 	  d_field_Result_entity(Rest, 0, 0, F@_1, F@_2,
 				TrUserData);
       _ ->
@@ -690,573 +974,22 @@ skip_64_Result(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
     dfp_read_field_def_Result(Rest, Z1, Z2, F@_1, F@_2,
 			      TrUserData).
 
-decode_msg_Bid(Bin, TrUserData) ->
-    dfp_read_field_def_Bid(Bin, 0, 0,
-			   id('$undef', TrUserData), id('$undef', TrUserData),
-			   id('$undef', TrUserData), TrUserData).
-
-dfp_read_field_def_Bid(<<10, Rest/binary>>, Z1, Z2,
-		       F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Bid_company(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			TrUserData);
-dfp_read_field_def_Bid(<<16, Rest/binary>>, Z1, Z2,
-		       F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Bid_amount(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-		       TrUserData);
-dfp_read_field_def_Bid(<<24, Rest/binary>>, Z1, Z2,
-		       F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Bid_interest(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			 TrUserData);
-dfp_read_field_def_Bid(<<>>, 0, 0, F@_1, F@_2, F@_3,
-		       _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{company => F@_1}
-	 end,
-    S3 = if F@_2 == '$undef' -> S2;
-	    true -> S2#{amount => F@_2}
-	 end,
-    if F@_3 == '$undef' -> S3;
-       true -> S3#{interest => F@_3}
-    end;
-dfp_read_field_def_Bid(Other, Z1, Z2, F@_1, F@_2, F@_3,
-		       TrUserData) ->
-    dg_read_field_def_Bid(Other, Z1, Z2, F@_1, F@_2, F@_3,
-			  TrUserData).
-
-dg_read_field_def_Bid(<<1:1, X:7, Rest/binary>>, N, Acc,
-		      F@_1, F@_2, F@_3, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_Bid(Rest, N + 7, X bsl N + Acc, F@_1,
-			  F@_2, F@_3, TrUserData);
-dg_read_field_def_Bid(<<0:1, X:7, Rest/binary>>, N, Acc,
-		      F@_1, F@_2, F@_3, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      10 ->
-	  d_field_Bid_company(Rest, 0, 0, F@_1, F@_2, F@_3,
-			      TrUserData);
-      16 ->
-	  d_field_Bid_amount(Rest, 0, 0, F@_1, F@_2, F@_3,
-			     TrUserData);
-      24 ->
-	  d_field_Bid_interest(Rest, 0, 0, F@_1, F@_2, F@_3,
-			       TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 ->
-		skip_varint_Bid(Rest, 0, 0, F@_1, F@_2, F@_3,
-				TrUserData);
-	    1 ->
-		skip_64_Bid(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData);
-	    2 ->
-		skip_length_delimited_Bid(Rest, 0, 0, F@_1, F@_2, F@_3,
-					  TrUserData);
-	    3 ->
-		skip_group_Bid(Rest, Key bsr 3, 0, F@_1, F@_2, F@_3,
-			       TrUserData);
-	    5 ->
-		skip_32_Bid(Rest, 0, 0, F@_1, F@_2, F@_3, TrUserData)
-	  end
-    end;
-dg_read_field_def_Bid(<<>>, 0, 0, F@_1, F@_2, F@_3,
-		      _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{company => F@_1}
-	 end,
-    S3 = if F@_2 == '$undef' -> S2;
-	    true -> S2#{amount => F@_2}
-	 end,
-    if F@_3 == '$undef' -> S3;
-       true -> S3#{interest => F@_3}
-    end.
-
-d_field_Bid_company(<<1:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    d_field_Bid_company(Rest, N + 7, X bsl N + Acc, F@_1,
-			F@_2, F@_3, TrUserData);
-d_field_Bid_company(<<0:1, X:7, Rest/binary>>, N, Acc,
-		    _, F@_2, F@_3, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {id(unicode:characters_to_list(Utf8, unicode),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Bid(RestF, 0, 0, NewFValue, F@_2,
-			   F@_3, TrUserData).
-
-d_field_Bid_amount(<<1:1, X:7, Rest/binary>>, N, Acc,
-		   F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    d_field_Bid_amount(Rest, N + 7, X bsl N + Acc, F@_1,
-		       F@_2, F@_3, TrUserData);
-d_field_Bid_amount(<<0:1, X:7, Rest/binary>>, N, Acc,
-		   F@_1, _, F@_3, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Bid(RestF, 0, 0, F@_1, NewFValue,
-			   F@_3, TrUserData).
-
-d_field_Bid_interest(<<1:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    d_field_Bid_interest(Rest, N + 7, X bsl N + Acc, F@_1,
-			 F@_2, F@_3, TrUserData);
-d_field_Bid_interest(<<0:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, _, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Bid(RestF, 0, 0, F@_1, F@_2,
-			   NewFValue, TrUserData).
-
-skip_varint_Bid(<<1:1, _:7, Rest/binary>>, Z1, Z2, F@_1,
-		F@_2, F@_3, TrUserData) ->
-    skip_varint_Bid(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-		    TrUserData);
-skip_varint_Bid(<<0:1, _:7, Rest/binary>>, Z1, Z2, F@_1,
-		F@_2, F@_3, TrUserData) ->
-    dfp_read_field_def_Bid(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			   TrUserData).
-
-skip_length_delimited_Bid(<<1:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Bid(Rest, N + 7, X bsl N + Acc,
-			      F@_1, F@_2, F@_3, TrUserData);
-skip_length_delimited_Bid(<<0:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, F@_3, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Bid(Rest2, 0, 0, F@_1, F@_2, F@_3,
-			   TrUserData).
-
-skip_group_Bid(Bin, FNum, Z2, F@_1, F@_2, F@_3,
-	       TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Bid(Rest, 0, Z2, F@_1, F@_2, F@_3,
-			   TrUserData).
-
-skip_32_Bid(<<_:32, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	    F@_3, TrUserData) ->
-    dfp_read_field_def_Bid(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			   TrUserData).
-
-skip_64_Bid(<<_:64, Rest/binary>>, Z1, Z2, F@_1, F@_2,
-	    F@_3, TrUserData) ->
-    dfp_read_field_def_Bid(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			   TrUserData).
-
-decode_msg_Subscription(Bin, TrUserData) ->
-    dfp_read_field_def_Subscription(Bin, 0, 0,
-				    id('$undef', TrUserData),
-				    id('$undef', TrUserData), TrUserData).
-
-dfp_read_field_def_Subscription(<<10, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, TrUserData) ->
-    d_field_Subscription_company(Rest, Z1, Z2, F@_1, F@_2,
-				 TrUserData);
-dfp_read_field_def_Subscription(<<16, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, TrUserData) ->
-    d_field_Subscription_amount(Rest, Z1, Z2, F@_1, F@_2,
-				TrUserData);
-dfp_read_field_def_Subscription(<<>>, 0, 0, F@_1, F@_2,
-				_) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{company => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{amount => F@_2}
-    end;
-dfp_read_field_def_Subscription(Other, Z1, Z2, F@_1,
-				F@_2, TrUserData) ->
-    dg_read_field_def_Subscription(Other, Z1, Z2, F@_1,
-				   F@_2, TrUserData).
-
-dg_read_field_def_Subscription(<<1:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_Subscription(Rest, N + 7,
-				   X bsl N + Acc, F@_1, F@_2, TrUserData);
-dg_read_field_def_Subscription(<<0:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      10 ->
-	  d_field_Subscription_company(Rest, 0, 0, F@_1, F@_2,
-				       TrUserData);
-      16 ->
-	  d_field_Subscription_amount(Rest, 0, 0, F@_1, F@_2,
-				      TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 ->
-		skip_varint_Subscription(Rest, 0, 0, F@_1, F@_2,
-					 TrUserData);
-	    1 ->
-		skip_64_Subscription(Rest, 0, 0, F@_1, F@_2,
-				     TrUserData);
-	    2 ->
-		skip_length_delimited_Subscription(Rest, 0, 0, F@_1,
-						   F@_2, TrUserData);
-	    3 ->
-		skip_group_Subscription(Rest, Key bsr 3, 0, F@_1, F@_2,
-					TrUserData);
-	    5 ->
-		skip_32_Subscription(Rest, 0, 0, F@_1, F@_2, TrUserData)
-	  end
-    end;
-dg_read_field_def_Subscription(<<>>, 0, 0, F@_1, F@_2,
-			       _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{company => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{amount => F@_2}
-    end.
-
-d_field_Subscription_company(<<1:1, X:7, Rest/binary>>,
-			     N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Subscription_company(Rest, N + 7, X bsl N + Acc,
-				 F@_1, F@_2, TrUserData);
-d_field_Subscription_company(<<0:1, X:7, Rest/binary>>,
-			     N, Acc, _, F@_2, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {id(unicode:characters_to_list(Utf8, unicode),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Subscription(RestF, 0, 0, NewFValue,
-				    F@_2, TrUserData).
-
-d_field_Subscription_amount(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Subscription_amount(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, TrUserData);
-d_field_Subscription_amount(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, _, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Subscription(RestF, 0, 0, F@_1,
-				    NewFValue, TrUserData).
-
-skip_varint_Subscription(<<1:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, TrUserData) ->
-    skip_varint_Subscription(Rest, Z1, Z2, F@_1, F@_2,
-			     TrUserData);
-skip_varint_Subscription(<<0:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Subscription(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
-skip_length_delimited_Subscription(<<1:1, X:7,
-				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Subscription(Rest, N + 7,
-				       X bsl N + Acc, F@_1, F@_2, TrUserData);
-skip_length_delimited_Subscription(<<0:1, X:7,
-				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Subscription(Rest2, 0, 0, F@_1, F@_2,
-				    TrUserData).
-
-skip_group_Subscription(Bin, FNum, Z2, F@_1, F@_2,
-			TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Subscription(Rest, 0, Z2, F@_1, F@_2,
-				    TrUserData).
-
-skip_32_Subscription(<<_:32, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Subscription(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
-skip_64_Subscription(<<_:64, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Subscription(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
-decode_msg_Auction(Bin, TrUserData) ->
-    dfp_read_field_def_Auction(Bin, 0, 0,
-			       id('$undef', TrUserData),
-			       id('$undef', TrUserData), TrUserData).
-
-dfp_read_field_def_Auction(<<8, Rest/binary>>, Z1, Z2,
-			   F@_1, F@_2, TrUserData) ->
-    d_field_Auction_amount(Rest, Z1, Z2, F@_1, F@_2,
-			   TrUserData);
-dfp_read_field_def_Auction(<<16, Rest/binary>>, Z1, Z2,
-			   F@_1, F@_2, TrUserData) ->
-    d_field_Auction_interest(Rest, Z1, Z2, F@_1, F@_2,
-			     TrUserData);
-dfp_read_field_def_Auction(<<>>, 0, 0, F@_1, F@_2, _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{amount => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{interest => F@_2}
-    end;
-dfp_read_field_def_Auction(Other, Z1, Z2, F@_1, F@_2,
-			   TrUserData) ->
-    dg_read_field_def_Auction(Other, Z1, Z2, F@_1, F@_2,
-			      TrUserData).
-
-dg_read_field_def_Auction(<<1:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_Auction(Rest, N + 7, X bsl N + Acc,
-			      F@_1, F@_2, TrUserData);
-dg_read_field_def_Auction(<<0:1, X:7, Rest/binary>>, N,
-			  Acc, F@_1, F@_2, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      8 ->
-	  d_field_Auction_amount(Rest, 0, 0, F@_1, F@_2,
-				 TrUserData);
-      16 ->
-	  d_field_Auction_interest(Rest, 0, 0, F@_1, F@_2,
-				   TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 ->
-		skip_varint_Auction(Rest, 0, 0, F@_1, F@_2, TrUserData);
-	    1 ->
-		skip_64_Auction(Rest, 0, 0, F@_1, F@_2, TrUserData);
-	    2 ->
-		skip_length_delimited_Auction(Rest, 0, 0, F@_1, F@_2,
-					      TrUserData);
-	    3 ->
-		skip_group_Auction(Rest, Key bsr 3, 0, F@_1, F@_2,
-				   TrUserData);
-	    5 -> skip_32_Auction(Rest, 0, 0, F@_1, F@_2, TrUserData)
-	  end
-    end;
-dg_read_field_def_Auction(<<>>, 0, 0, F@_1, F@_2, _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{amount => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{interest => F@_2}
-    end.
-
-d_field_Auction_amount(<<1:1, X:7, Rest/binary>>, N,
-		       Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Auction_amount(Rest, N + 7, X bsl N + Acc, F@_1,
-			   F@_2, TrUserData);
-d_field_Auction_amount(<<0:1, X:7, Rest/binary>>, N,
-		       Acc, _, F@_2, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Auction(RestF, 0, 0, NewFValue, F@_2,
-			       TrUserData).
-
-d_field_Auction_interest(<<1:1, X:7, Rest/binary>>, N,
-			 Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Auction_interest(Rest, N + 7, X bsl N + Acc,
-			     F@_1, F@_2, TrUserData);
-d_field_Auction_interest(<<0:1, X:7, Rest/binary>>, N,
-			 Acc, F@_1, _, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Auction(RestF, 0, 0, F@_1, NewFValue,
-			       TrUserData).
-
-skip_varint_Auction(<<1:1, _:7, Rest/binary>>, Z1, Z2,
-		    F@_1, F@_2, TrUserData) ->
-    skip_varint_Auction(Rest, Z1, Z2, F@_1, F@_2,
-			TrUserData);
-skip_varint_Auction(<<0:1, _:7, Rest/binary>>, Z1, Z2,
-		    F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Auction(Rest, Z1, Z2, F@_1, F@_2,
-			       TrUserData).
-
-skip_length_delimited_Auction(<<1:1, X:7, Rest/binary>>,
-			      N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Auction(Rest, N + 7,
-				  X bsl N + Acc, F@_1, F@_2, TrUserData);
-skip_length_delimited_Auction(<<0:1, X:7, Rest/binary>>,
-			      N, Acc, F@_1, F@_2, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Auction(Rest2, 0, 0, F@_1, F@_2,
-			       TrUserData).
-
-skip_group_Auction(Bin, FNum, Z2, F@_1, F@_2,
-		   TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Auction(Rest, 0, Z2, F@_1, F@_2,
-			       TrUserData).
-
-skip_32_Auction(<<_:32, Rest/binary>>, Z1, Z2, F@_1,
-		F@_2, TrUserData) ->
-    dfp_read_field_def_Auction(Rest, Z1, Z2, F@_1, F@_2,
-			       TrUserData).
-
-skip_64_Auction(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
-		F@_2, TrUserData) ->
-    dfp_read_field_def_Auction(Rest, Z1, Z2, F@_1, F@_2,
-			       TrUserData).
-
-decode_msg_Emission(Bin, TrUserData) ->
-    dfp_read_field_def_Emission(Bin, 0, 0,
-				id('$undef', TrUserData), TrUserData).
-
-dfp_read_field_def_Emission(<<8, Rest/binary>>, Z1, Z2,
-			    F@_1, TrUserData) ->
-    d_field_Emission_amount(Rest, Z1, Z2, F@_1, TrUserData);
-dfp_read_field_def_Emission(<<>>, 0, 0, F@_1, _) ->
-    S1 = #{},
-    if F@_1 == '$undef' -> S1;
-       true -> S1#{amount => F@_1}
-    end;
-dfp_read_field_def_Emission(Other, Z1, Z2, F@_1,
-			    TrUserData) ->
-    dg_read_field_def_Emission(Other, Z1, Z2, F@_1,
-			       TrUserData).
-
-dg_read_field_def_Emission(<<1:1, X:7, Rest/binary>>, N,
-			   Acc, F@_1, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_Emission(Rest, N + 7, X bsl N + Acc,
-			       F@_1, TrUserData);
-dg_read_field_def_Emission(<<0:1, X:7, Rest/binary>>, N,
-			   Acc, F@_1, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      8 ->
-	  d_field_Emission_amount(Rest, 0, 0, F@_1, TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 -> skip_varint_Emission(Rest, 0, 0, F@_1, TrUserData);
-	    1 -> skip_64_Emission(Rest, 0, 0, F@_1, TrUserData);
-	    2 ->
-		skip_length_delimited_Emission(Rest, 0, 0, F@_1,
-					       TrUserData);
-	    3 ->
-		skip_group_Emission(Rest, Key bsr 3, 0, F@_1,
-				    TrUserData);
-	    5 -> skip_32_Emission(Rest, 0, 0, F@_1, TrUserData)
-	  end
-    end;
-dg_read_field_def_Emission(<<>>, 0, 0, F@_1, _) ->
-    S1 = #{},
-    if F@_1 == '$undef' -> S1;
-       true -> S1#{amount => F@_1}
-    end.
-
-d_field_Emission_amount(<<1:1, X:7, Rest/binary>>, N,
-			Acc, F@_1, TrUserData)
-    when N < 57 ->
-    d_field_Emission_amount(Rest, N + 7, X bsl N + Acc,
-			    F@_1, TrUserData);
-d_field_Emission_amount(<<0:1, X:7, Rest/binary>>, N,
-			Acc, _, TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Emission(RestF, 0, 0, NewFValue,
-				TrUserData).
-
-skip_varint_Emission(<<1:1, _:7, Rest/binary>>, Z1, Z2,
-		     F@_1, TrUserData) ->
-    skip_varint_Emission(Rest, Z1, Z2, F@_1, TrUserData);
-skip_varint_Emission(<<0:1, _:7, Rest/binary>>, Z1, Z2,
-		     F@_1, TrUserData) ->
-    dfp_read_field_def_Emission(Rest, Z1, Z2, F@_1,
-				TrUserData).
-
-skip_length_delimited_Emission(<<1:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Emission(Rest, N + 7,
-				   X bsl N + Acc, F@_1, TrUserData);
-skip_length_delimited_Emission(<<0:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Emission(Rest2, 0, 0, F@_1,
-				TrUserData).
-
-skip_group_Emission(Bin, FNum, Z2, F@_1, TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Emission(Rest, 0, Z2, F@_1,
-				TrUserData).
-
-skip_32_Emission(<<_:32, Rest/binary>>, Z1, Z2, F@_1,
-		 TrUserData) ->
-    dfp_read_field_def_Emission(Rest, Z1, Z2, F@_1,
-				TrUserData).
-
-skip_64_Emission(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
-		 TrUserData) ->
-    dfp_read_field_def_Emission(Rest, Z1, Z2, F@_1,
-				TrUserData).
-
 decode_msg_Notification(Bin, TrUserData) ->
     dfp_read_field_def_Notification(Bin, 0, 0,
 				    id('$undef', TrUserData),
-				    id('$undef', TrUserData),
-				    id([], TrUserData), TrUserData).
+				    id('$undef', TrUserData), TrUserData).
 
 dfp_read_field_def_Notification(<<10, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, F@_3, TrUserData) ->
+				Z2, F@_1, F@_2, TrUserData) ->
     d_field_Notification_status(Rest, Z1, Z2, F@_1, F@_2,
-				F@_3, TrUserData);
+				TrUserData);
 dfp_read_field_def_Notification(<<18, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, F@_3, TrUserData) ->
+				Z2, F@_1, F@_2, TrUserData) ->
     d_field_Notification_action(Rest, Z1, Z2, F@_1, F@_2,
-				F@_3, TrUserData);
-dfp_read_field_def_Notification(<<26, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, F@_3, TrUserData) ->
-    d_field_Notification_company(Rest, Z1, Z2, F@_1, F@_2,
-				 F@_3, TrUserData);
+				TrUserData);
 dfp_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
-				R1, TrUserData) ->
-    S1 = #{company => lists_reverse(R1, TrUserData)},
+				_) ->
+    S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{status => F@_1}
 	 end,
@@ -1264,52 +997,48 @@ dfp_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
        true -> S2#{action => F@_2}
     end;
 dfp_read_field_def_Notification(Other, Z1, Z2, F@_1,
-				F@_2, F@_3, TrUserData) ->
+				F@_2, TrUserData) ->
     dg_read_field_def_Notification(Other, Z1, Z2, F@_1,
-				   F@_2, F@_3, TrUserData).
+				   F@_2, TrUserData).
 
 dg_read_field_def_Notification(<<1:1, X:7,
 				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, F@_3, TrUserData)
+			       N, Acc, F@_1, F@_2, TrUserData)
     when N < 32 - 7 ->
     dg_read_field_def_Notification(Rest, N + 7,
-				   X bsl N + Acc, F@_1, F@_2, F@_3, TrUserData);
+				   X bsl N + Acc, F@_1, F@_2, TrUserData);
 dg_read_field_def_Notification(<<0:1, X:7,
 				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, F@_3, TrUserData) ->
+			       N, Acc, F@_1, F@_2, TrUserData) ->
     Key = X bsl N + Acc,
     case Key of
       10 ->
 	  d_field_Notification_status(Rest, 0, 0, F@_1, F@_2,
-				      F@_3, TrUserData);
+				      TrUserData);
       18 ->
 	  d_field_Notification_action(Rest, 0, 0, F@_1, F@_2,
-				      F@_3, TrUserData);
-      26 ->
-	  d_field_Notification_company(Rest, 0, 0, F@_1, F@_2,
-				       F@_3, TrUserData);
+				      TrUserData);
       _ ->
 	  case Key band 7 of
 	    0 ->
-		skip_varint_Notification(Rest, 0, 0, F@_1, F@_2, F@_3,
+		skip_varint_Notification(Rest, 0, 0, F@_1, F@_2,
 					 TrUserData);
 	    1 ->
-		skip_64_Notification(Rest, 0, 0, F@_1, F@_2, F@_3,
+		skip_64_Notification(Rest, 0, 0, F@_1, F@_2,
 				     TrUserData);
 	    2 ->
 		skip_length_delimited_Notification(Rest, 0, 0, F@_1,
-						   F@_2, F@_3, TrUserData);
+						   F@_2, TrUserData);
 	    3 ->
 		skip_group_Notification(Rest, Key bsr 3, 0, F@_1, F@_2,
-					F@_3, TrUserData);
+					TrUserData);
 	    5 ->
-		skip_32_Notification(Rest, 0, 0, F@_1, F@_2, F@_3,
-				     TrUserData)
+		skip_32_Notification(Rest, 0, 0, F@_1, F@_2, TrUserData)
 	  end
     end;
 dg_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
-			       R1, TrUserData) ->
-    S1 = #{company => lists_reverse(R1, TrUserData)},
+			       _) ->
+    S1 = #{},
     S2 = if F@_1 == '$undef' -> S1;
 	    true -> S1#{status => F@_1}
 	 end,
@@ -1318,12 +1047,12 @@ dg_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
     end.
 
 d_field_Notification_status(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, F@_3, TrUserData)
+			    N, Acc, F@_1, F@_2, TrUserData)
     when N < 57 ->
     d_field_Notification_status(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, TrUserData);
+				F@_1, F@_2, TrUserData);
 d_field_Notification_status(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, _, F@_2, F@_3, TrUserData) ->
+			    N, Acc, _, F@_2, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
@@ -1332,15 +1061,15 @@ d_field_Notification_status(<<0:1, X:7, Rest/binary>>,
 			    Rest2}
 			 end,
     dfp_read_field_def_Notification(RestF, 0, 0, NewFValue,
-				    F@_2, F@_3, TrUserData).
+				    F@_2, TrUserData).
 
 d_field_Notification_action(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, F@_3, TrUserData)
+			    N, Acc, F@_1, F@_2, TrUserData)
     when N < 57 ->
     d_field_Notification_action(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, F@_3, TrUserData);
+				F@_1, F@_2, TrUserData);
 d_field_Notification_action(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, _, F@_3, TrUserData) ->
+			    N, Acc, F@_1, _, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
@@ -1349,65 +1078,46 @@ d_field_Notification_action(<<0:1, X:7, Rest/binary>>,
 			    Rest2}
 			 end,
     dfp_read_field_def_Notification(RestF, 0, 0, F@_1,
-				    NewFValue, F@_3, TrUserData).
-
-d_field_Notification_company(<<1:1, X:7, Rest/binary>>,
-			     N, Acc, F@_1, F@_2, F@_3, TrUserData)
-    when N < 57 ->
-    d_field_Notification_company(Rest, N + 7, X bsl N + Acc,
-				 F@_1, F@_2, F@_3, TrUserData);
-d_field_Notification_company(<<0:1, X:7, Rest/binary>>,
-			     N, Acc, F@_1, F@_2, Prev, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {id(unicode:characters_to_list(Utf8, unicode),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Notification(RestF, 0, 0, F@_1, F@_2,
-				    cons(NewFValue, Prev, TrUserData),
-				    TrUserData).
+				    NewFValue, TrUserData).
 
 skip_varint_Notification(<<1:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, F@_3, TrUserData) ->
-    skip_varint_Notification(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 Z2, F@_1, F@_2, TrUserData) ->
+    skip_varint_Notification(Rest, Z1, Z2, F@_1, F@_2,
 			     TrUserData);
 skip_varint_Notification(<<0:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, F@_3, TrUserData) ->
+			 Z2, F@_1, F@_2, TrUserData) ->
     dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, F@_3, TrUserData).
+				    F@_2, TrUserData).
 
 skip_length_delimited_Notification(<<1:1, X:7,
 				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, F@_3, TrUserData)
+				   N, Acc, F@_1, F@_2, TrUserData)
     when N < 57 ->
     skip_length_delimited_Notification(Rest, N + 7,
-				       X bsl N + Acc, F@_1, F@_2, F@_3,
-				       TrUserData);
+				       X bsl N + Acc, F@_1, F@_2, TrUserData);
 skip_length_delimited_Notification(<<0:1, X:7,
 				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, F@_3, TrUserData) ->
+				   N, Acc, F@_1, F@_2, TrUserData) ->
     Length = X bsl N + Acc,
     <<_:Length/binary, Rest2/binary>> = Rest,
     dfp_read_field_def_Notification(Rest2, 0, 0, F@_1, F@_2,
-				    F@_3, TrUserData).
+				    TrUserData).
 
-skip_group_Notification(Bin, FNum, Z2, F@_1, F@_2, F@_3,
+skip_group_Notification(Bin, FNum, Z2, F@_1, F@_2,
 			TrUserData) ->
     {_, Rest} = read_group(Bin, FNum),
     dfp_read_field_def_Notification(Rest, 0, Z2, F@_1, F@_2,
-				    F@_3, TrUserData).
+				    TrUserData).
 
 skip_32_Notification(<<_:32, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, F@_3, TrUserData) ->
+		     F@_1, F@_2, TrUserData) ->
     dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, F@_3, TrUserData).
+				    F@_2, TrUserData).
 
 skip_64_Notification(<<_:64, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, F@_3, TrUserData) ->
+		     F@_1, F@_2, TrUserData) ->
     dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, F@_3, TrUserData).
+				    F@_2, TrUserData).
 
 read_group(Bin, FieldNum) ->
     {NumBytes, EndTagLen} = read_gr_b(Bin, 0, 0, 0, 0, FieldNum),
@@ -1473,16 +1183,63 @@ merge_msgs(Prev, New, MsgName) when is_atom(MsgName) ->
 merge_msgs(Prev, New, MsgName, Opts) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case MsgName of
+      'Message' -> merge_msg_Message(Prev, New, TrUserData);
       'Authentication' ->
 	  merge_msg_Authentication(Prev, New, TrUserData);
       'Result' -> merge_msg_Result(Prev, New, TrUserData);
-      'Bid' -> merge_msg_Bid(Prev, New, TrUserData);
-      'Subscription' ->
-	  merge_msg_Subscription(Prev, New, TrUserData);
-      'Auction' -> merge_msg_Auction(Prev, New, TrUserData);
-      'Emission' -> merge_msg_Emission(Prev, New, TrUserData);
       'Notification' ->
 	  merge_msg_Notification(Prev, New, TrUserData)
+    end.
+
+-compile({nowarn_unused_function,merge_msg_Message/3}).
+merge_msg_Message(PMsg, NMsg, TrUserData) ->
+    S1 = #{},
+    S2 = case {PMsg, NMsg} of
+	   {_, #{type := NFtype}} -> S1#{type => NFtype};
+	   {#{type := PFtype}, _} -> S1#{type => PFtype};
+	   _ -> S1
+	 end,
+    S3 = case {PMsg, NMsg} of
+	   {_, #{amount := NFamount}} -> S2#{amount => NFamount};
+	   {#{amount := PFamount}, _} -> S2#{amount => PFamount};
+	   _ -> S2
+	 end,
+    S4 = case {PMsg, NMsg} of
+	   {_, #{interest := NFinterest}} ->
+	       S3#{interest => NFinterest};
+	   {#{interest := PFinterest}, _} ->
+	       S3#{interest => PFinterest};
+	   _ -> S3
+	 end,
+    S5 = case {PMsg, NMsg} of
+	   {_, #{company := NFcompany}} ->
+	       S4#{company => NFcompany};
+	   {#{company := PFcompany}, _} ->
+	       S4#{company => PFcompany};
+	   _ -> S4
+	 end,
+    S6 = case {PMsg, NMsg} of
+	   {#{auth := PFauth}, #{auth := NFauth}} ->
+	       S5#{auth =>
+		       merge_msg_Authentication(PFauth, NFauth, TrUserData)};
+	   {_, #{auth := NFauth}} -> S5#{auth => NFauth};
+	   {#{auth := PFauth}, _} -> S5#{auth => PFauth};
+	   {_, _} -> S5
+	 end,
+    S7 = case {PMsg, NMsg} of
+	   {#{res := PFres}, #{res := NFres}} ->
+	       S6#{res => merge_msg_Result(PFres, NFres, TrUserData)};
+	   {_, #{res := NFres}} -> S6#{res => NFres};
+	   {#{res := PFres}, _} -> S6#{res => PFres};
+	   {_, _} -> S6
+	 end,
+    case {PMsg, NMsg} of
+      {#{'not' := PFnot}, #{'not' := NFnot}} ->
+	  S7#{'not' =>
+		  merge_msg_Notification(PFnot, NFnot, TrUserData)};
+      {_, #{'not' := NFnot}} -> S7#{'not' => NFnot};
+      {#{'not' := PFnot}, _} -> S7#{'not' => PFnot};
+      {_, _} -> S7
     end.
 
 -compile({nowarn_unused_function,merge_msg_Authentication/3}).
@@ -1517,92 +1274,18 @@ merge_msg_Result(PMsg, NMsg, _) ->
       _ -> S2
     end.
 
--compile({nowarn_unused_function,merge_msg_Bid/3}).
-merge_msg_Bid(PMsg, NMsg, _) ->
-    S1 = #{},
-    S2 = case {PMsg, NMsg} of
-	   {_, #{company := NFcompany}} ->
-	       S1#{company => NFcompany};
-	   {#{company := PFcompany}, _} ->
-	       S1#{company => PFcompany};
-	   _ -> S1
-	 end,
-    S3 = case {PMsg, NMsg} of
-	   {_, #{amount := NFamount}} -> S2#{amount => NFamount};
-	   {#{amount := PFamount}, _} -> S2#{amount => PFamount};
-	   _ -> S2
-	 end,
-    case {PMsg, NMsg} of
-      {_, #{interest := NFinterest}} ->
-	  S3#{interest => NFinterest};
-      {#{interest := PFinterest}, _} ->
-	  S3#{interest => PFinterest};
-      _ -> S3
-    end.
-
--compile({nowarn_unused_function,merge_msg_Subscription/3}).
-merge_msg_Subscription(PMsg, NMsg, _) ->
-    S1 = #{},
-    S2 = case {PMsg, NMsg} of
-	   {_, #{company := NFcompany}} ->
-	       S1#{company => NFcompany};
-	   {#{company := PFcompany}, _} ->
-	       S1#{company => PFcompany};
-	   _ -> S1
-	 end,
-    case {PMsg, NMsg} of
-      {_, #{amount := NFamount}} -> S2#{amount => NFamount};
-      {#{amount := PFamount}, _} -> S2#{amount => PFamount};
-      _ -> S2
-    end.
-
--compile({nowarn_unused_function,merge_msg_Auction/3}).
-merge_msg_Auction(PMsg, NMsg, _) ->
-    S1 = #{},
-    S2 = case {PMsg, NMsg} of
-	   {_, #{amount := NFamount}} -> S1#{amount => NFamount};
-	   {#{amount := PFamount}, _} -> S1#{amount => PFamount};
-	   _ -> S1
-	 end,
-    case {PMsg, NMsg} of
-      {_, #{interest := NFinterest}} ->
-	  S2#{interest => NFinterest};
-      {#{interest := PFinterest}, _} ->
-	  S2#{interest => PFinterest};
-      _ -> S2
-    end.
-
--compile({nowarn_unused_function,merge_msg_Emission/3}).
-merge_msg_Emission(PMsg, NMsg, _) ->
-    S1 = #{},
-    case {PMsg, NMsg} of
-      {_, #{amount := NFamount}} -> S1#{amount => NFamount};
-      {#{amount := PFamount}, _} -> S1#{amount => PFamount};
-      _ -> S1
-    end.
-
 -compile({nowarn_unused_function,merge_msg_Notification/3}).
-merge_msg_Notification(PMsg, NMsg, TrUserData) ->
+merge_msg_Notification(PMsg, NMsg, _) ->
     S1 = #{},
     S2 = case {PMsg, NMsg} of
 	   {_, #{status := NFstatus}} -> S1#{status => NFstatus};
 	   {#{status := PFstatus}, _} -> S1#{status => PFstatus};
 	   _ -> S1
 	 end,
-    S3 = case {PMsg, NMsg} of
-	   {_, #{action := NFaction}} -> S2#{action => NFaction};
-	   {#{action := PFaction}, _} -> S2#{action => PFaction};
-	   _ -> S2
-	 end,
     case {PMsg, NMsg} of
-      {#{company := PFcompany}, #{company := NFcompany}} ->
-	  S3#{company =>
-		  'erlang_++'(PFcompany, NFcompany, TrUserData)};
-      {_, #{company := NFcompany}} ->
-	  S3#{company => NFcompany};
-      {#{company := PFcompany}, _} ->
-	  S3#{company => PFcompany};
-      {_, _} -> S3
+      {_, #{action := NFaction}} -> S2#{action => NFaction};
+      {#{action := PFaction}, _} -> S2#{action => PFaction};
+      _ -> S2
     end.
 
 
@@ -1612,20 +1295,72 @@ verify_msg(Msg, MsgName) when is_atom(MsgName) ->
 verify_msg(Msg, MsgName, Opts) ->
     TrUserData = proplists:get_value(user_data, Opts),
     case MsgName of
+      'Message' -> v_msg_Message(Msg, [MsgName], TrUserData);
       'Authentication' ->
 	  v_msg_Authentication(Msg, [MsgName], TrUserData);
       'Result' -> v_msg_Result(Msg, [MsgName], TrUserData);
-      'Bid' -> v_msg_Bid(Msg, [MsgName], TrUserData);
-      'Subscription' ->
-	  v_msg_Subscription(Msg, [MsgName], TrUserData);
-      'Auction' -> v_msg_Auction(Msg, [MsgName], TrUserData);
-      'Emission' ->
-	  v_msg_Emission(Msg, [MsgName], TrUserData);
       'Notification' ->
 	  v_msg_Notification(Msg, [MsgName], TrUserData);
       _ -> mk_type_error(not_a_known_message, Msg, [])
     end.
 
+
+-compile({nowarn_unused_function,v_msg_Message/3}).
+-dialyzer({nowarn_function,v_msg_Message/3}).
+v_msg_Message(#{} = M, Path, TrUserData) ->
+    case M of
+      #{type := F1} ->
+	  v_type_string(F1, [type | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{amount := F2} ->
+	  v_type_int32(F2, [amount | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{interest := F3} ->
+	  v_type_int32(F3, [interest | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{company := F4} ->
+	  v_type_string(F4, [company | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{auth := F5} ->
+	  v_msg_Authentication(F5, [auth | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{res := F6} ->
+	  v_msg_Result(F6, [res | Path], TrUserData);
+      _ -> ok
+    end,
+    case M of
+      #{'not' := F7} ->
+	  v_msg_Notification(F7, ['not' | Path], TrUserData);
+      _ -> ok
+    end,
+    lists:foreach(fun (type) -> ok;
+		      (amount) -> ok;
+		      (interest) -> ok;
+		      (company) -> ok;
+		      (auth) -> ok;
+		      (res) -> ok;
+		      ('not') -> ok;
+		      (OtherKey) ->
+			  mk_type_error({extraneous_key, OtherKey}, M, Path)
+		  end,
+		  maps:keys(M)),
+    ok;
+v_msg_Message(M, Path, _TrUserData) when is_map(M) ->
+    mk_type_error({missing_fields, [] -- maps:keys(M),
+		   'Message'},
+		  M, Path);
+v_msg_Message(X, Path, _TrUserData) ->
+    mk_type_error({expected_msg, 'Message'}, X, Path).
 
 -compile({nowarn_unused_function,v_msg_Authentication/3}).
 -dialyzer({nowarn_function,v_msg_Authentication/3}).
@@ -1683,115 +1418,6 @@ v_msg_Result(M, Path, _TrUserData) when is_map(M) ->
 v_msg_Result(X, Path, _TrUserData) ->
     mk_type_error({expected_msg, 'Result'}, X, Path).
 
--compile({nowarn_unused_function,v_msg_Bid/3}).
--dialyzer({nowarn_function,v_msg_Bid/3}).
-v_msg_Bid(#{} = M, Path, TrUserData) ->
-    case M of
-      #{company := F1} ->
-	  v_type_string(F1, [company | Path], TrUserData);
-      _ -> ok
-    end,
-    case M of
-      #{amount := F2} ->
-	  v_type_int32(F2, [amount | Path], TrUserData);
-      _ -> ok
-    end,
-    case M of
-      #{interest := F3} ->
-	  v_type_int32(F3, [interest | Path], TrUserData);
-      _ -> ok
-    end,
-    lists:foreach(fun (company) -> ok;
-		      (amount) -> ok;
-		      (interest) -> ok;
-		      (OtherKey) ->
-			  mk_type_error({extraneous_key, OtherKey}, M, Path)
-		  end,
-		  maps:keys(M)),
-    ok;
-v_msg_Bid(M, Path, _TrUserData) when is_map(M) ->
-    mk_type_error({missing_fields, [] -- maps:keys(M),
-		   'Bid'},
-		  M, Path);
-v_msg_Bid(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Bid'}, X, Path).
-
--compile({nowarn_unused_function,v_msg_Subscription/3}).
--dialyzer({nowarn_function,v_msg_Subscription/3}).
-v_msg_Subscription(#{} = M, Path, TrUserData) ->
-    case M of
-      #{company := F1} ->
-	  v_type_string(F1, [company | Path], TrUserData);
-      _ -> ok
-    end,
-    case M of
-      #{amount := F2} ->
-	  v_type_int32(F2, [amount | Path], TrUserData);
-      _ -> ok
-    end,
-    lists:foreach(fun (company) -> ok;
-		      (amount) -> ok;
-		      (OtherKey) ->
-			  mk_type_error({extraneous_key, OtherKey}, M, Path)
-		  end,
-		  maps:keys(M)),
-    ok;
-v_msg_Subscription(M, Path, _TrUserData)
-    when is_map(M) ->
-    mk_type_error({missing_fields, [] -- maps:keys(M),
-		   'Subscription'},
-		  M, Path);
-v_msg_Subscription(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Subscription'}, X, Path).
-
--compile({nowarn_unused_function,v_msg_Auction/3}).
--dialyzer({nowarn_function,v_msg_Auction/3}).
-v_msg_Auction(#{} = M, Path, TrUserData) ->
-    case M of
-      #{amount := F1} ->
-	  v_type_int32(F1, [amount | Path], TrUserData);
-      _ -> ok
-    end,
-    case M of
-      #{interest := F2} ->
-	  v_type_int32(F2, [interest | Path], TrUserData);
-      _ -> ok
-    end,
-    lists:foreach(fun (amount) -> ok;
-		      (interest) -> ok;
-		      (OtherKey) ->
-			  mk_type_error({extraneous_key, OtherKey}, M, Path)
-		  end,
-		  maps:keys(M)),
-    ok;
-v_msg_Auction(M, Path, _TrUserData) when is_map(M) ->
-    mk_type_error({missing_fields, [] -- maps:keys(M),
-		   'Auction'},
-		  M, Path);
-v_msg_Auction(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Auction'}, X, Path).
-
--compile({nowarn_unused_function,v_msg_Emission/3}).
--dialyzer({nowarn_function,v_msg_Emission/3}).
-v_msg_Emission(#{} = M, Path, TrUserData) ->
-    case M of
-      #{amount := F1} ->
-	  v_type_int32(F1, [amount | Path], TrUserData);
-      _ -> ok
-    end,
-    lists:foreach(fun (amount) -> ok;
-		      (OtherKey) ->
-			  mk_type_error({extraneous_key, OtherKey}, M, Path)
-		  end,
-		  maps:keys(M)),
-    ok;
-v_msg_Emission(M, Path, _TrUserData) when is_map(M) ->
-    mk_type_error({missing_fields, [] -- maps:keys(M),
-		   'Emission'},
-		  M, Path);
-v_msg_Emission(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Emission'}, X, Path).
-
 -compile({nowarn_unused_function,v_msg_Notification/3}).
 -dialyzer({nowarn_function,v_msg_Notification/3}).
 v_msg_Notification(#{} = M, Path, TrUserData) ->
@@ -1805,21 +1431,8 @@ v_msg_Notification(#{} = M, Path, TrUserData) ->
 	  v_type_string(F2, [action | Path], TrUserData);
       _ -> ok
     end,
-    case M of
-      #{company := F3} ->
-	  if is_list(F3) ->
-		 _ = [v_type_string(Elem, [company | Path], TrUserData)
-		      || Elem <- F3],
-		 ok;
-	     true ->
-		 mk_type_error({invalid_list_of, string}, F3,
-			       [company | Path])
-	  end;
-      _ -> ok
-    end,
     lists:foreach(fun (status) -> ok;
 		      (action) -> ok;
-		      (company) -> ok;
 		      (OtherKey) ->
 			  mk_type_error({extraneous_key, OtherKey}, M, Path)
 		  end,
@@ -1910,7 +1523,25 @@ cons(Elem, Acc, _TrUserData) -> [Elem | Acc].
 'erlang_++'(A, B, _TrUserData) -> A ++ B.
 
 get_msg_defs() ->
-    [{{msg, 'Authentication'},
+    [{{msg, 'Message'},
+      [#{name => type, fnum => 1, rnum => 2, type => string,
+	 occurrence => optional, opts => []},
+       #{name => amount, fnum => 2, rnum => 3, type => int32,
+	 occurrence => optional, opts => []},
+       #{name => interest, fnum => 3, rnum => 4, type => int32,
+	 occurrence => optional, opts => []},
+       #{name => company, fnum => 4, rnum => 5, type => string,
+	 occurrence => optional, opts => []},
+       #{name => auth, fnum => 5, rnum => 6,
+	 type => {msg, 'Authentication'}, occurrence => optional,
+	 opts => []},
+       #{name => res, fnum => 6, rnum => 7,
+	 type => {msg, 'Result'}, occurrence => optional,
+	 opts => []},
+       #{name => 'not', fnum => 7, rnum => 8,
+	 type => {msg, 'Notification'}, occurrence => optional,
+	 opts => []}]},
+     {{msg, 'Authentication'},
       [#{name => username, fnum => 1, rnum => 2,
 	 type => string, occurrence => optional, opts => []},
        #{name => password, fnum => 2, rnum => 3,
@@ -1918,48 +1549,24 @@ get_msg_defs() ->
      {{msg, 'Result'},
       [#{name => result, fnum => 1, rnum => 2, type => bool,
 	 occurrence => optional, opts => []},
-       #{name => entity, fnum => 3, rnum => 3, type => string,
-	 occurrence => optional, opts => []}]},
-     {{msg, 'Bid'},
-      [#{name => company, fnum => 1, rnum => 2,
-	 type => string, occurrence => optional, opts => []},
-       #{name => amount, fnum => 2, rnum => 3, type => int32,
-	 occurrence => optional, opts => []},
-       #{name => interest, fnum => 3, rnum => 4, type => int32,
-	 occurrence => optional, opts => []}]},
-     {{msg, 'Subscription'},
-      [#{name => company, fnum => 1, rnum => 2,
-	 type => string, occurrence => optional, opts => []},
-       #{name => amount, fnum => 2, rnum => 3, type => int32,
-	 occurrence => optional, opts => []}]},
-     {{msg, 'Auction'},
-      [#{name => amount, fnum => 1, rnum => 2, type => int32,
-	 occurrence => optional, opts => []},
-       #{name => interest, fnum => 2, rnum => 3, type => int32,
-	 occurrence => optional, opts => []}]},
-     {{msg, 'Emission'},
-      [#{name => amount, fnum => 1, rnum => 2, type => int32,
+       #{name => entity, fnum => 2, rnum => 3, type => string,
 	 occurrence => optional, opts => []}]},
      {{msg, 'Notification'},
       [#{name => status, fnum => 1, rnum => 2, type => string,
 	 occurrence => optional, opts => []},
        #{name => action, fnum => 2, rnum => 3, type => string,
-	 occurrence => optional, opts => []},
-       #{name => company, fnum => 3, rnum => 4, type => string,
-	 occurrence => repeated, opts => []}]}].
+	 occurrence => optional, opts => []}]}].
 
 
 get_msg_names() ->
-    ['Authentication', 'Result', 'Bid', 'Subscription',
-     'Auction', 'Emission', 'Notification'].
+    ['Message', 'Authentication', 'Result', 'Notification'].
 
 
 get_group_names() -> [].
 
 
 get_msg_or_group_names() ->
-    ['Authentication', 'Result', 'Bid', 'Subscription',
-     'Auction', 'Emission', 'Notification'].
+    ['Message', 'Authentication', 'Result', 'Notification'].
 
 
 get_enum_names() -> [].
@@ -1977,6 +1584,24 @@ fetch_enum_def(EnumName) ->
     erlang:error({no_such_enum, EnumName}).
 
 
+find_msg_def('Message') ->
+    [#{name => type, fnum => 1, rnum => 2, type => string,
+       occurrence => optional, opts => []},
+     #{name => amount, fnum => 2, rnum => 3, type => int32,
+       occurrence => optional, opts => []},
+     #{name => interest, fnum => 3, rnum => 4, type => int32,
+       occurrence => optional, opts => []},
+     #{name => company, fnum => 4, rnum => 5, type => string,
+       occurrence => optional, opts => []},
+     #{name => auth, fnum => 5, rnum => 6,
+       type => {msg, 'Authentication'}, occurrence => optional,
+       opts => []},
+     #{name => res, fnum => 6, rnum => 7,
+       type => {msg, 'Result'}, occurrence => optional,
+       opts => []},
+     #{name => 'not', fnum => 7, rnum => 8,
+       type => {msg, 'Notification'}, occurrence => optional,
+       opts => []}];
 find_msg_def('Authentication') ->
     [#{name => username, fnum => 1, rnum => 2,
        type => string, occurrence => optional, opts => []},
@@ -1985,35 +1610,13 @@ find_msg_def('Authentication') ->
 find_msg_def('Result') ->
     [#{name => result, fnum => 1, rnum => 2, type => bool,
        occurrence => optional, opts => []},
-     #{name => entity, fnum => 3, rnum => 3, type => string,
-       occurrence => optional, opts => []}];
-find_msg_def('Bid') ->
-    [#{name => company, fnum => 1, rnum => 2,
-       type => string, occurrence => optional, opts => []},
-     #{name => amount, fnum => 2, rnum => 3, type => int32,
-       occurrence => optional, opts => []},
-     #{name => interest, fnum => 3, rnum => 4, type => int32,
-       occurrence => optional, opts => []}];
-find_msg_def('Subscription') ->
-    [#{name => company, fnum => 1, rnum => 2,
-       type => string, occurrence => optional, opts => []},
-     #{name => amount, fnum => 2, rnum => 3, type => int32,
-       occurrence => optional, opts => []}];
-find_msg_def('Auction') ->
-    [#{name => amount, fnum => 1, rnum => 2, type => int32,
-       occurrence => optional, opts => []},
-     #{name => interest, fnum => 2, rnum => 3, type => int32,
-       occurrence => optional, opts => []}];
-find_msg_def('Emission') ->
-    [#{name => amount, fnum => 1, rnum => 2, type => int32,
+     #{name => entity, fnum => 2, rnum => 3, type => string,
        occurrence => optional, opts => []}];
 find_msg_def('Notification') ->
     [#{name => status, fnum => 1, rnum => 2, type => string,
        occurrence => optional, opts => []},
      #{name => action, fnum => 2, rnum => 3, type => string,
-       occurrence => optional, opts => []},
-     #{name => company, fnum => 3, rnum => 4, type => string,
-       occurrence => repeated, opts => []}];
+       occurrence => optional, opts => []}];
 find_msg_def(_) -> error.
 
 
