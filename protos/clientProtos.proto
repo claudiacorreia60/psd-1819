@@ -7,6 +7,7 @@ message Message {
     optional Auction auct = 4;
     optional Emission emi = 5;
     optional Notification not = 6;
+    optional bytes pid = 3;
 }
 
 message Authentication {
@@ -16,7 +17,8 @@ message Authentication {
 
 message Result {
     optional bool result = 1;
-    optional string entity = 3;
+    optional string entity = 2;
+    optional bytes pid = 3;
 }
 
 message Bid {
