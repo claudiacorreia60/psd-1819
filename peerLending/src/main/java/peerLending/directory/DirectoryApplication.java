@@ -1,6 +1,6 @@
-package peerLending;
+package peerLending.directory;
 
-import peerLending.resources.DirectoryResource;
+import peerLending.directory.resources.DirectoryResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;

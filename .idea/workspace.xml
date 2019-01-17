@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1f9d61bc-4c3f-4a80-93c9-93d325a2ee2a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path="$PROJECT_DIR$/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="-1268373088">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="java" value="12" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="JAVA" value="12" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="dummy" value="24" />
+          <entry key="java" value="1155" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JAVA" value="1155" />
+          <entry key="PLAIN_TEXT" value="24" />
+        </counts>
+      </usages-collector>
+    </session>
+    <session id="1018043416">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="dummy" value="8" />
+          <entry key="java" value="3770" />
+          <entry key="txt" value="192" />
+          <entry key="xml" value="65" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="JAVA" value="3770" />
+          <entry key="PLAIN_TEXT" value="200" />
+          <entry key="XML" value="65" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="iml" value="2" />
+          <entry key="java" value="44" />
+          <entry key="xml" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="IDEA_MODULE" value="2" />
+          <entry key="JAVA" value="44" />
+          <entry key="XML" value="3" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>maxInterest</find>
+      <find>auctionsId</find>
+      <find>emissionCounter</find>
+      <find>currentEmissions</find>
+      <find>args</find>
+      <find>hello</find>
+      <find>hell</find>
+      <find>Hello</find>
+      <find>psd</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>interest</replace>
+      <replace>emissionNextId</replace>
+      <replace>availableEmissions</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/Diretorio.java" />
+        <option value="$PROJECT_DIR$/src/Client.java" />
+        <option value="$PROJECT_DIR$/src/Subscription.java" />
+        <option value="$PROJECT_DIR$/src/Investor.java" />
+        <option value="$PROJECT_DIR$/src/Bid.java" />
+        <option value="$PROJECT_DIR$/src/Auction.java" />
+        <option value="$PROJECT_DIR$/src/Emission.java" />
+        <option value="$PROJECT_DIR$/src/Company.java" />
+        <option value="$PROJECT_DIR$/src/Directory.java" />
+        <option value="$PROJECT_DIR$/src/resources/DirectoryAPI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/resources/DirectoryAPI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/resources/DirectoryAPI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/health/TemplateHealthCheck.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Auction.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Company.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Directory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Emission.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/DirectoryConfiguration.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/DirectoryApplication.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/resources/DirectoryResource.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="960" />
+    <option name="y" value="27" />
+    <option name="width" value="960" />
+    <option name="height" value="1053" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="peerLending" type="b2602c69:ProjectViewProjectNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="peerLending" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547083829401" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/peerLending" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.gitignore</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/enunciado.pdf</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/Makefile</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/bin/clientProtos.beam</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/bin/frontend.beam</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/clientProtos.erl</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/dependencies/chumak</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/dependencies/gpb</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/frontend/frontend.erl</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/compiler.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/encodings.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__ch_qos_logback_logback_core_1_1_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_annotation_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_core_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_healthchecks_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_jersey_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_jetty9_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_json_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_jvm_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_logback_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_codahale_metrics_metrics_servlets_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_classmate_1_0_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_3_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_yaml_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_guava_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_joda_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_base_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_afterburner_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_google_code_findbugs_jsr305_2_0_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_google_guava_guava_17_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_sun_jersey_jersey_core_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_sun_jersey_jersey_server_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_sun_jersey_jersey_servlet_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_sun_xml_bind_jaxb_core_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__com_sun_xml_bind_jaxb_impl_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__commons_lang_commons_lang_2_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_configuration_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_core_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_jackson_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_jersey_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_jetty_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_lifecycle_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_logging_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_metrics_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_servlets_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_util_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__io_dropwizard_dropwizard_validation_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__javax_activation_activation_1_1_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__javax_el_javax_el_api_2_2_5.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__javax_validation_validation_api_1_1_0_Final.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__javax_xml_bind_jaxb_api_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__joda_time_joda_time_2_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__junit_junit_3_8_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__net_sourceforge_argparse4j_argparse4j_0_4_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_continuation_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlets_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_orbit_javax_servlet_3_0_0_v201112011016.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_eclipse_jetty_toolchain_setuid_jetty_setuid_java_1_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_glassfish_web_javax_el_2_2_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_hibernate_hibernate_validator_5_1_1_Final.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_1_3_GA.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_slf4j_jcl_over_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_slf4j_log4j_over_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/libraries/protobuf_java_3_6_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/misc.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/modules.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/uiDesigner.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/vcs.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/.idea/workspace.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/imagens/PSD.png</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/imagens/PSD_(1).xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/imagens/PSD_(2).png</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/imagens/PSD_(2).xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/jeromq-0.4.3.jar</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/peerLending.iml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/pom.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/protobuf-java-3.6.1.jar</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Auction.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Bid.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Company.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Directory.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/DirectoryApplication.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/DirectoryConfiguration.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Emission.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/Investor.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLending/resources/DirectoryResource.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLendingClient/Client.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLendingClient/ClientProtos.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending/src/main/java/peerLendingClient/Subscriber.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/protocolos.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/protos/clientProtos.proto</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/META-INF/peerLending.kotlin_module</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Auction.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Bid.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Company.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Directory.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/DirectoryApplication.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/DirectoryConfiguration.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Emission.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/Investor.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLending/resources/DirectoryResource.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/Client.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Auction$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Auction$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Auction.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$AuctionOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Authentication$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Authentication$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Authentication.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$AuthenticationOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Bid$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Bid$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Bid.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$BidOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Emission$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Emission$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Emission.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$EmissionOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Notification$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Notification$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Notification.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$NotificationOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Result$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Result$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Result.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$ResultOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Subscription$1.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Subscription$Builder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$Subscription.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos$SubscriptionOrBuilder.class</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/target/classes/peerLendingClient/ClientProtos.class</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/compiler.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/encodings.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_1_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_annotation_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_core_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_healthchecks_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_jersey_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_jetty9_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_json_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_jvm_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_logback_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_codahale_metrics_metrics_servlets_3_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_classmate_1_0_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_3_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_yaml_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_guava_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_joda_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_base_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_afterburner_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_jaxb_annotations_2_3_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_google_code_findbugs_jsr305_2_0_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_google_guava_guava_17_0.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_sun_jersey_jersey_core_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_sun_jersey_jersey_server_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_sun_jersey_jersey_servlet_1_18_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_sun_xml_bind_jaxb_core_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__com_sun_xml_bind_jaxb_impl_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__commons_lang_commons_lang_2_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_configuration_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_core_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_jackson_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_jersey_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_jetty_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_lifecycle_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_logging_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_metrics_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_servlets_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_util_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__io_dropwizard_dropwizard_validation_0_7_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__javax_activation_activation_1_1_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__javax_el_javax_el_api_2_2_5.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__javax_validation_validation_api_1_1_0_Final.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__javax_xml_bind_jaxb_api_2_2_11.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__joda_time_joda_time_2_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_3_8_1.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__net_sourceforge_argparse4j_argparse4j_0_4_3.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_continuation_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_servlets_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_0_7_v20131107.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_orbit_javax_servlet_3_0_0_v201112011016.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_eclipse_jetty_toolchain_setuid_jetty_setuid_java_1_0_2.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_glassfish_web_javax_el_2_2_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_validator_5_1_1_Final.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_1_3_GA.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jcl_over_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_log4j_over_slf4j_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_6.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/misc.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/modules.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/uiDesigner.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/vcs.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/workspace.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/peerLending.iml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/pom.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Auction.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Bid.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Company.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Directory.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/DirectoryApplication.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/DirectoryConfiguration.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Emission.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/Investor.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/peerLending/resources/DirectoryResource.java</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="DirectoryApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="peerLending.DirectoryApplication" />
+      <module name="peerLending" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="peerLending.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DirectoryApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1f9d61bc-4c3f-4a80-93c9-93d325a2ee2a" name="Default Changelist" comment="" />
+      <created>1547054361388</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1547054361388</updated>
+      <workItem from="1547054364814" duration="3702000" />
+      <workItem from="1547058301151" duration="8215000" />
+      <workItem from="1547075247664" duration="8533000" />
+      <workItem from="1547678626991" duration="564000" />
+    </task>
+    <task id="LOCAL-00001" summary="Falta terminar o directory com: terminar auction/emission e notificações">
+      <created>1547063280456</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1547063280457</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Métodos do diretório terminados.&#10;Projeto Maven.">
+      <created>1547075341596</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1547075341596</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="21014000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
+    <layout>
+      <window_info id="Designer" order="0" />
+      <window_info id="UI Designer" order="1" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info id="Image Layers" order="4" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.1430096" />
+      <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Java Enterprise" order="0" />
+      <window_info anchor="bottom" id="Messages" order="1" weight="0.32938644" />
+      <window_info anchor="bottom" id="Version Control" order="2" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" order="3" weight="0.24650161" />
+      <window_info anchor="bottom" id="Event Log" order="4" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="5" />
+      <window_info anchor="bottom" id="Find" order="6" />
+      <window_info anchor="bottom" id="Run" order="7" weight="0.32938644" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="12" />
+      <window_info anchor="right" id="Bean Validation" order="0" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Theme Preview" order="2" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" />
+      <window_info anchor="right" id="Palette" order="6" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="7" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="8" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="9" weight="0.25" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Designer" order="0" />
+      <window_info id="UI Designer" order="1" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info id="Image Layers" order="4" />
+      <window_info content_ui="combo" id="Project" order="5" visible="true" weight="0.3238512" />
+      <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Java Enterprise" order="0" />
+      <window_info anchor="bottom" id="Messages" order="1" weight="0.32938644" />
+      <window_info anchor="bottom" id="Version Control" order="2" />
+      <window_info anchor="bottom" id="Terminal" order="3" weight="0.24650161" />
+      <window_info anchor="bottom" id="Event Log" order="4" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="5" />
+      <window_info anchor="bottom" id="Find" order="6" />
+      <window_info anchor="bottom" id="Run" order="7" weight="0.32938644" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="12" />
+      <window_info anchor="right" id="Bean Validation" order="0" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Theme Preview" order="2" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" />
+      <window_info anchor="right" id="Palette" order="6" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="7" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="8" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="9" weight="0.25" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Falta terminar o directory com: terminar auction/emission e notificações" />
+    <MESSAGE value="Métodos do diretório terminados.&#10;Projeto Maven." />
+    <option name="LAST_COMMIT_MESSAGE" value="Métodos do diretório terminados.&#10;Projeto Maven." />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Subscription.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/health/TemplateHealthCheck.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Auction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Bid.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Company.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="15" column="62" selection-start-line="15" selection-start-column="62" selection-end-line="15" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Directory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="17" column="64" selection-start-line="17" selection-start-column="64" selection-end-line="17" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Emission.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="58" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Investor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/peerLending.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="44" column="54" selection-start-line="44" selection-start-column="54" selection-end-line="44" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/resources/DirectoryResource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="32" lean-forward="true" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/DirectoryApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/DirectoryConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1660">
+          <caret line="83" column="79" selection-start-line="83" selection-start-column="79" selection-end-line="83" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>peerLending</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: ch.qos.logback:logback-classic:1.1.2</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

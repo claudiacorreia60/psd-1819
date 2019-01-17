@@ -1,4 +1,4 @@
-package peerLending.resources;
+package peerLending.directory.resources;
 
 import peerLending.Directory;
 

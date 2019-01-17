@@ -27,15 +27,15 @@ public class Directory {
             Investor investor = this.investors.get(username);
 
             if(investor == null){
-                // The client doesn't exist
+                // The peerLending.client doesn't exist
                 return null;
             }
 
-            // The client is an investor
+            // The peerLending.client is an investor
             return investor.getPassword();
         }
 
-        // The client is a company
+        // The peerLending.client is a company
         return company.getPassword();
     }
 

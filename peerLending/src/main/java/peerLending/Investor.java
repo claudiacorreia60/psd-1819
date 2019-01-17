@@ -1,7 +1,7 @@
 package peerLending;
 
 import org.zeromq.ZMQ;
-import peerLendingClient.ClientProtos;
+import peerLending.client.ClientProtos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package peerLendingClient;
+package peerLending.client;
 
 import org.zeromq.ZMQ;
 import peerLending.Company;

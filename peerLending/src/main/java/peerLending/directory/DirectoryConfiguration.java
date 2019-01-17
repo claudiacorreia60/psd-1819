@@ -1,4 +1,4 @@
-package peerLending;
+package peerLending.directory;
 
 import io.dropwizard.Configuration;
 
