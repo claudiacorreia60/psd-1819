@@ -2,22 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f9d61bc-4c3f-4a80-93c9-93d325a2ee2a" name="Default Changelist" comment="Inserido Subscriber (Cliente feito.)">
-      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/peerLending/exchange/Exchange.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/peerLending.iml" beforeDir="false" afterPath="$PROJECT_DIR$/peerLending.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/Company.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/Company.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/Directory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/Directory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/DirectoryApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/directory/DirectoryApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/DirectoryConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/directory/DirectoryConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/Investor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/Investor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/resources/DirectoryResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/directory/resources/DirectoryResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLendingClient/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLendingClient/ClientProtos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/client/ClientProtos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/peerLendingClient/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/client/Subscriber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/peerLending/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/peerLending/client/Client.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -27,70 +16,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="295957110">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.11" value="1" />
-          <entry key="project.opened" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="iml" value="1" />
-          <entry key="java" value="8" />
-          <entry key="xml" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="8" />
-          <entry key="XML" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="java" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="JAVA" value="1" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/client/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="317">
-              <caret line="72" column="64" lean-forward="true" selection-start-line="72" selection-start-column="64" selection-end-line="72" selection-end-column="64" />
+            <state relative-caret-position="364">
+              <caret line="92" column="84" selection-start-line="92" selection-start-column="84" selection-end-line="92" selection-end-column="84" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/exchange/Exchange.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Directory.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -98,12 +33,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Investor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="86" column="48" lean-forward="true" selection-start-line="86" selection-start-column="48" selection-end-line="86" selection-end-column="48" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#handleNotifications#0;class#Investor#0" />
-              </folding>
+            <state>
+              <caret column="20" selection-start-column="20" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Company.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="28" lean-forward="true" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -151,18 +91,13 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/peerLendingClient/ClientProtos.java" />
         <option value="$PROJECT_DIR$/src/main/java/peerLendingClient/Client.java" />
-        <option value="$PROJECT_DIR$/src/main/java/peerLending/Company.java" />
         <option value="$PROJECT_DIR$/src/main/java/peerLendingClient/Subscriber.java" />
-        <option value="$PROJECT_DIR$/src/main/java/peerLending/Investor.java" />
         <option value="$PROJECT_DIR$/src/main/java/peerLending/directory/DirectoryApplication.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Investor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/Company.java" />
+        <option value="$PROJECT_DIR$/src/main/java/peerLending/client/Client.java" />
       </list>
     </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -329,6 +264,7 @@
       <workItem from="1547220675785" duration="21028000" />
       <workItem from="1547679192907" duration="1680000" />
       <workItem from="1547720641726" duration="3099000" />
+      <workItem from="1547725873252" duration="1304000" />
     </task>
     <task id="LOCAL-00001" summary="Falta terminar o directory com: terminar auction/emission e notificações">
       <created>1547063280456</created>
@@ -355,7 +291,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57482000" />
+    <option name="totallyTimeSpent" value="58786000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -367,7 +303,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
+    <frame x="67" y="25" width="1299" height="743" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" order="0" />
@@ -375,7 +311,7 @@
       <window_info id="Capture Tool" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Image Layers" order="4" />
-      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.14887941" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.15083799" />
       <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Java Enterprise" order="0" />
       <window_info anchor="bottom" id="Messages" order="1" weight="0.32899022" />
@@ -444,9 +380,6 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Falta terminar o directory com: terminar auction/emission e notificações" />
@@ -689,17 +622,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Company.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="460">
-          <caret line="26" column="64" selection-start-line="26" selection-start-column="64" selection-end-line="26" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#handleNotifications#0;class#Company#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/directory/DirectoryApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -714,23 +636,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/client/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="72" column="64" lean-forward="true" selection-start-line="72" selection-start-column="64" selection-end-line="72" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/exchange/Exchange.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/directory/resources/DirectoryResource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -738,21 +643,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Investor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/exchange/Exchange.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="86" column="48" lean-forward="true" selection-start-line="86" selection-start-column="48" selection-end-line="86" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#handleNotifications#0;class#Investor#0" />
-          </folding>
+        <state relative-caret-position="30">
+          <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Directory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+        <state relative-caret-position="225">
+          <caret line="73" lean-forward="true" selection-start-line="73" selection-end-line="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Company.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="28" lean-forward="true" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/Investor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="20" selection-start-column="20" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/peerLending/client/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="92" column="84" selection-start-line="92" selection-start-column="84" selection-end-line="92" selection-end-column="84" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
