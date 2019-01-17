@@ -1,6 +1,7 @@
 package peerLending.client;
 
 import org.zeromq.ZMQ;
+import peerLending.ClientProtos;
 import peerLending.Company;
 import peerLending.Investor;
 import java.io.*;
