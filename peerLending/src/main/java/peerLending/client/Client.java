@@ -2,8 +2,6 @@ package peerLending.client;
 
 import org.zeromq.ZMQ;
 import peerLending.ClientProtos;
-import peerLending.Company;
-import peerLending.Investor;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -53,13 +51,21 @@ public class Client {
         this.password = password;
     }
 
+    public Map<String, List<String>> getEnabledNotifications() {
+        return this.enabledNotifications;
+    }
+
+    public void setEnabledNotifications(Map<String, List<String>> enabledNotifications) {
+        this.enabledNotifications = enabledNotifications;
+    }
+
 
     public void startClient() throws IOException {
         System.out.println("\n################ LOGIN ################");
         System.out.print("\n> Username: ");
-        this.username = reader.readLine();
+        this.username = this.reader.readLine();
         System.out.print("> Password: ");
-        this.password = reader.readLine();
+        this.password = this.reader.readLine();
         ClientProtos.Authentication auth = ClientProtos.Authentication.newBuilder()
                 .setUsername(this.username)
                 .setPassword(this.password)
@@ -69,8 +75,8 @@ public class Client {
                 .setAuth(auth)
                 .build();
 
-        out.write(msg.toByteArray());
-        out.flush();
+        this.out.write(msg.toByteArray());
+        this.out.flush();
 
         byte [] response = this.recv();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
@@ -84,7 +90,7 @@ public class Client {
         else {
             ZMQ.Context context = ZMQ.context(1);
             this.subscriber = context.socket(ZMQ.SUB);
-            Subscriber sub = new Subscriber(context, subscriber);
+            Subscriber sub = new Subscriber(context, this.subscriber);
             Thread t = new Thread(sub);
             t.start();
             /* TODO: Ir buscar as notificações ativas às exchanges
