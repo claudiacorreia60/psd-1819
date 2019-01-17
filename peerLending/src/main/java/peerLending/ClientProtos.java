@@ -75,41 +75,55 @@ public final class ClientProtos {
         getCompanyBytes();
 
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional string investor = 5;</code>
+     */
+    boolean hasInvestor();
+    /**
+     * <code>optional string investor = 5;</code>
+     */
+    java.lang.String getInvestor();
+    /**
+     * <code>optional string investor = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getInvestorBytes();
+
+    /**
+     * <code>optional .Authentication auth = 6;</code>
      */
     boolean hasAuth();
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional .Authentication auth = 6;</code>
      */
     ClientProtos.Authentication getAuth();
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional .Authentication auth = 6;</code>
      */
     ClientProtos.AuthenticationOrBuilder getAuthOrBuilder();
 
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     boolean hasRes();
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     ClientProtos.Result getRes();
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     ClientProtos.ResultOrBuilder getResOrBuilder();
 
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     boolean hasNot();
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     ClientProtos.Notification getNot();
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     ClientProtos.NotificationOrBuilder getNotOrBuilder();
   }
@@ -129,6 +143,7 @@ public final class ClientProtos {
       amount_ = 0;
       interest_ = 0;
       company_ = "";
+      investor_ = "";
     }
 
     @java.lang.Override
@@ -182,8 +197,14 @@ public final class ClientProtos {
               break;
             }
             case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000010;
+              investor_ = bs;
+              break;
+            }
+            case 50: {
               ClientProtos.Authentication.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+              if (((bitField0_ & 0x00000020) == 0x00000020)) {
                 subBuilder = auth_.toBuilder();
               }
               auth_ = input.readMessage(ClientProtos.Authentication.PARSER, extensionRegistry);
@@ -191,12 +212,12 @@ public final class ClientProtos {
                 subBuilder.mergeFrom(auth_);
                 auth_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             }
-            case 50: {
+            case 58: {
               ClientProtos.Result.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000020) == 0x00000020)) {
+              if (((bitField0_ & 0x00000040) == 0x00000040)) {
                 subBuilder = res_.toBuilder();
               }
               res_ = input.readMessage(ClientProtos.Result.PARSER, extensionRegistry);
@@ -204,12 +225,12 @@ public final class ClientProtos {
                 subBuilder.mergeFrom(res_);
                 res_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             }
-            case 58: {
+            case 66: {
               ClientProtos.Notification.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = not_.toBuilder();
               }
               not_ = input.readMessage(ClientProtos.Notification.PARSER, extensionRegistry);
@@ -217,7 +238,7 @@ public final class ClientProtos {
                 subBuilder.mergeFrom(not_);
                 not_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
               break;
             }
           }
@@ -371,64 +392,106 @@ public final class ClientProtos {
       }
     }
 
-    public static final int AUTH_FIELD_NUMBER = 5;
-    private ClientProtos.Authentication auth_;
+    public static final int INVESTOR_FIELD_NUMBER = 5;
+    private volatile java.lang.Object investor_;
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional string investor = 5;</code>
      */
-    public boolean hasAuth() {
+    public boolean hasInvestor() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional string investor = 5;</code>
+     */
+    public java.lang.String getInvestor() {
+      java.lang.Object ref = investor_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          investor_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string investor = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getInvestorBytes() {
+      java.lang.Object ref = investor_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        investor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AUTH_FIELD_NUMBER = 6;
+    private ClientProtos.Authentication auth_;
+    /**
+     * <code>optional .Authentication auth = 6;</code>
+     */
+    public boolean hasAuth() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional .Authentication auth = 6;</code>
      */
     public ClientProtos.Authentication getAuth() {
       return auth_ == null ? ClientProtos.Authentication.getDefaultInstance() : auth_;
     }
     /**
-     * <code>optional .Authentication auth = 5;</code>
+     * <code>optional .Authentication auth = 6;</code>
      */
     public ClientProtos.AuthenticationOrBuilder getAuthOrBuilder() {
       return auth_ == null ? ClientProtos.Authentication.getDefaultInstance() : auth_;
     }
 
-    public static final int RES_FIELD_NUMBER = 6;
+    public static final int RES_FIELD_NUMBER = 7;
     private ClientProtos.Result res_;
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     public boolean hasRes() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     public ClientProtos.Result getRes() {
       return res_ == null ? ClientProtos.Result.getDefaultInstance() : res_;
     }
     /**
-     * <code>optional .Result res = 6;</code>
+     * <code>optional .Result res = 7;</code>
      */
     public ClientProtos.ResultOrBuilder getResOrBuilder() {
       return res_ == null ? ClientProtos.Result.getDefaultInstance() : res_;
     }
 
-    public static final int NOT_FIELD_NUMBER = 7;
+    public static final int NOT_FIELD_NUMBER = 8;
     private ClientProtos.Notification not_;
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     public boolean hasNot() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     public ClientProtos.Notification getNot() {
       return not_ == null ? ClientProtos.Notification.getDefaultInstance() : not_;
     }
     /**
-     * <code>optional .Notification not = 7;</code>
+     * <code>optional .Notification not = 8;</code>
      */
     public ClientProtos.NotificationOrBuilder getNotOrBuilder() {
       return not_ == null ? ClientProtos.Notification.getDefaultInstance() : not_;
@@ -459,13 +522,16 @@ public final class ClientProtos {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, company_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeMessage(5, getAuth());
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, investor_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeMessage(6, getRes());
+        output.writeMessage(6, getAuth());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(7, getNot());
+        output.writeMessage(7, getRes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeMessage(8, getNot());
       }
       unknownFields.writeTo(output);
     }
@@ -490,16 +556,19 @@ public final class ClientProtos {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, company_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getAuth());
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, investor_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getRes());
+          .computeMessageSize(6, getAuth());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getNot());
+          .computeMessageSize(7, getRes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, getNot());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -537,6 +606,11 @@ public final class ClientProtos {
       if (hasCompany()) {
         result = result && getCompany()
             .equals(other.getCompany());
+      }
+      result = result && (hasInvestor() == other.hasInvestor());
+      if (hasInvestor()) {
+        result = result && getInvestor()
+            .equals(other.getInvestor());
       }
       result = result && (hasAuth() == other.hasAuth());
       if (hasAuth()) {
@@ -579,6 +653,10 @@ public final class ClientProtos {
       if (hasCompany()) {
         hash = (37 * hash) + COMPANY_FIELD_NUMBER;
         hash = (53 * hash) + getCompany().hashCode();
+      }
+      if (hasInvestor()) {
+        hash = (37 * hash) + INVESTOR_FIELD_NUMBER;
+        hash = (53 * hash) + getInvestor().hashCode();
       }
       if (hasAuth()) {
         hash = (37 * hash) + AUTH_FIELD_NUMBER;
@@ -721,24 +799,26 @@ public final class ClientProtos {
         bitField0_ = (bitField0_ & ~0x00000004);
         company_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
+        investor_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         if (authBuilder_ == null) {
           auth_ = null;
         } else {
           authBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         if (resBuilder_ == null) {
           res_ = null;
         } else {
           resBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         if (notBuilder_ == null) {
           not_ = null;
         } else {
           notBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -782,21 +862,25 @@ public final class ClientProtos {
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
+        result.investor_ = investor_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
         if (authBuilder_ == null) {
           result.auth_ = auth_;
         } else {
           result.auth_ = authBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
         }
         if (resBuilder_ == null) {
           result.res_ = res_;
         } else {
           result.res_ = resBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
         }
         if (notBuilder_ == null) {
           result.not_ = not_;
@@ -859,6 +943,11 @@ public final class ClientProtos {
         if (other.hasCompany()) {
           bitField0_ |= 0x00000008;
           company_ = other.company_;
+          onChanged();
+        }
+        if (other.hasInvestor()) {
+          bitField0_ |= 0x00000010;
+          investor_ = other.investor_;
           onChanged();
         }
         if (other.hasAuth()) {
@@ -1138,17 +1227,93 @@ public final class ClientProtos {
         return this;
       }
 
+      private java.lang.Object investor_ = "";
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public boolean hasInvestor() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public java.lang.String getInvestor() {
+        java.lang.Object ref = investor_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            investor_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getInvestorBytes() {
+        java.lang.Object ref = investor_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          investor_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public Builder setInvestor(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        investor_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public Builder clearInvestor() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        investor_ = getDefaultInstance().getInvestor();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string investor = 5;</code>
+       */
+      public Builder setInvestorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        investor_ = value;
+        onChanged();
+        return this;
+      }
+
       private ClientProtos.Authentication auth_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Authentication, ClientProtos.Authentication.Builder, ClientProtos.AuthenticationOrBuilder> authBuilder_;
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public boolean hasAuth() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public ClientProtos.Authentication getAuth() {
         if (authBuilder_ == null) {
@@ -1158,7 +1323,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public Builder setAuth(ClientProtos.Authentication value) {
         if (authBuilder_ == null) {
@@ -1170,11 +1335,11 @@ public final class ClientProtos {
         } else {
           authBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public Builder setAuth(
           ClientProtos.Authentication.Builder builderForValue) {
@@ -1184,15 +1349,15 @@ public final class ClientProtos {
         } else {
           authBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public Builder mergeAuth(ClientProtos.Authentication value) {
         if (authBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
               auth_ != null &&
               auth_ != ClientProtos.Authentication.getDefaultInstance()) {
             auth_ =
@@ -1204,11 +1369,11 @@ public final class ClientProtos {
         } else {
           authBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public Builder clearAuth() {
         if (authBuilder_ == null) {
@@ -1217,19 +1382,19 @@ public final class ClientProtos {
         } else {
           authBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public ClientProtos.Authentication.Builder getAuthBuilder() {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return getAuthFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       public ClientProtos.AuthenticationOrBuilder getAuthOrBuilder() {
         if (authBuilder_ != null) {
@@ -1240,7 +1405,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Authentication auth = 5;</code>
+       * <code>optional .Authentication auth = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Authentication, ClientProtos.Authentication.Builder, ClientProtos.AuthenticationOrBuilder> 
@@ -1260,13 +1425,13 @@ public final class ClientProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Result, ClientProtos.Result.Builder, ClientProtos.ResultOrBuilder> resBuilder_;
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public boolean hasRes() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public ClientProtos.Result getRes() {
         if (resBuilder_ == null) {
@@ -1276,7 +1441,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public Builder setRes(ClientProtos.Result value) {
         if (resBuilder_ == null) {
@@ -1288,11 +1453,11 @@ public final class ClientProtos {
         } else {
           resBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public Builder setRes(
           ClientProtos.Result.Builder builderForValue) {
@@ -1302,15 +1467,15 @@ public final class ClientProtos {
         } else {
           resBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public Builder mergeRes(ClientProtos.Result value) {
         if (resBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+          if (((bitField0_ & 0x00000040) == 0x00000040) &&
               res_ != null &&
               res_ != ClientProtos.Result.getDefaultInstance()) {
             res_ =
@@ -1322,11 +1487,11 @@ public final class ClientProtos {
         } else {
           resBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         return this;
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public Builder clearRes() {
         if (resBuilder_ == null) {
@@ -1335,19 +1500,19 @@ public final class ClientProtos {
         } else {
           resBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public ClientProtos.Result.Builder getResBuilder() {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         onChanged();
         return getResFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       public ClientProtos.ResultOrBuilder getResOrBuilder() {
         if (resBuilder_ != null) {
@@ -1358,7 +1523,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Result res = 6;</code>
+       * <code>optional .Result res = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Result, ClientProtos.Result.Builder, ClientProtos.ResultOrBuilder> 
@@ -1378,13 +1543,13 @@ public final class ClientProtos {
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Notification, ClientProtos.Notification.Builder, ClientProtos.NotificationOrBuilder> notBuilder_;
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public boolean hasNot() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public ClientProtos.Notification getNot() {
         if (notBuilder_ == null) {
@@ -1394,7 +1559,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public Builder setNot(ClientProtos.Notification value) {
         if (notBuilder_ == null) {
@@ -1406,11 +1571,11 @@ public final class ClientProtos {
         } else {
           notBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public Builder setNot(
           ClientProtos.Notification.Builder builderForValue) {
@@ -1420,15 +1585,15 @@ public final class ClientProtos {
         } else {
           notBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public Builder mergeNot(ClientProtos.Notification value) {
         if (notBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
               not_ != null &&
               not_ != ClientProtos.Notification.getDefaultInstance()) {
             not_ =
@@ -1440,11 +1605,11 @@ public final class ClientProtos {
         } else {
           notBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public Builder clearNot() {
         if (notBuilder_ == null) {
@@ -1453,19 +1618,19 @@ public final class ClientProtos {
         } else {
           notBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public ClientProtos.Notification.Builder getNotBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return getNotFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       public ClientProtos.NotificationOrBuilder getNotOrBuilder() {
         if (notBuilder_ != null) {
@@ -1476,7 +1641,7 @@ public final class ClientProtos {
         }
       }
       /**
-       * <code>optional .Notification not = 7;</code>
+       * <code>optional .Notification not = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           ClientProtos.Notification, ClientProtos.Notification.Builder, ClientProtos.NotificationOrBuilder> 
@@ -3619,15 +3784,15 @@ public final class ClientProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022clientProtos.proto\"\233\001\n\007Message\022\014\n\004type" +
+      "\n\022clientProtos.proto\"\255\001\n\007Message\022\014\n\004type" +
       "\030\001 \001(\t\022\016\n\006amount\030\002 \001(\005\022\020\n\010interest\030\003 \001(\005" +
-      "\022\017\n\007company\030\004 \001(\t\022\035\n\004auth\030\005 \001(\0132\017.Authen" +
-      "tication\022\024\n\003res\030\006 \001(\0132\007.Result\022\032\n\003not\030\007 " +
-      "\001(\0132\r.Notification\"4\n\016Authentication\022\020\n\010" +
-      "username\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"(\n\006Resu" +
-      "lt\022\016\n\006result\030\001 \001(\010\022\016\n\006entity\030\002 \001(\t\".\n\014No" +
-      "tification\022\016\n\006status\030\001 \001(\t\022\016\n\006action\030\002 \001" +
-      "(\t"
+      "\022\017\n\007company\030\004 \001(\t\022\020\n\010investor\030\005 \001(\t\022\035\n\004a" +
+      "uth\030\006 \001(\0132\017.Authentication\022\024\n\003res\030\007 \001(\0132" +
+      "\007.Result\022\032\n\003not\030\010 \001(\0132\r.Notification\"4\n\016" +
+      "Authentication\022\020\n\010username\030\001 \001(\t\022\020\n\010pass" +
+      "word\030\002 \001(\t\"(\n\006Result\022\016\n\006result\030\001 \001(\010\022\016\n\006" +
+      "entity\030\002 \001(\t\".\n\014Notification\022\016\n\006status\030\001" +
+      " \001(\t\022\016\n\006action\030\002 \001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3646,7 +3811,7 @@ public final class ClientProtos {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "Type", "Amount", "Interest", "Company", "Auth", "Res", "Not", });
+        new java.lang.String[] { "Type", "Amount", "Interest", "Company", "Investor", "Auth", "Res", "Not", });
     internal_static_Authentication_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Authentication_fieldAccessorTable = new

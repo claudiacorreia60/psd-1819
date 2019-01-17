@@ -140,6 +140,7 @@ public class Client {
                 .setType("Bid")
                 .setAmount(amount)
                 .setCompany(company)
+                .setInvestor(this.username)
                 .setInterest(interest)
                 .build();
 
@@ -169,6 +170,7 @@ public class Client {
                 .setType("Subscription")
                 .setAmount(amount)
                 .setCompany(company)
+                .setInvestor(this.username)
                 .build();
 
         this.out.write(msg.toByteArray());

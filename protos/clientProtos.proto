@@ -5,9 +5,10 @@ message Message {
     optional int32 amount = 2;
     optional int32 interest = 3; 
     optional string company = 4;
-    optional Authentication auth = 5;
-    optional Result res = 6;
-    optional Notification not = 7;
+    optional string investor = 5;
+    optional Authentication auth = 6;
+    optional Result res = 7;
+    optional Notification not = 8;
 }
 
 message Authentication {
