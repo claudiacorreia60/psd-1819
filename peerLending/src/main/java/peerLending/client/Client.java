@@ -78,7 +78,7 @@ public class Client {
         this.out.write(msg.toByteArray());
         this.out.flush();
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
@@ -147,7 +147,7 @@ public class Client {
         this.out.write(msg.toByteArray());
         this.out.flush();
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
@@ -176,7 +176,7 @@ public class Client {
         this.out.write(msg.toByteArray());
         this.out.flush();
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
@@ -225,7 +225,7 @@ public class Client {
         this.out.write(msg.toByteArray());
         this.out.flush();
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
@@ -251,7 +251,7 @@ public class Client {
         this.out.write(msg.toByteArray());
         this.out.flush();
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
@@ -297,7 +297,7 @@ public class Client {
             disableNotifications(action, companies);
         }
 
-        byte [] response = this.recv();
+        byte [] response = this.receive();
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
         boolean result = res.getResult();
@@ -329,7 +329,7 @@ public class Client {
         }
     }
 
-    public byte[] recv(){
+    public byte[] receive(){
         byte[] tmp = new byte[4096];
         int len = 0;
         try {

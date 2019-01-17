@@ -6,16 +6,14 @@ import java.util.*;
 
 public class Company {
     private String username;
-    private String password;
     private Map<Integer, Auction> auctionHistory; // auctions that are over
     private Map<Integer, Emission> emissionHistory; // emissions that are over
 
 
     // TODO: Pensar no caso em que o cliente vai abaixo antes das notificações serem guardadas?
 
-    public Company(String username, String password) {
+    public Company(String username) {
         this.username = username;
-        this.password = password;
         this.auctionHistory = new HashMap<Integer, Auction>();
         this.emissionHistory = new HashMap<Integer, Emission>();
     }
@@ -35,14 +33,6 @@ public class Company {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Map<Integer, Auction> getAuctionHistory() {

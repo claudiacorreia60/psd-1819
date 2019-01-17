@@ -6,10 +6,10 @@ import java.util.Map;
 public class Emission {
     private int id;
     private int amount;
-    private float interest;
+    private int interest;
     private Map<String, Integer> subscriptions;
 
-    public Emission(int id, int amount, float interest) {
+    public Emission(int id, int amount, int interest) {
         this.id = id;
         this.amount = amount;
         this.interest = interest;
@@ -36,11 +36,11 @@ public class Emission {
         this.amount = amout;
     }
 
-    public float getInterest() {
+    public int getInterest() {
         return interest;
     }
 
-    public void setInterest(float interest) {
+    public void setInterest(int interest) {
         this.interest = interest;
     }
 
