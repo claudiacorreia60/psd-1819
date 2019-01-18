@@ -1,6 +1,15 @@
 package peerLending.exchange;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.zeromq.ZMQ;
 import peerLending.*;
 import java.io.*;
@@ -141,13 +150,16 @@ public class Exchange implements Runnable{
             this.availableAuctions.put(msg.getCompany(), auction);
             success = true;
 
+            // Increment auctionCounter
+            this.auctionCounter++;
+
+            // Update directory
+            sendHTTPRequest("add/auction", auction);
+
             Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Auction", this.availableAuctions, this.availableEmissions, this.publisher);
             Thread t = new Thread(handler);
             t.start();
         }
-
-        // Increment auctionCounter
-        this.auctionCounter++;
 
         // Reply to frontendServer
         res = ClientProtos.Result.newBuilder()
@@ -173,6 +185,9 @@ public class Exchange implements Runnable{
             }
             else {
                 success = true;
+
+                // Increment emissionCounter
+                this.emissionCounter++;
             }
 
             if(success) {
@@ -180,14 +195,14 @@ public class Exchange implements Runnable{
                 Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
                 this.availableEmissions.put(msg.getCompany(), emission);
 
+                // Update directory
+                sendHTTPRequest("add/emission", emission);
+
                 Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
                 Thread t = new Thread(handler);
                 t.start();
             }
         }
-
-        // Increment emissionCounter
-        this.emissionCounter++;
 
         // Reply to frontendServer
         ClientProtos.Result res = ClientProtos.Result.newBuilder()
@@ -263,6 +278,26 @@ public class Exchange implements Runnable{
         return result;
     }
 
+    public void sendHTTPRequest(String uri, Object obj){
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost("http://localhost:8080/directory/" + uri);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String JSON_STRING= null;
+
+        try {
+            JSON_STRING = ow.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        HttpEntity stringEntity = new StringEntity(JSON_STRING, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(stringEntity);
+        try {
+            httpclient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main (String[] args) throws IOException {
         ZMQ.Context context = ZMQ.context(1);

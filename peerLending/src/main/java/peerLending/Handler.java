@@ -1,8 +1,14 @@
 package peerLending;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.zeromq.ZMQ;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.util.Map;
 
@@ -36,7 +42,6 @@ public class Handler implements Runnable {
     }
 
 
-
     public void resultEmission (Emission emission) {
         Map<String, Integer> subscriptions = emission.getSubscriptions();
         int total = 0;
@@ -55,11 +60,36 @@ public class Handler implements Runnable {
             notification += "Failure:End";
         }
         this.publisher.sendNotification(notification);
+
+        sendHTTPRequest("end/emission", emission);
+    }
+
+    public void sendHTTPRequest(String uri, Object obj){
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost("http://localhost:8080/directory/" + uri);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String JSON_STRING= null;
+
+        try {
+            JSON_STRING = ow.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        HttpEntity stringEntity = new StringEntity(JSON_STRING, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(stringEntity);
+        try {
+            httpclient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void resultAuction (Auction auction) {
         Map<String, Bid> bids = auction.getBids();
         /* TODO: Tratar do algoritmo de escolha das melhores bids */
+
+        // sendHTTPRequest("end/auction", auction);
     }
 
 

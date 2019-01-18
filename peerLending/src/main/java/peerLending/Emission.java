@@ -68,4 +68,13 @@ public class Emission {
                 ", subscriptions=" + subscriptions.toString() +
                 '}';
     }
+
+    public String toJson() {
+        return "{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", interest=" + interest +
+                ", subscriptions=" + subscriptions.toString() +
+                '}';
+    }
 }
