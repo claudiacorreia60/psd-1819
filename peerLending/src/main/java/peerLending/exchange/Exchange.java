@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 
 /* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
@@ -24,6 +25,7 @@ import java.util.Map;
 public class Exchange implements Runnable{
     private int id;
     private int port;
+    private Timer timer;
     private ZMQ.Socket socket;
     private Publisher publisher;
     private Map<String, Company> companies;
@@ -35,6 +37,7 @@ public class Exchange implements Runnable{
     public Exchange(int port, int id, Publisher publisher) throws IOException {
         this.port = port;
         this.id = id;
+        this.timer = new Timer("Timer");
         this.publisher = publisher;
         ZMQ.Context context = ZMQ.context(1);
         this.socket = context.socket(ZMQ.REP);
@@ -161,9 +164,9 @@ public class Exchange implements Runnable{
             // Update directory
             sendHTTPRequest("add/auction", auction);
 
-            Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Auction", this.availableAuctions, this.availableEmissions, this.publisher);
-            Thread t = new Thread(handler);
-            t.start();
+            // Set auction scheduler - 30 seconds
+            AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies,"Auction", this.availableAuctions, this.availableEmissions, this.publisher);
+            this.timer.schedule(auctioneerTask, 30000);
         }
 
         // Reply to frontendServer
@@ -203,9 +206,9 @@ public class Exchange implements Runnable{
                 // Update directory
                 sendHTTPRequest("add/emission", emission);
 
-                Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
-                Thread t = new Thread(handler);
-                t.start();
+                // Set emission scheduler - 30 seconds
+                AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
+                this.timer.schedule(auctioneerTask, 30000);
             }
         }
 
