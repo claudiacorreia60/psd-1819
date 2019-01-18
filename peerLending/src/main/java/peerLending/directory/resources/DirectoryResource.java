@@ -1,6 +1,8 @@
 package peerLending.directory.resources;
 
-import peerLending.Directory;
+import org.eclipse.jetty.server.Response;
+import peerLending.Company;
+import peerLending.directory.Directory;
 import peerLending.directory.representations.AuctionRepresentation;
 import peerLending.directory.representations.EmissionRepresentation;
 
@@ -14,6 +16,18 @@ public class DirectoryResource {
 
     public DirectoryResource() {
         this.directory = new Directory();
+        Company c1 = new Company("apple");
+        this.directory.putCompany(c1);
+        Company c2 = new Company("ibm");
+        this.directory.putCompany(c2);
+        Company c3 = new Company("google");
+        this.directory.putCompany(c3);
+        Company c4 = new Company("primavera");
+        this.directory.putCompany(c4);
+        Company c5 = new Company("edp");
+        this.directory.putCompany(c5);
+        Company c6 = new Company("farfetch");
+        this.directory.putCompany(c6);
     }
 
     // Consult companies
@@ -61,14 +75,26 @@ public class DirectoryResource {
     // Add emission to company history
     @POST
     @Path("/end/emission")
-    public void putEmissionHistory(EmissionRepresentation emission) {
-        this.directory.putEmissionHistory(emission.build(), emission.getCompany());
+    public int putEmissionHistory(EmissionRepresentation emission) {
+        int res = this.directory.putEmissionHistory(emission.build(), emission.getCompany());
+
+        if(res == 0){
+            return Response.SC_OK;
+        }
+
+        return Response.SC_NOT_FOUND;
     }
 
     // Add auction to company history
     @POST
     @Path("/end/auction")
-    public void putAuctionHistory(AuctionRepresentation auction) {
-        this.directory.putAuctionHistory(auction.build(), auction.getCompany());
+    public int putAuctionHistory(AuctionRepresentation auction) {
+        int res = this.directory.putAuctionHistory(auction.build(), auction.getCompany());
+
+        if(res == 0){
+            return Response.SC_OK;
+        }
+
+        return Response.SC_NOT_FOUND;
     }
 }

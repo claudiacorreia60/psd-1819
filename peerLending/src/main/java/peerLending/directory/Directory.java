@@ -1,4 +1,8 @@
-package peerLending;
+package peerLending.directory;
+
+import peerLending.Auction;
+import peerLending.Company;
+import peerLending.Emission;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,18 +28,40 @@ public class Directory {
         this.availableEmissions.put(company, emission);
     }
 
-    public void putAuctionHistory(Auction auction, String company){
-            // Remove auction from availableAuctions
-            this.availableAuctions.remove(company);
-            // Add auction to the history of the company
-            this.companies.get(company).putAuction(auction);
+    public int putAuctionHistory(Auction auction, String company){
+        // Remove auction from availableAuctions
+        this.availableAuctions.remove(company);
+
+        Company c = this.companies.get(company);
+
+        // Company does not exist
+        if(c == null){
+            return -1;
+        }
+
+        // Add auction to the history of the company
+        c.putAuction(auction);
+        return 0;
     }
 
-    public void putEmissionHistory(Emission emission, String company){
-            // Remove emission from availableEmissions
-            this.availableEmissions.remove(company);
-            // Add emission to the history of the company
-            this.companies.get(company).putEmission(emission);
+    public int putEmissionHistory(Emission emission, String company){
+        // Remove emission from availableEmissions
+        this.availableEmissions.remove(company);
+
+        Company c = this.companies.get(company);
+
+        // Company does not exist
+        if(c == null){
+            return -1;
+        }
+
+        // Add emission to the history of the company
+        c.putEmission(emission);
+        return 0;
+    }
+
+    public void putCompany(Company company){
+        this.companies.put(company.getUsername(), company);
     }
 
     public String getCompaniesNames(){
