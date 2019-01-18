@@ -10,7 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 
 public class Handler implements Runnable {
@@ -84,6 +84,37 @@ public class Handler implements Runnable {
             e.printStackTrace();
         }
     }
+
+/*    private static Map<String, Bid> sortByInterest(Map<String, Bid> unsortBids) {
+
+        // Convert Map to List of Map
+        List<Map.Entry<String, Bid>> list =
+                new LinkedList<Map.Entry<String, Bid>>(unsortBids.entrySet());
+
+        // Sort list with Collections.sort()
+        Collections.sort(list, new Comparator<Map.Entry<String, Bid>>() {
+            public int compare(Map.Entry<String, Bid> o1,
+                               Map.Entry<String, Bid> o2) {
+                return (o1.getValue().getInterest()).compareTo(o2.getValue().getInterest());
+            }
+        });
+
+        // 3. Loop the sorted list and put it into a new insertion order Map LinkedHashMap
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }*/
+
+        /*
+        //classic iterator example
+        for (Iterator<Map.Entry<String, Integer>> it = list.iterator(); it.hasNext(); ) {
+            Map.Entry<String, Integer> entry = it.next();
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }*/
+
+
+        //return sortedMap;
+    //}
 
     public void resultAuction (Auction auction) {
         Map<String, Bid> bids = auction.getBids();

@@ -38,7 +38,11 @@ public class Exchange implements Runnable{
         this.publisher = publisher;
         ZMQ.Context context = ZMQ.context(1);
         this.socket = context.socket(ZMQ.REP);
-        socket.connect("tcp://localhost:"+port);
+        socket.bind("tcp://localhost:"+port);
+        System.out.println("Running " + this.id + "...");
+
+        // Initialize companies structure
+        this.companies = new HashMap<String, Company>();
 
         // Populate companies
         if(this.id  == 1){
@@ -68,6 +72,7 @@ public class Exchange implements Runnable{
 
             while(true){
                 byte [] response = this.socket.recv();
+                System.out.println(response);
                 ClientProtos.Message msg = ClientProtos.Message.parseFrom(response);
 
                 if("Bid".equals(msg.getType())){

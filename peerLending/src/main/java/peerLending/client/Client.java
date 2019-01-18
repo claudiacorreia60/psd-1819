@@ -248,6 +248,7 @@ public class Client {
             }
         }
         System.out.print("Interest: ");
+
         float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
@@ -406,7 +407,7 @@ public class Client {
     }
 
     public static void main (String[] args) throws IOException {
-        Client c = new Client("192.168.1.146", 3000);
+        Client c = new Client("192.168.1.76", 3000);
         c.startClient();
     }
 }
