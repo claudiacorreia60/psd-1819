@@ -1,10 +1,9 @@
 package peerLending.exchange;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.zeromq.ZMQ;
 import peerLending.*;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,19 +15,21 @@ import java.util.Map;
 public class Exchange implements Runnable{
     private int id;
     private int port;
-    private ServerSocket server;
-    private Socket frontendServer;
-    InputStream in;
-    OutputStream out;
+    private ZMQ.Socket socket;
+    private Publisher publisher;
     private Map<String, Company> companies;
     private Map<String, Auction> availableAuctions;
     private Map<String, Emission> availableEmissions;
     private int auctionCounter;
     private int emissionCounter;
 
-    public Exchange(int port, int id) throws IOException {
+    public Exchange(int port, int id, Publisher publisher) throws IOException {
         this.port = port;
-        this.server = new ServerSocket(this.port);
+        this.id = id;
+        this.publisher = publisher;
+        ZMQ.Context context = ZMQ.context(1);
+        this.socket = context.socket(ZMQ.REP);
+        socket.connect("tcp://localhost:"+port);
 
         // Populate companies
         if(this.id  == 1){
@@ -55,23 +56,18 @@ public class Exchange implements Runnable{
 
     public void run() {
         try {
-            this.frontendServer = this.server.accept();
-            this.in = this.frontendServer.getInputStream();
-            this.out = this.frontendServer.getOutputStream();
 
             while(true){
-                byte [] response = this.receive();
+                byte [] response = this.socket.recv();
                 ClientProtos.Message msg = ClientProtos.Message.parseFrom(response);
 
-                /*if("Bid".equals(msg.getType())){
-                    // TODO: fazer a handleBid
-                    // handleBid(msg);
+                if("Bid".equals(msg.getType())){
+                    handleBid(msg);
                 }
                 else if("Subscription".equals(msg.getType())){
-                    // TODO: fazer a handleSubscription
-                    // handleSubscription(msg);
-                }*/
-                if("Emission".equals(msg.getType())){
+                    handleSubscription(msg);
+                }
+                else if("Emission".equals(msg.getType())){
                     handleEmission(msg);
                 }
                 else if("Auction".equals(msg.getType())){
@@ -86,7 +82,57 @@ public class Exchange implements Runnable{
         }
     }
 
-    public void handleAuction(ClientProtos.Message msg) throws IOException {
+    public void handleSubscription (ClientProtos.Message msg) {
+        boolean success = false;
+        Emission emission = this.availableEmissions.get(msg.getCompany());
+        if (emission != null) {
+            Map<String, Integer> subscriptions = emission.getSubscriptions();
+            int total = 0;
+            //total = subscriptions.values().stream().mapToInt(Integer::value).sum();
+            for (Integer amount : subscriptions.values()) {
+                total += amount;
+            }
+            if ((total + msg.getAmount()) <= emission.getAmount()) {
+                subscriptions.put(msg.getInvestor(), msg.getAmount());
+                emission.setSubscriptions(subscriptions);
+                success = true;
+            }
+        }
+        // Reply to frontendServer
+        ClientProtos.Result res = ClientProtos.Result.newBuilder()
+                .setResult(success)
+                .build();
+
+        ClientProtos.Message reply = ClientProtos.Message.newBuilder()
+                .setType("Subscription")
+                .setRes(res)
+                .build();
+        this.socket.send(reply.toByteArray());
+    }
+
+    public void handleBid (ClientProtos.Message msg) {
+        boolean success = false;
+        Auction auction = this.availableAuctions.get(msg.getCompany());
+        if (auction != null) {
+            Map<String, Bid> bids = auction.getBids();
+            Bid bid = new Bid(msg.getInvestor(), msg.getAmount(), msg.getInterest());
+            bids.put(msg.getInvestor(), bid);
+            auction.setBids(bids);
+            success = true;
+        }
+        // Reply to frontendServer
+        ClientProtos.Result res = ClientProtos.Result.newBuilder()
+                .setResult(success)
+                .build();
+
+        ClientProtos.Message reply = ClientProtos.Message.newBuilder()
+                .setType("Auction")
+                .setRes(res)
+                .build();
+        this.socket.send(reply.toByteArray());
+    }
+
+    public void handleAuction(ClientProtos.Message msg) {
         ClientProtos.Result res;
         boolean success = false;
 
@@ -97,7 +143,7 @@ public class Exchange implements Runnable{
             this.availableAuctions.put(msg.getCompany(), auction);
             success = true;
 
-            Handler handler = new Handler(System.currentTimeMillis(), Auction.class, this.in, this.out);
+            Handler handler = new Handler(System.currentTimeMillis(), Auction.class);
             Thread t = new Thread(handler);
             t.start();
         }
@@ -114,11 +160,10 @@ public class Exchange implements Runnable{
                 .setType("Auction")
                 .setRes(res)
                 .build();
-        this.out.write(reply.toByteArray());
-        this.out.flush();
+        this.socket.send(reply.toByteArray());
     }
 
-    public void handleEmission(ClientProtos.Message msg) throws IOException {
+    public void handleEmission(ClientProtos.Message msg) {
         boolean success = false;
 
         // No emission available
@@ -137,7 +182,7 @@ public class Exchange implements Runnable{
                 Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
                 this.availableEmissions.put(msg.getCompany(), emission);
 
-                Handler handler = new Handler(System.currentTimeMillis(), Emission.class, this.in, this.out);
+                Handler handler = new Handler(System.currentTimeMillis(), Emission.class);
                 Thread t = new Thread(handler);
                 t.start();
             }
@@ -155,8 +200,7 @@ public class Exchange implements Runnable{
                 .setType("Emission")
                 .setRes(res)
                 .build();
-        this.out.write(reply.toByteArray());
-        this.out.flush();
+        this.socket.send(reply.toByteArray());
     }
 
     public float getEmissionInterest(String company){
@@ -221,27 +265,15 @@ public class Exchange implements Runnable{
         return result;
     }
 
-    public byte[] receive(){
-        byte[] tmp = new byte[4096];
-        int len = 0;
-        try {
-            len = this.in.read(tmp);
-            byte[] response = new byte[len];
-
-            for(int i = 0; i < len; i++)
-                response[i] = tmp[i];
-            return response;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public static void main (String[] args) throws IOException {
-        Exchange e1 = new Exchange(5551, 1);
-        Exchange e2 = new Exchange(5552, 2);
-        Exchange e3 = new Exchange(5553, 3);
+        ZMQ.Context context = ZMQ.context(1);
+        ZMQ.Socket socket = context.socket(ZMQ.PUB);
+        //socket.bind("tcp://*:" + args[0]);
+        Publisher publisher = new Publisher(context, socket);
+        Exchange e1 = new Exchange(5551, 1, publisher);
+        Exchange e2 = new Exchange(5552, 2, publisher);
+        Exchange e3 = new Exchange(5553, 3, publisher);
 
         // Initialize threads
         Thread t1 = new Thread(e1);

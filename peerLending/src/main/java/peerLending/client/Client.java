@@ -171,6 +171,7 @@ public class Client {
             System.out.println("\nERROR: Bidding failed!");
         }
         else {
+            enableNotification("Bid", company);
             System.out.println("\nSUCCESS: Bidding successful!");
         }
         handleInvestor();
@@ -339,17 +340,13 @@ public class Client {
                 System.out.println("\nERROR: Max number of companies exceeded.");
             }
         }
-        if (action.equals("auction") && status.equals("start")) {
-            enableNotifications(action, companies);
-        }
-        else if (action.equals("auction") && status.equals("cancel")) {
-            disableNotifications(action, companies);
-        }
-        else if (action.equals("emission") && status.equals("start")) {
-            enableNotifications(action, companies);
-        }
-        else {
-            disableNotifications(action, companies);
+        for (String company : companies) {
+            if (status.equals("start")) {
+                enableNotification(action, company);
+            }
+            else {
+                disableNotification(action, company);
+            }
         }
 
         byte [] response = this.receive();
@@ -380,16 +377,12 @@ public class Client {
         return chosenOption;
     }
 
-    public void enableNotifications (String action, List<String> companies) {
-        for (String company : companies) {
-            this.subscriber.subscribe(action + ":" + company);
-        }
+    public void enableNotification (String action, String company) {
+        this.subscriber.subscribe(action + ":" + company);
     }
 
-    public void disableNotifications (String action, List<String> companies) {
-        for (String company : companies) {
-            this.subscriber.unsubscribe(action + ":" + company);
-        }
+    public void disableNotification (String action, String company) {
+        this.subscriber.unsubscribe(action + ":" + company);
     }
 
     public byte[] receive(){
