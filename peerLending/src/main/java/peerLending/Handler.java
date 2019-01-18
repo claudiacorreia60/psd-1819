@@ -54,6 +54,7 @@ public class Handler implements Runnable {
         else {
             notification += "Failure:End";
         }
+        this.publisher.sendNotification(notification);
     }
 
     public void resultAuction (Auction auction) {

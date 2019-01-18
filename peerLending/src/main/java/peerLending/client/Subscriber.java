@@ -18,8 +18,11 @@ public class Subscriber implements Runnable {
 
         try {
             while (true) {
-                System.out.println("########### NEW NOTIFICATION ##########");
                 String notification = this.subscriber.recvStr();
+                String[] splitNotification = notification.split(":");
+                if (splitNotification[splitNotification.length-1].equals("End"))
+                System.out.println("########### NEW NOTIFICATION ##########");
+
                 System.out.println(notification);
                 /*String[] notification = this.subscriber.recvStr().split(":");
                 System.out.println(notification[0]);
