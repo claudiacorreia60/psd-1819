@@ -4,9 +4,13 @@ import org.zeromq.ZMQ;
 import peerLending.ClientProtos;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+
+/* TODO: Fazer subscrição mal faça bid, subscription, auction e emission*/
 
 
 public class Client {
@@ -97,6 +101,7 @@ public class Client {
                  Fazer enable dessas notificações */
             //enableNotifications("auction", enabledNotifications.get("auction"));
             //enableNotifications("emission", enabledNotifications.get("emission"));
+
             if (entity.equals("investor")) {
                 handleInvestor();
             }
@@ -104,26 +109,30 @@ public class Client {
                 handleCompany();
             }
         }
+        this.reader.close();
+        this.out.close();
+        this.in.close();
+        this.socket.close();
     }
 
 
     // INVESTOR
     public void handleInvestor() throws IOException {
         System.out.println("\n############ INVESTOR MENU ############");
-        System.out.println("(1) Bid in an auction   |   (2) Subscript fixed fee loan   |   (3) Enable/Disable Notifications");
+        System.out.println("(1) Bid in an auction   |   (2) Subscript fixed fee loan   |   (3) Enable/Disable Notifications   |   (4) Logout");
         System.out.print("\nChoose an option: ");
         String chosenOption = "0";
-        while (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3")) {
+        while (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3") && !chosenOption.equals("4")) {
             chosenOption = this.reader.readLine();
-            if (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3"))
+            if (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3") && !chosenOption.equals("4"))
                 System.out.print("\nInvalid option! Insert a valid one: ");
         }
         if (chosenOption.equals("1"))
             handleBid();
         else if (chosenOption.equals("2"))
             handleSubscription();
-        else
-            handleNotifications();
+        else if (chosenOption.equals("3"))
+            handleNotifications("investor");
     }
 
     public void handleBid() throws IOException {
@@ -131,10 +140,16 @@ public class Client {
         System.out.println("Complete the following fields.");
         System.out.print("\nCompany: ");
         String company = this.reader.readLine();
-        System.out.print("Amount: ");
-        int amount = Integer.parseInt(this.reader.readLine());
+        int amount = 1;
+        while (amount % 100 != 0) {
+            System.out.print("Amount (multiple of 100): ");
+            amount = Integer.parseInt(this.reader.readLine());
+            if (amount % 100 != 0) {
+                System.out.println("ERROR: Invalid amount!");
+            }
+        }
         System.out.print("Interest: ");
-        int interest = Integer.parseInt(this.reader.readLine());
+        float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
                 .setType("Bid")
@@ -152,10 +167,13 @@ public class Client {
         ClientProtos.Result res = ans.getRes();
 
         boolean result = res.getResult();
-        if (!result)
+        if (!result) {
             System.out.println("\nERROR: Bidding failed!");
-        else
+        }
+        else {
             System.out.println("\nSUCCESS: Bidding successful!");
+        }
+        handleInvestor();
     }
 
     public void handleSubscription() throws IOException {
@@ -163,8 +181,14 @@ public class Client {
         System.out.println("Complete the following fields.");
         System.out.print("\nCompany: ");
         String company = this.reader.readLine();
-        System.out.print("Amount: ");
-        int amount = Integer.parseInt(this.reader.readLine());
+        int amount = 1;
+        while (amount % 100 != 0) {
+            System.out.print("Amount (multiple of 100): ");
+            amount = Integer.parseInt(this.reader.readLine());
+            if (amount % 100 != 0) {
+                System.out.println("ERROR: Invalid amount!");
+            }
+        }
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
                 .setType("Subscription")
@@ -181,39 +205,48 @@ public class Client {
         ClientProtos.Result res = ans.getRes();
 
         boolean result = res.getResult();
-        if (!result)
+        if (!result) {
             System.out.println("\nERROR: Subscription failed!");
-        else
+        }
+        else {
             System.out.println("\nSUCCESS: Subscription successful!");
+        }
+        handleInvestor();
     }
 
 
     // COMPANY
     public void handleCompany() throws IOException {
         System.out.println("\n############# COMPANY MENU ############");
-        System.out.println("(1) Create an auction   |   (2) Issue fixed fee   |   (3) Enable/Disable Notifications");
+        System.out.println("(1) Create an auction   |   (2) Issue fixed fee   |   (3) Enable/Disable Notifications   |   (4) Logout");
         System.out.print("\nChoose an option: ");
         String chosenOption = "0";
-        while (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3")) {
+        while (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3") && !chosenOption.equals("4")) {
             chosenOption = this.reader.readLine();
-            if (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3"))
+            if (!chosenOption.equals("1") && !chosenOption.equals("2") && !chosenOption.equals("3") && !chosenOption.equals("4"))
                 System.out.print("\nInvalid option! Insert a valid one: ");
         }
         if (chosenOption.equals("1"))
             handleAuction();
         else if (chosenOption.equals("2"))
             handleEmission();
-        else
-            handleNotifications();
+        else if (chosenOption.equals("3"))
+            handleNotifications("company");
     }
 
     public void handleAuction() throws IOException {
         System.out.println("\n######### CREATE AUCTION MENU #########");
         System.out.println("Complete the following fields.");
-        System.out.print("Amount: ");
-        int amount = Integer.parseInt(this.reader.readLine());
+        int amount = 1;
+        while (amount % 1000 != 0) {
+            System.out.print("Amount (multiple of 1000): ");
+            amount = Integer.parseInt(this.reader.readLine());
+            if (amount % 1000 != 0) {
+                System.out.println("ERROR: Invalid amount!");
+            }
+        }
         System.out.print("Interest: ");
-        int interest = Integer.parseInt(this.reader.readLine());
+        float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
                 .setType("Auction")
@@ -230,22 +263,34 @@ public class Client {
         ClientProtos.Result res = ans.getRes();
 
         boolean result = res.getResult();
-        if (!result)
-            System.out.println("\nERROR: Auction creation failed!");
-        else
-            System.out.println("\nSUCCESS: Auction creation successful!");
+        if (!result) {
+            System.out.println("\nERROR: Auction failed!");
+        }
+        else {
+            System.out.println("\nSUCCESS: Auction successful!");
+        }
+        handleCompany();
     }
 
     public void handleEmission() throws IOException {
         System.out.println("\n############ EMISSION MENU ############");
         System.out.println("Complete the following fields.");
-        System.out.print("Amount: ");
-        int amount = Integer.parseInt(this.reader.readLine());
+        int amount = 1;
+        while (amount % 1000 != 0) {
+            System.out.print("Amount (multiple of 1000): ");
+            amount = Integer.parseInt(this.reader.readLine());
+            if (amount % 1000 != 0) {
+                System.out.println("ERROR: Invalid amount!");
+            }
+        }
+        System.out.print("Interest: ");
+        float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
                 .setType("Emission")
                 .setAmount(amount)
                 .setCompany(this.username)
+                .setInterest(interest)
                 .build();
 
         this.out.write(msg.toByteArray());
@@ -256,14 +301,17 @@ public class Client {
         ClientProtos.Result res = ans.getRes();
 
         boolean result = res.getResult();
-        if (!result)
+        if (!result) {
             System.out.println("\nERROR: Emission failed!");
-        else
+        }
+        else {
             System.out.println("\nSUCCESS: Emission successful!");
+        }
+        handleCompany();
     }
 
 
-    public void handleNotifications() throws IOException {
+    public void handleNotifications (String entity) throws IOException {
         System.out.println("\n########## NOTIFICATIONS MENU #########");
         System.out.println("(1) Auctions   |   (2) Emissions");
         System.out.print("\nChoose an option: ");
@@ -281,9 +329,16 @@ public class Client {
             status = "start";
         else
             status = "cancel";
-        System.out.print("\nInsert companies (separated by a comma): ");
-        List<String> companies = Arrays.asList(this.reader.readLine().split(","));
-
+        int size = 0;
+        List<String> companies = new ArrayList<String>();
+        while (size > 10) {
+            System.out.print("\nInsert companies (separated by a comma, max. 10): ");
+            companies = Arrays.asList(this.reader.readLine().split(","));
+            size = companies.size();
+            if (size > 10) {
+                System.out.println("\nERROR: Max number of companies exceeded.");
+            }
+        }
         if (action.equals("auction") && status.equals("start")) {
             enableNotifications(action, companies);
         }
@@ -301,10 +356,18 @@ public class Client {
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
         boolean result = res.getResult();
-        if (!result)
+        if (!result) {
             System.out.println("\nERROR: Failed to save notifications' options!");
-        else
+        }
+        else {
             System.out.println("\nSUCCESS: Notifications' options saved successfully!");
+        }
+        if (entity.equals("investor")) {
+            handleInvestor();
+        }
+        else {
+            handleCompany();
+        }
     }
 
     public String checkOption() throws IOException {

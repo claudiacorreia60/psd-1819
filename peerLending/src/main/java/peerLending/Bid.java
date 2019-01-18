@@ -3,9 +3,9 @@ package peerLending;
 public class Bid {
     private String investor;
     private int amount;
-    private int interest;
+    private float interest;
 
-    public Bid(String investor, int amount, int interest) {
+    public Bid(String investor, int amount, float interest) {
         this.investor = investor;
         this.amount = amount;
         this.interest = interest;
@@ -27,11 +27,11 @@ public class Bid {
         this.amount = amount;
     }
 
-    public int getInterest() {
+    public float getInterest() {
         return interest;
     }
 
-    public void setInterest(int interest) {
+    public void setInterest(float interest) {
         this.interest = interest;
     }
 }

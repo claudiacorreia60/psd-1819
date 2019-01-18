@@ -3,7 +3,7 @@ syntax = "proto2";
 message Message {
     optional string type = 1; // Bid, Subscription, Auction, Emission 
     optional int32 amount = 2;
-    optional int32 interest = 3; 
+    optional float interest = 3; 
     optional string company = 4;
     optional string investor = 5;
     optional Authentication auth = 6;

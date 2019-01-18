@@ -52,13 +52,13 @@ public final class ClientProtos {
     int getAmount();
 
     /**
-     * <code>optional int32 interest = 3;</code>
+     * <code>optional float interest = 3;</code>
      */
     boolean hasInterest();
     /**
-     * <code>optional int32 interest = 3;</code>
+     * <code>optional float interest = 3;</code>
      */
-    int getInterest();
+    float getInterest();
 
     /**
      * <code>optional string company = 4;</code>
@@ -141,7 +141,7 @@ public final class ClientProtos {
     private Message() {
       type_ = "";
       amount_ = 0;
-      interest_ = 0;
+      interest_ = 0F;
       company_ = "";
       investor_ = "";
     }
@@ -185,9 +185,9 @@ public final class ClientProtos {
               amount_ = input.readInt32();
               break;
             }
-            case 24: {
+            case 29: {
               bitField0_ |= 0x00000004;
-              interest_ = input.readInt32();
+              interest_ = input.readFloat();
               break;
             }
             case 34: {
@@ -336,17 +336,17 @@ public final class ClientProtos {
     }
 
     public static final int INTEREST_FIELD_NUMBER = 3;
-    private int interest_;
+    private float interest_;
     /**
-     * <code>optional int32 interest = 3;</code>
+     * <code>optional float interest = 3;</code>
      */
     public boolean hasInterest() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int32 interest = 3;</code>
+     * <code>optional float interest = 3;</code>
      */
-    public int getInterest() {
+    public float getInterest() {
       return interest_;
     }
 
@@ -516,7 +516,7 @@ public final class ClientProtos {
         output.writeInt32(2, amount_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, interest_);
+        output.writeFloat(3, interest_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, company_);
@@ -550,7 +550,7 @@ public final class ClientProtos {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, interest_);
+          .computeFloatSize(3, interest_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, company_);
@@ -599,8 +599,10 @@ public final class ClientProtos {
       }
       result = result && (hasInterest() == other.hasInterest());
       if (hasInterest()) {
-        result = result && (getInterest()
-            == other.getInterest());
+        result = result && (
+            java.lang.Float.floatToIntBits(getInterest())
+            == java.lang.Float.floatToIntBits(
+                other.getInterest()));
       }
       result = result && (hasCompany() == other.hasCompany());
       if (hasCompany()) {
@@ -648,7 +650,8 @@ public final class ClientProtos {
       }
       if (hasInterest()) {
         hash = (37 * hash) + INTEREST_FIELD_NUMBER;
-        hash = (53 * hash) + getInterest();
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getInterest());
       }
       if (hasCompany()) {
         hash = (37 * hash) + COMPANY_FIELD_NUMBER;
@@ -795,7 +798,7 @@ public final class ClientProtos {
         bitField0_ = (bitField0_ & ~0x00000001);
         amount_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
-        interest_ = 0;
+        interest_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000004);
         company_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1119,34 +1122,34 @@ public final class ClientProtos {
         return this;
       }
 
-      private int interest_ ;
+      private float interest_ ;
       /**
-       * <code>optional int32 interest = 3;</code>
+       * <code>optional float interest = 3;</code>
        */
       public boolean hasInterest() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int32 interest = 3;</code>
+       * <code>optional float interest = 3;</code>
        */
-      public int getInterest() {
+      public float getInterest() {
         return interest_;
       }
       /**
-       * <code>optional int32 interest = 3;</code>
+       * <code>optional float interest = 3;</code>
        */
-      public Builder setInterest(int value) {
+      public Builder setInterest(float value) {
         bitField0_ |= 0x00000004;
         interest_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 interest = 3;</code>
+       * <code>optional float interest = 3;</code>
        */
       public Builder clearInterest() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        interest_ = 0;
+        interest_ = 0F;
         onChanged();
         return this;
       }
@@ -3785,7 +3788,7 @@ public final class ClientProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\022clientProtos.proto\"\255\001\n\007Message\022\014\n\004type" +
-      "\030\001 \001(\t\022\016\n\006amount\030\002 \001(\005\022\020\n\010interest\030\003 \001(\005" +
+      "\030\001 \001(\t\022\016\n\006amount\030\002 \001(\005\022\020\n\010interest\030\003 \001(\002" +
       "\022\017\n\007company\030\004 \001(\t\022\020\n\010investor\030\005 \001(\t\022\035\n\004a" +
       "uth\030\006 \001(\0132\017.Authentication\022\024\n\003res\030\007 \001(\0132" +
       "\007.Result\022\032\n\003not\030\010 \001(\0132\r.Notification\"4\n\016" +

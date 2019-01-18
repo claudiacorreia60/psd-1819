@@ -6,10 +6,10 @@ import java.util.Map;
 public class Auction {
     private int id;
     private int amount;
-    private int interest;
+    private float interest;
     private Map<String, Bid> bids;
 
-    public Auction(int id, int amount, int interest) {
+    public Auction(int id, int amount, float interest) {
         this.id = id;
         this.amount = amount;
         this.interest = interest;
@@ -36,11 +36,11 @@ public class Auction {
         this.amount = amount;
     }
 
-    public int getInterest() {
+    public float getInterest() {
         return interest;
     }
 
-    public void setInterest(int interest) {
+    public void setInterest(float interest) {
         this.interest = interest;
     }
 

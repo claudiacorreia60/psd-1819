@@ -2,13 +2,16 @@ package peerLending.exchange;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import peerLending.*;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+
+/* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
+
 
 public class Exchange implements Runnable{
     private int id;
@@ -60,15 +63,15 @@ public class Exchange implements Runnable{
                 byte [] response = this.receive();
                 ClientProtos.Message msg = ClientProtos.Message.parseFrom(response);
 
-                if("Bid".equals(msg.getType())){
+                /*if("Bid".equals(msg.getType())){
                     // TODO: fazer a handleBid
                     // handleBid(msg);
                 }
                 else if("Subscription".equals(msg.getType())){
                     // TODO: fazer a handleSubscription
                     // handleSubscription(msg);
-                }
-                else if("Emission".equals(msg.getType())){
+                }*/
+                if("Emission".equals(msg.getType())){
                     handleEmission(msg);
                 }
                 else if("Auction".equals(msg.getType())){
@@ -85,29 +88,28 @@ public class Exchange implements Runnable{
 
     public void handleAuction(ClientProtos.Message msg) throws IOException {
         ClientProtos.Result res;
-
-        // Auction already available
-        if(this.availableAuctions.containsKey(msg.getCompany())){
-            res = ClientProtos.Result.newBuilder()
-                    .setResult(false)
-                    .build();
-        }
+        boolean success = false;
 
         // No auction available
-        else {
+        if(!this.availableAuctions.containsKey(msg.getCompany())){
             // Create new available auction
             Auction auction = new Auction(this.auctionCounter, msg.getAmount(), msg.getInterest());
             this.availableAuctions.put(msg.getCompany(), auction);
+            success = true;
 
-            res = ClientProtos.Result.newBuilder()
-                    .setResult(true)
-                    .build();
+            Handler handler = new Handler(System.currentTimeMillis(), Auction.class, this.in, this.out);
+            Thread t = new Thread(handler);
+            t.start();
         }
 
         // Increment auctionCounter
         this.auctionCounter++;
 
         // Reply to frontendServer
+        res = ClientProtos.Result.newBuilder()
+                .setResult(success)
+                .build();
+
         ClientProtos.Message reply = ClientProtos.Message.newBuilder()
                 .setType("Auction")
                 .setRes(res)
@@ -121,13 +123,23 @@ public class Exchange implements Runnable{
 
         // No emission available
         if(!this.availableEmissions.containsKey(msg.getCompany())){
-            // Create new available emission
-            int interest = getEmissionInterest(msg.getCompany());
+            float interest = msg.getInterest();
+            float result = getEmissionInterest(msg.getCompany());
+            if (interest != result) {
+                success = checkEmissionInterest(interest, msg.getCompany());
+            }
+            else {
+                success = true;
+            }
 
-            if(interest != -1) {
+            if(success) {
+                // Create new available emission
                 Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
                 this.availableEmissions.put(msg.getCompany(), emission);
-                success = true;
+
+                Handler handler = new Handler(System.currentTimeMillis(), Emission.class, this.in, this.out);
+                Thread t = new Thread(handler);
+                t.start();
             }
         }
 
@@ -147,7 +159,7 @@ public class Exchange implements Runnable{
         this.out.flush();
     }
 
-    public int getEmissionInterest(String company){
+    public float getEmissionInterest(String company){
         Map<Integer, Auction> allAuctions =  this.companies.get(company).getAuctionHistory();
         Map<Integer, Auction> successfulAuctions = new HashMap<Integer, Auction>();
 
@@ -166,7 +178,7 @@ public class Exchange implements Runnable{
 
         Map<String, Bid> bids = successfulAuctions.get(maxId).getBids();
 
-        int maxInterest = 0;
+        float maxInterest = 0;
 
         for(Map.Entry<String, Bid> e : bids.entrySet()){
             if(e.getValue().getInterest() > maxInterest){
@@ -175,6 +187,38 @@ public class Exchange implements Runnable{
         }
 
         return maxInterest;
+    }
+
+    public boolean checkEmissionInterest (float interest, String company) {
+        boolean result = false;
+        float maxInterest = 0;
+        Map<Integer, Emission> allEmissions = this.companies.get(company).getEmissionHistory();
+        Map<Integer, Emission> successfulEmissions = new HashMap<Integer, Emission>();
+        int maxId;
+        if (!allEmissions.isEmpty()) {
+            maxId = Collections.max(allEmissions.keySet());
+            for (Map.Entry<Integer, Emission> e : allEmissions.entrySet()) {
+                // Check if auction was successful
+                if (!e.getValue().getSubscriptions().isEmpty()) {
+                    successfulEmissions.put(e.getKey(), e.getValue());
+                }
+            }
+            if (!successfulEmissions.isEmpty()) {
+                if (!successfulEmissions.containsKey(maxId)) {
+                    maxInterest = (float) (maxInterest * 1.1);
+                    if (interest == maxInterest)
+                        result = true;
+                }
+                else {
+                    for (Map.Entry<Integer, Emission> e : successfulEmissions.entrySet()) {
+                        if (e.getValue().getInterest() == interest) {
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public byte[] receive(){
