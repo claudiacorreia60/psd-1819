@@ -3,9 +3,6 @@ package peerLending;
 import org.zeromq.ZMQ;
 
 
-/* TODO: Ver como vai ser o publisher */
-
-
 public class Publisher {
     ZMQ.Context context;
     ZMQ.Socket publisher;

@@ -171,7 +171,7 @@ public class Client {
             System.out.println("\nERROR: Bidding failed!");
         }
         else {
-            enableNotification("Bid", company);
+            enableNotification("Auction", company);
             System.out.println("\nSUCCESS: Bidding successful!");
         }
         handleInvestor();
@@ -210,6 +210,7 @@ public class Client {
             System.out.println("\nERROR: Subscription failed!");
         }
         else {
+            enableNotification("Emission", company);
             System.out.println("\nSUCCESS: Subscription successful!");
         }
         handleInvestor();
@@ -268,6 +269,7 @@ public class Client {
             System.out.println("\nERROR: Auction failed!");
         }
         else {
+            enableNotification("Auction", this.username);
             System.out.println("\nSUCCESS: Auction successful!");
         }
         handleCompany();
@@ -306,6 +308,7 @@ public class Client {
             System.out.println("\nERROR: Emission failed!");
         }
         else {
+            enableNotification("Emission", this.username);
             System.out.println("\nSUCCESS: Emission successful!");
         }
         handleCompany();
@@ -319,9 +322,9 @@ public class Client {
         String chosenOption = checkOption();
         String action;
         if (chosenOption.equals("1"))
-            action = "auction";
+            action = "Auction";
         else
-            action = "emission";
+            action = "Emission";
         System.out.println("(1) Enable   |   (2) Disable");
         System.out.print("\nChoose an option: ");
         chosenOption = checkOption();

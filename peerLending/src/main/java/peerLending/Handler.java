@@ -9,25 +9,29 @@ import java.util.Map;
 
 public class Handler implements Runnable {
     private long startupTime;
-    private Object object;
-    private Map<String, Object> available;
-    // private Publisher publisher ou private ZMQ.Socket publisher ?
+    private String company;
+    private String type;
+    private Map<String, Auction> availableAuctions;
+    private Map<String, Emission> availableEmissions;
+    private Publisher publisher;
 
-    public Handler (long startupTime, Object object) {
+    public Handler (long startupTime, String company, String type, Map<String, Auction> availableAuctions, Map<String, Emission> availableEmissions, Publisher publisher) {
         this.startupTime = startupTime;
-        this.object = object;
+        this.company = company;
+        this.type = type;
+        this.availableAuctions = availableAuctions;
+        this.availableEmissions = availableEmissions;
+        this.publisher = publisher;
     }
 
 
     public void run() {
-        Emission emission = null;
-        Auction auction = null;
         while (System.currentTimeMillis() - this.startupTime < 30000);
-        if (this.object.getClass().getName().equals("Emission")) {
-            resultEmission(emission);
+        if (this.type.equals("Emission")) {
+            resultEmission(this.availableEmissions.get(this.company));
         }
         else {
-            resultAuction(auction);
+            resultAuction(this.availableAuctions.get(this.company));
         }
     }
 
@@ -40,8 +44,15 @@ public class Handler implements Runnable {
         for (Integer amount : subscriptions.values()) {
             total += amount;
         }
+        String notification = "Emission:"+this.company+":"+emission.getAmount()+":"+emission.getInterest()+":";
         if (total == emission.getAmount()) {
-            /* TODO: Enviar notificação a cada investor do map subscriptions e à company */
+            for (Map.Entry<String, Integer> e : emission.getSubscriptions().entrySet()) {
+                notification += e.getKey()+":"+e.getValue()+":";
+            }
+            notification += "Success:End";
+        }
+        else {
+            notification += "Failure:End";
         }
     }
 

@@ -77,8 +77,6 @@ public class Exchange implements Runnable{
 
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -143,7 +141,7 @@ public class Exchange implements Runnable{
             this.availableAuctions.put(msg.getCompany(), auction);
             success = true;
 
-            Handler handler = new Handler(System.currentTimeMillis(), Auction.class);
+            Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Auction", this.availableAuctions, this.availableEmissions, this.publisher);
             Thread t = new Thread(handler);
             t.start();
         }
@@ -182,7 +180,7 @@ public class Exchange implements Runnable{
                 Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
                 this.availableEmissions.put(msg.getCompany(), emission);
 
-                Handler handler = new Handler(System.currentTimeMillis(), Emission.class);
+                Handler handler = new Handler(System.currentTimeMillis(), msg.getCompany(), "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
                 Thread t = new Thread(handler);
                 t.start();
             }
