@@ -183,10 +183,10 @@ public class Exchange implements Runnable{
 
     public void handleEmission(ClientProtos.Message msg) {
         boolean success = false;
-
+        float interest = -1;
         // No emission available
         if(!this.availableEmissions.containsKey(msg.getCompany())){
-            float interest = msg.getInterest();
+            interest = msg.getInterest();
             float result = getEmissionInterest(msg.getCompany());
             if (interest != result) {
                 success = checkEmissionInterest(interest, msg.getCompany());
@@ -197,19 +197,18 @@ public class Exchange implements Runnable{
                 // Increment emissionCounter
                 this.emissionCounter++;
             }
+        }
+        if(success) {
+            // Create new available emission
+            Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
+            this.availableEmissions.put(msg.getCompany(), emission);
 
-            if(success) {
-                // Create new available emission
-                Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
-                this.availableEmissions.put(msg.getCompany(), emission);
+            // Update directory
+            sendHTTPRequest("add/emission", emission);
 
-                // Update directory
-                sendHTTPRequest("add/emission", emission);
-
-                // Set emission scheduler - 30 seconds
-                AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
-                this.timer.schedule(auctioneerTask, 30000);
-            }
+            // Set emission scheduler - 30 seconds
+            AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
+            this.timer.schedule(auctioneerTask, 30000);
         }
 
         // Reply to frontendServer
@@ -243,7 +242,7 @@ public class Exchange implements Runnable{
 
         Map<String, Bid> bids = successfulAuctions.get(maxId).getBids();
 
-        float maxInterest = 0;
+        float maxInterest = -1;
 
         for(Map.Entry<String, Bid> e : bids.entrySet()){
             if(e.getValue().getInterest() > maxInterest){
@@ -256,7 +255,7 @@ public class Exchange implements Runnable{
 
     public boolean checkEmissionInterest (float interest, String company) {
         boolean result = false;
-        float maxInterest = 0;
+        float maxInterest = -1;
         Map<Integer, Emission> allEmissions = this.companies.get(company).getEmissionHistory();
         Map<Integer, Emission> successfulEmissions = new HashMap<Integer, Emission>();
         int maxId;
