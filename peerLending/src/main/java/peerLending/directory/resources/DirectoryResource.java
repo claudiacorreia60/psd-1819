@@ -1,6 +1,8 @@
 package peerLending.directory.resources;
 
 import peerLending.Directory;
+import peerLending.directory.representations.AuctionRepresentation;
+import peerLending.directory.representations.EmissionRepresentation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -40,5 +42,33 @@ public class DirectoryResource {
     @Path("/available/emissions")
     public String getAvailableEmissions() {
         return this.directory.getAvailableEmissions();
+    }
+
+    // Add new available emission
+    @POST
+    @Path("/add/emission")
+    public void putAvailableEmission(EmissionRepresentation emission) {
+        this.directory.putAvailableEmission(emission.build(), emission.getCompany());
+    }
+
+    // Add new available auction
+    @POST
+    @Path("/add/auction")
+    public void putAvailableAuction(AuctionRepresentation auction) {
+        this.directory.putAvailableAuction(auction.build(), auction.getCompany());
+    }
+
+    // Add emission to company history
+    @POST
+    @Path("/end/emission")
+    public void putEmissionHistory(EmissionRepresentation emission) {
+        this.directory.putEmissionHistory(emission.build(), emission.getCompany());
+    }
+
+    // Add auction to company history
+    @POST
+    @Path("/end/auction")
+    public void putAuctionHistory(AuctionRepresentation auction) {
+        this.directory.putAuctionHistory(auction.build(), auction.getCompany());
     }
 }

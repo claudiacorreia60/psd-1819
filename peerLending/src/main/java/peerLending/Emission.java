@@ -16,6 +16,13 @@ public class Emission {
         this.subscriptions = new HashMap<String, Integer>();
     }
 
+    public Emission(int id, int amount, float interest, Map<String, Integer> subscriptions) {
+        this.id = id;
+        this.amount = amount;
+        this.interest = interest;
+        this.subscriptions = subscriptions;
+    }
+
     public void putSubscription(String investor, int amount){
         this.subscriptions.put(investor, amount);
     }

@@ -16,6 +16,13 @@ public class Auction {
         this.bids = new HashMap<String, Bid>();
     }
 
+    public Auction(int id, int amount, float interest, Map<String, Bid> bids) {
+        this.id = id;
+        this.amount = amount;
+        this.interest = interest;
+        this.bids = bids;
+    }
+
     public void putBid(String investor, Bid bid){
         this.bids.put(investor, bid);
     }
