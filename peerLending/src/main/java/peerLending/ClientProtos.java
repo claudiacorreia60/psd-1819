@@ -113,19 +113,6 @@ public final class ClientProtos {
      * <code>optional .Result res = 7;</code>
      */
     ClientProtos.ResultOrBuilder getResOrBuilder();
-
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    boolean hasNot();
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    ClientProtos.Notification getNot();
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    ClientProtos.NotificationOrBuilder getNotOrBuilder();
   }
   /**
    * Protobuf type {@code Message}
@@ -226,19 +213,6 @@ public final class ClientProtos {
                 res_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000040;
-              break;
-            }
-            case 66: {
-              ClientProtos.Notification.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000080) == 0x00000080)) {
-                subBuilder = not_.toBuilder();
-              }
-              not_ = input.readMessage(ClientProtos.Notification.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(not_);
-                not_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000080;
               break;
             }
           }
@@ -476,27 +450,6 @@ public final class ClientProtos {
       return res_ == null ? ClientProtos.Result.getDefaultInstance() : res_;
     }
 
-    public static final int NOT_FIELD_NUMBER = 8;
-    private ClientProtos.Notification not_;
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    public boolean hasNot() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    public ClientProtos.Notification getNot() {
-      return not_ == null ? ClientProtos.Notification.getDefaultInstance() : not_;
-    }
-    /**
-     * <code>optional .Notification not = 8;</code>
-     */
-    public ClientProtos.NotificationOrBuilder getNotOrBuilder() {
-      return not_ == null ? ClientProtos.Notification.getDefaultInstance() : not_;
-    }
-
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -530,9 +483,6 @@ public final class ClientProtos {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeMessage(7, getRes());
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeMessage(8, getNot());
-      }
       unknownFields.writeTo(output);
     }
 
@@ -565,10 +515,6 @@ public final class ClientProtos {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, getRes());
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getNot());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -624,11 +570,6 @@ public final class ClientProtos {
         result = result && getRes()
             .equals(other.getRes());
       }
-      result = result && (hasNot() == other.hasNot());
-      if (hasNot()) {
-        result = result && getNot()
-            .equals(other.getNot());
-      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -668,10 +609,6 @@ public final class ClientProtos {
       if (hasRes()) {
         hash = (37 * hash) + RES_FIELD_NUMBER;
         hash = (53 * hash) + getRes().hashCode();
-      }
-      if (hasNot()) {
-        hash = (37 * hash) + NOT_FIELD_NUMBER;
-        hash = (53 * hash) + getNot().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -789,7 +726,6 @@ public final class ClientProtos {
                 .alwaysUseFieldBuilders) {
           getAuthFieldBuilder();
           getResFieldBuilder();
-          getNotFieldBuilder();
         }
       }
       public Builder clear() {
@@ -816,12 +752,6 @@ public final class ClientProtos {
           resBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000040);
-        if (notBuilder_ == null) {
-          not_ = null;
-        } else {
-          notBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -881,14 +811,6 @@ public final class ClientProtos {
           result.res_ = res_;
         } else {
           result.res_ = resBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        if (notBuilder_ == null) {
-          result.not_ = not_;
-        } else {
-          result.not_ = notBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -958,9 +880,6 @@ public final class ClientProtos {
         }
         if (other.hasRes()) {
           mergeRes(other.getRes());
-        }
-        if (other.hasNot()) {
-          mergeNot(other.getNot());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -1540,124 +1459,6 @@ public final class ClientProtos {
           res_ = null;
         }
         return resBuilder_;
-      }
-
-      private ClientProtos.Notification not_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          ClientProtos.Notification, ClientProtos.Notification.Builder, ClientProtos.NotificationOrBuilder> notBuilder_;
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public boolean hasNot() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public ClientProtos.Notification getNot() {
-        if (notBuilder_ == null) {
-          return not_ == null ? ClientProtos.Notification.getDefaultInstance() : not_;
-        } else {
-          return notBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public Builder setNot(ClientProtos.Notification value) {
-        if (notBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          not_ = value;
-          onChanged();
-        } else {
-          notBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000080;
-        return this;
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public Builder setNot(
-          ClientProtos.Notification.Builder builderForValue) {
-        if (notBuilder_ == null) {
-          not_ = builderForValue.build();
-          onChanged();
-        } else {
-          notBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000080;
-        return this;
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public Builder mergeNot(ClientProtos.Notification value) {
-        if (notBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080) &&
-              not_ != null &&
-              not_ != ClientProtos.Notification.getDefaultInstance()) {
-            not_ =
-              ClientProtos.Notification.newBuilder(not_).mergeFrom(value).buildPartial();
-          } else {
-            not_ = value;
-          }
-          onChanged();
-        } else {
-          notBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000080;
-        return this;
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public Builder clearNot() {
-        if (notBuilder_ == null) {
-          not_ = null;
-          onChanged();
-        } else {
-          notBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000080);
-        return this;
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public ClientProtos.Notification.Builder getNotBuilder() {
-        bitField0_ |= 0x00000080;
-        onChanged();
-        return getNotFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      public ClientProtos.NotificationOrBuilder getNotOrBuilder() {
-        if (notBuilder_ != null) {
-          return notBuilder_.getMessageOrBuilder();
-        } else {
-          return not_ == null ?
-              ClientProtos.Notification.getDefaultInstance() : not_;
-        }
-      }
-      /**
-       * <code>optional .Notification not = 8;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          ClientProtos.Notification, ClientProtos.Notification.Builder, ClientProtos.NotificationOrBuilder> 
-          getNotFieldBuilder() {
-        if (notBuilder_ == null) {
-          notBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              ClientProtos.Notification, ClientProtos.Notification.Builder, ClientProtos.NotificationOrBuilder>(
-                  getNot(),
-                  getParentForChildren(),
-                  isClean());
-          not_ = null;
-        }
-        return notBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -3049,715 +2850,6 @@ public final class ClientProtos {
 
   }
 
-  public interface NotificationOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Notification)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    boolean hasStatus();
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    java.lang.String getStatus();
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getStatusBytes();
-
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    boolean hasAction();
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    java.lang.String getAction();
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getActionBytes();
-  }
-  /**
-   * Protobuf type {@code Notification}
-   */
-  public  static final class Notification extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Notification)
-      NotificationOrBuilder {
-    // Use Notification.newBuilder() to construct.
-    private Notification(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Notification() {
-      status_ = "";
-      action_ = "";
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private Notification(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              status_ = bs;
-              break;
-            }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              action_ = bs;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return ClientProtos.internal_static_Notification_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return ClientProtos.internal_static_Notification_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              ClientProtos.Notification.class, ClientProtos.Notification.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int STATUS_FIELD_NUMBER = 1;
-    private volatile java.lang.Object status_;
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    public boolean hasStatus() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    public java.lang.String getStatus() {
-      java.lang.Object ref = status_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          status_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string status = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getStatusBytes() {
-      java.lang.Object ref = status_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        status_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ACTION_FIELD_NUMBER = 2;
-    private volatile java.lang.Object action_;
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    public boolean hasAction() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    public java.lang.String getAction() {
-      java.lang.Object ref = action_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          action_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string action = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getActionBytes() {
-      java.lang.Object ref = action_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        action_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, status_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, action_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, status_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, action_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof ClientProtos.Notification)) {
-        return super.equals(obj);
-      }
-      ClientProtos.Notification other = (ClientProtos.Notification) obj;
-
-      boolean result = true;
-      result = result && (hasStatus() == other.hasStatus());
-      if (hasStatus()) {
-        result = result && getStatus()
-            .equals(other.getStatus());
-      }
-      result = result && (hasAction() == other.hasAction());
-      if (hasAction()) {
-        result = result && getAction()
-            .equals(other.getAction());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasStatus()) {
-        hash = (37 * hash) + STATUS_FIELD_NUMBER;
-        hash = (53 * hash) + getStatus().hashCode();
-      }
-      if (hasAction()) {
-        hash = (37 * hash) + ACTION_FIELD_NUMBER;
-        hash = (53 * hash) + getAction().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static ClientProtos.Notification parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static ClientProtos.Notification parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static ClientProtos.Notification parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static ClientProtos.Notification parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static ClientProtos.Notification parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static ClientProtos.Notification parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static ClientProtos.Notification parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static ClientProtos.Notification parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static ClientProtos.Notification parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static ClientProtos.Notification parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(ClientProtos.Notification prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code Notification}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Notification)
-        ClientProtos.NotificationOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return ClientProtos.internal_static_Notification_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return ClientProtos.internal_static_Notification_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                ClientProtos.Notification.class, ClientProtos.Notification.Builder.class);
-      }
-
-      // Construct using peerLending.ClientProtos.Notification.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        status_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        action_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return ClientProtos.internal_static_Notification_descriptor;
-      }
-
-      public ClientProtos.Notification getDefaultInstanceForType() {
-        return ClientProtos.Notification.getDefaultInstance();
-      }
-
-      public ClientProtos.Notification build() {
-        ClientProtos.Notification result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public ClientProtos.Notification buildPartial() {
-        ClientProtos.Notification result = new ClientProtos.Notification(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.status_ = status_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.action_ = action_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof ClientProtos.Notification) {
-          return mergeFrom((ClientProtos.Notification)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(ClientProtos.Notification other) {
-        if (other == ClientProtos.Notification.getDefaultInstance()) return this;
-        if (other.hasStatus()) {
-          bitField0_ |= 0x00000001;
-          status_ = other.status_;
-          onChanged();
-        }
-        if (other.hasAction()) {
-          bitField0_ |= 0x00000002;
-          action_ = other.action_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        ClientProtos.Notification parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (ClientProtos.Notification) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object status_ = "";
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public boolean hasStatus() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public java.lang.String getStatus() {
-        java.lang.Object ref = status_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            status_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getStatusBytes() {
-        java.lang.Object ref = status_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          status_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public Builder setStatus(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        status_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        status_ = getDefaultInstance().getStatus();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string status = 1;</code>
-       */
-      public Builder setStatusBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        status_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object action_ = "";
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public boolean hasAction() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public java.lang.String getAction() {
-        java.lang.Object ref = action_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            action_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getActionBytes() {
-        java.lang.Object ref = action_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          action_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public Builder setAction(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        action_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public Builder clearAction() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        action_ = getDefaultInstance().getAction();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string action = 2;</code>
-       */
-      public Builder setActionBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        action_ = value;
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:Notification)
-    }
-
-    // @@protoc_insertion_point(class_scope:Notification)
-    private static final ClientProtos.Notification DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new ClientProtos.Notification();
-    }
-
-    public static ClientProtos.Notification getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Notification>
-        PARSER = new com.google.protobuf.AbstractParser<Notification>() {
-      public Notification parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Notification(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<Notification> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Notification> getParserForType() {
-      return PARSER;
-    }
-
-    public ClientProtos.Notification getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Message_descriptor;
   private static final 
@@ -3773,11 +2865,6 @@ public final class ClientProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_Result_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Notification_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Notification_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3787,15 +2874,13 @@ public final class ClientProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022clientProtos.proto\"\255\001\n\007Message\022\014\n\004type" +
+      "\n\022clientProtos.proto\"\221\001\n\007Message\022\014\n\004type" +
       "\030\001 \001(\t\022\016\n\006amount\030\002 \001(\005\022\020\n\010interest\030\003 \001(\002" +
       "\022\017\n\007company\030\004 \001(\t\022\020\n\010investor\030\005 \001(\t\022\035\n\004a" +
       "uth\030\006 \001(\0132\017.Authentication\022\024\n\003res\030\007 \001(\0132" +
-      "\007.Result\022\032\n\003not\030\010 \001(\0132\r.Notification\"4\n\016" +
-      "Authentication\022\020\n\010username\030\001 \001(\t\022\020\n\010pass" +
-      "word\030\002 \001(\t\"(\n\006Result\022\016\n\006result\030\001 \001(\010\022\016\n\006" +
-      "entity\030\002 \001(\t\".\n\014Notification\022\016\n\006status\030\001" +
-      " \001(\t\022\016\n\006action\030\002 \001(\t"
+      "\007.Result\"4\n\016Authentication\022\020\n\010username\030\001" +
+      " \001(\t\022\020\n\010password\030\002 \001(\t\"(\n\006Result\022\016\n\006resu" +
+      "lt\030\001 \001(\010\022\016\n\006entity\030\002 \001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3814,7 +2899,7 @@ public final class ClientProtos {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "Type", "Amount", "Interest", "Company", "Investor", "Auth", "Res", "Not", });
+        new java.lang.String[] { "Type", "Amount", "Interest", "Company", "Investor", "Auth", "Res", });
     internal_static_Authentication_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_Authentication_fieldAccessorTable = new
@@ -3827,12 +2912,6 @@ public final class ClientProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Result_descriptor,
         new java.lang.String[] { "Result", "Entity", });
-    internal_static_Notification_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_Notification_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Notification_descriptor,
-        new java.lang.String[] { "Status", "Action", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

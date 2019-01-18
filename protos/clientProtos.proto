@@ -8,7 +8,6 @@ message Message {
     optional string investor = 5;
     optional Authentication auth = 6;
     optional Result res = 7;
-    optional Notification not = 8;
 }
 
 message Authentication {
@@ -19,9 +18,4 @@ message Authentication {
 message Result {
     optional bool result = 1;
     optional string entity = 2;
-}
-
-message Notification {
-	optional string status = 1;
-	optional string action = 2;
 }
