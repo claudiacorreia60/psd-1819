@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/* TODO: Fazer subscrição mal faça bid, subscription, auction e emission*/
-
-
 public class Client {
     private String username;
     private String password;
@@ -109,6 +106,7 @@ public class Client {
                 handleCompany();
             }
         }
+        this.subscriber.close();
         this.reader.close();
         this.out.close();
         this.in.close();
@@ -248,7 +246,6 @@ public class Client {
             }
         }
         System.out.print("Interest: ");
-
         float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
@@ -346,10 +343,14 @@ public class Client {
         }
         for (String company : companies) {
             if (status.equals("start")) {
-                enableNotification(action, company);
+                enableNotification("End"+action, company);
+                enableNotification("Create"+action, company);
+                enableNotification("Bid"+action, company);
             }
             else {
-                disableNotification(action, company);
+                disableNotification("End"+action, company);
+                disableNotification("Create"+action, company);
+                disableNotification("Bid"+action, company);
             }
         }
 

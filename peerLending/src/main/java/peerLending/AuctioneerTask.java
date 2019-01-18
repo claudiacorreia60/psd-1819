@@ -48,16 +48,19 @@ public class AuctioneerTask extends TimerTask {
         for (Integer amount : subscriptions.values()) {
             total += amount;
         }
+        // Notify clients of the result
         String notification = "Emission:"+this.company+":"+emission.getAmount()+":"+emission.getInterest()+":";
         if (total == emission.getAmount()) {
             for (Map.Entry<String, Integer> e : emission.getSubscriptions().entrySet()) {
                 notification += e.getKey()+":"+e.getValue()+":";
             }
-            notification += "Success:End";
+            notification += "Success";
         }
         else {
-            notification += "Failure:End";
+            notification += "Failure";
         }
+        this.publisher.sendNotification(notification);
+        notification = "End" + notification;
         this.publisher.sendNotification(notification);
 
         sendHTTPRequest("end/emission", emission);
@@ -116,15 +119,24 @@ public class AuctioneerTask extends TimerTask {
             }
         }
 
-        // TODO: notify clients of the result
-
-        // Update auction with the actual final bids
-        if(success){
+        // Notify clients of the result
+        String notification = "Auction:"+this.company+":"+auction.getAmount()+":"+auction.getInterest()+":";
+        if (success) {
+            for (Map.Entry<String, Bid> e : selectedBids.entrySet()) {
+                notification += e.getKey()+":"+e.getValue().getAmount()+":"+e.getValue().getInterest()+":";
+            }
+            notification += "Success";
+            // Update auction with the actual final bids
             auction.setBids(selectedBids);
         }
         else {
+            notification += "Failure";
             auction.setBids(null);
         }
+        this.publisher.sendNotification(notification);
+        notification = "End" + notification;
+        this.publisher.sendNotification(notification);
+
 
         // TODO: tenho de enviar a empresa que tem o auction. Como?
         sendHTTPRequest("end/auction", auction);

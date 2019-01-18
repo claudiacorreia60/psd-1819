@@ -19,9 +19,6 @@ import java.util.Map;
 import java.util.Timer;
 
 
-/* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
-
-
 public class Exchange implements Runnable{
     private int id;
     private int port;
@@ -41,6 +38,7 @@ public class Exchange implements Runnable{
         this.publisher = publisher;
         ZMQ.Context context = ZMQ.context(1);
         this.socket = context.socket(ZMQ.REP);
+        /* TODO: Verificar este endereço */
         socket.bind("tcp://localhost:"+port);
         System.out.println("Running " + this.id + "...");
 
@@ -113,6 +111,14 @@ public class Exchange implements Runnable{
                 success = true;
             }
         }
+
+        if (success) {
+            // Notify clients
+            String notification = "Emission:"+msg.getCompany()+":"+emission.getAmount()+":"+emission.getInterest()+":"+msg.getInvestor()+":"+msg.getAmount();
+            this.publisher.sendNotification(notification);
+            notification = "Bid" + notification;
+            this.publisher.sendNotification(notification);
+        }
         // Reply to frontendServer
         ClientProtos.Result res = ClientProtos.Result.newBuilder()
                 .setResult(success)
@@ -134,6 +140,14 @@ public class Exchange implements Runnable{
             bids.put(msg.getInvestor(), bid);
             auction.setBids(bids);
             success = true;
+        }
+
+        if (success) {
+            // Notify clients
+            String notification = "Auction:"+msg.getCompany()+":"+auction.getAmount()+":"+auction.getInterest()+":"+msg.getInvestor()+":"+msg.getAmount()+":"+msg.getInterest();
+            this.publisher.sendNotification(notification);
+            notification = "Bid" + notification;
+            this.publisher.sendNotification(notification);
         }
         // Reply to frontendServer
         ClientProtos.Result res = ClientProtos.Result.newBuilder()
@@ -167,6 +181,14 @@ public class Exchange implements Runnable{
             // Set auction scheduler - 30 seconds
             AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies,"Auction", this.availableAuctions, this.availableEmissions, this.publisher);
             this.timer.schedule(auctioneerTask, 30000);
+        }
+
+        if (success) {
+            // Notify clients
+            String notification = "Auction:"+msg.getCompany()+":"+msg.getAmount()+":"+msg.getInterest();
+            this.publisher.sendNotification(notification);
+            notification = "Create" + notification;
+            this.publisher.sendNotification(notification);
         }
 
         // Reply to frontendServer
@@ -209,6 +231,13 @@ public class Exchange implements Runnable{
             // Set emission scheduler - 30 seconds
             AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
             this.timer.schedule(auctioneerTask, 30000);
+
+
+            // Notify clients
+            String notification = "Emission:"+msg.getCompany()+":"+emission.getAmount()+":"+emission.getInterest();
+            this.publisher.sendNotification(notification);
+            notification = "Create" + notification;
+            this.publisher.sendNotification(notification);
         }
 
         // Reply to frontendServer
@@ -229,7 +258,7 @@ public class Exchange implements Runnable{
 
         for(Map.Entry<Integer, Auction> e : allAuctions.entrySet()){
             // Check if auction was successful
-            if(!e.getValue().getBids().isEmpty()){
+            if(e.getValue().getBids() != null){
                 successfulAuctions.put(e.getKey(), e.getValue());
             }
         }
@@ -309,7 +338,8 @@ public class Exchange implements Runnable{
     public static void main (String[] args) throws IOException {
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket socket = context.socket(ZMQ.PUB);
-        //socket.bind("tcp://*:" + args[0]);
+        /* TODO: Verificar este endereço */
+        socket.bind("tcp://localhost:1234");
         Publisher publisher = new Publisher(context, socket);
         Exchange e1 = new Exchange(5551, 1, publisher);
         Exchange e2 = new Exchange(5552, 2, publisher);
