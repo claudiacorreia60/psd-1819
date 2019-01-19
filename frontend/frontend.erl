@@ -41,8 +41,27 @@ server(Investidores, Empresas, Enderecos) ->
     case gen_tcp:listen(3000, [binary,{packet, 0}, {reuseaddr, true}, {active, true}]) of
         {ok, LSock} ->
             io:format("Frontend: iniciado\n"),
-            spawn(fun() -> client_acceptor(LSock, Investidores, Empresas, Enderecos) end);
+            spawn(fun() -> client_acceptor(LSock, Investidores, Empresas, Enderecos) end),
+            spawn(fun() -> notification_broker() end);
         _ -> io:format("Frontend: erro\n")
+    end.
+
+notification_broker() ->
+    {ok, Context} = erlzmq:context(),
+    {ok, Frontend} = erlzmq:socket(Context, [xsub, {active, false}]),
+    {ok, Backend} = erlzmq:socket(Context, [xpub, {active, false}]),
+    erlzmq:bind(Frontend,"tcp://localhost:6661"),
+    erlzmq:bind(Backend,"tcp://localhost:6662"),
+    notification_broker_proxy(Frontend, Backend).
+
+notification_broker_proxy(Frontend, Backend) ->
+    case erlzmq:recv(Frontend) of
+        {ok, RecvMessage} ->
+            io:format("Recv message: ~p\n", [RecvMessage]),
+            erlzmq:send(Backend, Data),
+            notification_broker_proxy(Frontend, Backend);
+        {error, RecvReason} ->
+            io:format("Failed to recv, reason: ~p\n", [RecvReason])
     end.
 
 client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
@@ -89,11 +108,11 @@ client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
 connect_to_exchanges() ->
     {ok, Context} = erlzmq:context(),
     {ok, Socket1} = erlzmq:socket(Context, [req, {active, false}]),
-    erlzmq:connect(Socket1,"tcp://localhost:5551"),
+    erlzmq:connect(Socket1,"tcp://192.168.158.1:5551"),
     {ok, Socket2} = erlzmq:socket(Context, [req, {active, false}]),
-    erlzmq:connect(Socket2,"tcp://localhost:5552"),
+    erlzmq:connect(Socket2,"tcp://192.168.158.1:5552"),
     {ok, Socket3} = erlzmq:socket(Context, [req, {active, false}]),
-    erlzmq:connect(Socket3,"tcp://localhost:5553"),
+    erlzmq:connect(Socket3,"tcp://192.168.158.1:5553"),
     {Socket1, Socket2, Socket3}.
 
 client_handler(Sock, Enderecos, Sockets) ->
