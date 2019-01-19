@@ -1,7 +1,6 @@
 BIN = bin/
 ERLANG_GPB = dependencies/gpb/include/
-ERLANG_ZMQ = dependencies/chumak/_build/default/lib/chumak/ebin
-PA_ZMQ = dependencies/chumak/_build/default/lib/chumak/ebin
+PA_ZMQ = dependencies/erlzmq2/ebin/
 PA_FRONT = bin/
 
 all: compile

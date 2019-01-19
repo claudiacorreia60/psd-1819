@@ -40,9 +40,9 @@ start() ->
 server(Investidores, Empresas, Enderecos) ->
     case gen_tcp:listen(3000, [binary,{packet, 0}, {reuseaddr, true}, {active, true}]) of
         {ok, LSock} ->
-            io:format("Frontend: iniciado"),
+            io:format("Frontend: iniciado\n"),
             spawn(fun() -> client_acceptor(LSock, Investidores, Empresas, Enderecos) end);
-        _ -> io:format("Frontend: erro")
+        _ -> io:format("Frontend: erro\n")
     end.
 
 client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
@@ -51,22 +51,30 @@ client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
     spawn(fun() -> client_acceptor(LSock, Investidores, Empresas, Enderecos) end),
     receive
         {tcp, Sock, Data} ->
-            Msg = maps:get(auth, clientProtos:decode_msg(Data, 'Message')),
+            Msg      = maps:get(auth, clientProtos:decode_msg(Data, 'Message')),
             Username = maps:get(username, Msg),
             Password = maps:get(password, Msg),
-            case maps:is_key(Username, Investidores) and string:equal(maps:get(Username, Investidores), Password) of
+            case maps:is_key(Username, Investidores) of
                 true ->
-                    MsgR = #{res=>#{result=>true, entity=>"investor"}},
-                    gen_tcp:send(Sock, clientProtos:encode_msg(MsgR, 'Message')),
-                    Sockets = connect_to_exchanges(),
-                    client_handler(Sock, Enderecos, Sockets);
-                false ->
-                    case maps:is_key(Username, Empresas) and maps:get(Username, Empresas) == Password of
+                    case string:equal(maps:get(Username, Investidores), Password) of
                         true ->
-                            MsgR = #{res=>#{result=>true, entity=>"company"}},
+                            MsgR = #{res=>#{result=>true, entity=>"investor"}},
                             gen_tcp:send(Sock, clientProtos:encode_msg(MsgR, 'Message')),
                             Sockets = connect_to_exchanges(),
                             client_handler(Sock, Enderecos, Sockets);
+                        _ -> io:fwrite("Erro")
+                    end;
+                false ->
+                    case maps:is_key(Username, Empresas) of
+                        true ->
+                            case maps:get(Username, Empresas) == Password of
+                                true ->
+                                    MsgR = #{res=>#{result=>true, entity=>"company"}},
+                                    gen_tcp:send(Sock, clientProtos:encode_msg(MsgR, 'Message')),
+                                    Sockets = connect_to_exchanges(),
+                                    client_handler(Sock, Enderecos, Sockets);
+                                _ -> io:fwrite("Error")
+                            end;
                         false ->
                             MsgR = #{res=>#{result=>false}},
                             gen_tcp:send(Sock, clientProtos:encode_msg(MsgR, 'Message'))
@@ -79,13 +87,13 @@ client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
     end.
 
 connect_to_exchanges() ->
-    application:start(chumak),
-    {ok, Socket1} = chumak:socket(req, "exchange1"),
-    chumak:bind(Socket1, tcp, "localhost", 5551),
-    {ok, Socket2} = chumak:socket(req, "exchange2"),
-    chumak:bind(Socket2, tcp, "localhost", 5552),
-    {ok, Socket3} = chumak:socket(req, "exchange3"),
-    chumak:bind(Socket3, tcp, "localhost", 5553),
+    {ok, Context} = erlzmq:context(),
+    {ok, Socket1} = erlzmq:socket(Context, [req, {active, false}]),
+    erlzmq:connect(Socket1,"tcp://localhost:5551"),
+    {ok, Socket2} = erlzmq:socket(Context, [req, {active, false}]),
+    erlzmq:connect(Socket2,"tcp://localhost:5552"),
+    {ok, Socket3} = erlzmq:socket(Context, [req, {active, false}]),
+    erlzmq:connect(Socket3,"tcp://localhost:5553"),
     {Socket1, Socket2, Socket3}.
 
 client_handler(Sock, Enderecos, Sockets) ->
@@ -94,7 +102,8 @@ client_handler(Sock, Enderecos, Sockets) ->
             Msg = clientProtos:decode_msg(Data, 'Message'),
             case maps:is_key(company,Msg) of
                 true -> 
-                    route_to_exchange(maps:get(company,Msg), Data, Enderecos, Sockets, Sock);
+                    route_to_exchange(maps:get(company,Msg), Data, Enderecos, Sockets, Sock),
+                    client_handler(Sock, Enderecos, Sockets);
                 false -> 
                     io:fwrite("No company!\n"),
                     client_handler(Sock, Enderecos, Sockets)
@@ -109,17 +118,20 @@ route_to_exchange(Company, Data, Enderecos, Sockets, Sock) ->
     case maps:get(Company, Enderecos) of
         1 -> send_messages(Socket1, Data, Sock);
         2 -> send_messages(Socket2, Data, Sock);
-        3 -> send_messages(Socket3, Data, Sock)
+        3 -> send_messages(Socket3, Data, Sock);
+        _ -> io:fwrite("Error\n")
     end.
 
 send_messages(Socket, Data, Sock) ->
-    case chumak:send(Socket, Data) of
+    case erlzmq:send(Socket, Data) of
         ok ->
+            io:fwrite("Enviei com sucesso\n"),
             io:format("Send message: ~p\n", [Data]);
         {error, Reason} ->
+            io:fwrite("Enviei sem sucesso"),
             io:format("Failed to send message: ~p, reason: ~p\n", [Data, Reason])
     end,
-    case chumak:recv(Socket) of
+    case erlzmq:recv(Socket) of
         {ok, RecvMessage} ->
             io:format("Recv message: ~p\n", [RecvMessage]),
             gen_tcp:send(Sock, RecvMessage);

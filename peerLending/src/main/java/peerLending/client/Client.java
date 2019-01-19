@@ -62,6 +62,8 @@ public class Client {
 
 
     public void startClient() throws IOException {
+        Thread t = null;
+
         System.out.println("\n################ LOGIN ################");
         System.out.print("\n> Username: ");
         this.username = this.reader.readLine();
@@ -83,6 +85,7 @@ public class Client {
         ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
         ClientProtos.Result res = ans.getRes();
 
+        Boolean stop = false;
         boolean result = res.getResult();
         String entity = res.getEntity();
         //System.out.println("RESULT: "+result+"\nENTITY: "+entity);
@@ -91,8 +94,8 @@ public class Client {
         else {
             ZMQ.Context context = ZMQ.context(1);
             this.subscriber = context.socket(ZMQ.SUB);
-            Subscriber sub = new Subscriber(context, this.subscriber);
-            Thread t = new Thread(sub);
+            Subscriber sub = new Subscriber(context, this.subscriber, stop);
+            t = new Thread(sub);
             t.start();
             /* TODO: Ir buscar as notificações ativas às exchanges
                  Fazer enable dessas notificações */
@@ -106,11 +109,8 @@ public class Client {
                 handleCompany();
             }
         }
-        this.subscriber.close();
-        this.reader.close();
-        this.out.close();
-        this.in.close();
-        this.socket.close();
+
+        stop = true;
     }
 
 
@@ -408,7 +408,9 @@ public class Client {
     }
 
     public static void main (String[] args) throws IOException {
-        Client c = new Client("192.168.1.76", 3000);
-        c.startClient();
+        Client c = new Client("localhost", 3000);
+        while(true) {
+            c.startClient();
+        }
     }
 }

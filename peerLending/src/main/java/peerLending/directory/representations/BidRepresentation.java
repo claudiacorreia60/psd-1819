@@ -3,12 +3,10 @@ package peerLending.directory.representations;
 import com.fasterxml.jackson.annotation.*;
 import peerLending.Bid;
 
-import java.util.Map;
-
 public class BidRepresentation {
-    private String investor;
-    private int amount;
-    private float interest;
+    public String investor;
+    public int amount;
+    public float interest;
 
     @JsonCreator
     public BidRepresentation(@JsonProperty("investor") String investor, @JsonProperty("amount") int amount, @JsonProperty("interest") float interest) {

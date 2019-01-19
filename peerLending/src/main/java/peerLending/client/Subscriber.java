@@ -6,19 +6,21 @@ import org.zeromq.ZMQ;
 public class Subscriber implements Runnable {
     ZMQ.Context context;
     ZMQ.Socket subscriber;
+    private Boolean stop;
 
 
-    public Subscriber (ZMQ.Context context, ZMQ.Socket subscriber) {
+    public Subscriber (ZMQ.Context context, ZMQ.Socket subscriber, Boolean stop) {
         this.context = context;
         this.subscriber = subscriber;
+        this.stop = stop;
     }
 
     public void run() {
         /* TODO: Verificar este endereço */
-        this.subscriber.connect("tcp://localhost:8888");
+        this.subscriber.connect("tcp://localhost:6662");
 
         try {
-            while (true) {
+            while (!stop) {
                 String notification = this.subscriber.recvStr();
                 String[] splitNotification = notification.split(":");
                 if (splitNotification[splitNotification.length-1].equals("Success") || splitNotification[splitNotification.length-1].equals("Failure")) {

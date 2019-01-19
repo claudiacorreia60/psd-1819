@@ -8,32 +8,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuctionRepresentation {
-    private int id;
-    private int amount;
-    private float interest;
-    private Map<String, BidRepresentation> bids;
-    private String company;
+    public int id;
+    public String company;
+    public int amount;
+    public float interest;
+    public Map<String, BidRepresentation> bids;
 
     @JsonCreator
-    public AuctionRepresentation(@JsonProperty("id") int id, @JsonProperty("amount") int amount, @JsonProperty("interest") float interest, @JsonProperty("bids")  Map<String, BidRepresentation> bids, @JsonProperty("company")  String company) {
+    public AuctionRepresentation(@JsonProperty("id") int id, @JsonProperty("company")  String company, @JsonProperty("amount") int amount, @JsonProperty("interest") float interest, @JsonProperty("bids")  Map<String, BidRepresentation> bids) {
         this.id = id;
+        this.company = company;
         this.amount = amount;
         this.interest = interest;
         this.bids = bids;
-        this.company = company;
     }
 
     public Auction build(){
         Map<String, Bid> bids = new HashMap<String, Bid>();
 
-        for(Map.Entry<String, BidRepresentation> e : this.bids.entrySet()){
-            bids.put(e.getKey(), e.getValue().build());
+        if(this.bids != null) {
+            for (Map.Entry<String, BidRepresentation> e : this.bids.entrySet()) {
+                bids.put(e.getKey(), e.getValue().build());
+            }
+
+            return new Auction(this.id, this.company, this.amount, this.interest, bids);
         }
 
-        return new Auction(this.id, this.amount, this.interest, bids);
-    }
-
-    public String getCompany() {
-        return company;
+        return new Auction(this.id, this.company, this.amount, this.interest, null);
     }
 }

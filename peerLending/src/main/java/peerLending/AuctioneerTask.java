@@ -50,7 +50,7 @@ public class AuctioneerTask extends TimerTask {
         }
         // Notify clients of the result
         String notification = "Emission:"+this.company+":"+emission.getAmount()+":"+emission.getInterest()+":";
-        if (total == emission.getAmount()) {
+        if (total >= emission.getAmount()) {
             for (Map.Entry<String, Integer> e : emission.getSubscriptions().entrySet()) {
                 notification += e.getKey()+":"+e.getValue()+":";
             }
@@ -98,25 +98,25 @@ public class AuctioneerTask extends TimerTask {
         boolean success = false;
 
         // Maximum interest amount that the company will pay
-        float maxInterest = auction.getInterest() * auction.getAmount();
+        float maxInterest = (auction.getInterest()/10) * auction.getAmount();
 
         for (Map.Entry<String, Bid> e : bids.entrySet()) {
+            totalAmount += e.getValue().getAmount();
+            totalInterest += (e.getValue().getInterest()/10) * e.getValue().getAmount();
+
+            // Maximum interest rate exceeded
+            if(totalInterest > maxInterest){
+                break;
+            }
+
             // Bids reached desired amount
             if(totalAmount >= auction.getAmount()){
+                selectedBids.put(e.getKey(), e.getValue());
                 success = true;
                 break;
             }
-            else {
-                totalAmount += e.getValue().getAmount();
-                totalInterest += e.getValue().getInterest() * e.getValue().getAmount();
 
-                // Maximum interest rate exceeded
-                if(totalInterest > maxInterest){
-                    break;
-                }
-
-                selectedBids.put(e.getKey(), e.getValue());
-            }
+            selectedBids.put(e.getKey(), e.getValue());
         }
 
         // Notify clients of the result
@@ -138,7 +138,6 @@ public class AuctioneerTask extends TimerTask {
         this.publisher.sendNotification(notification);
 
 
-        // TODO: tenho de enviar a empresa que tem o auction. Como?
         sendHTTPRequest("end/auction", auction);
 
         // Remove available auction

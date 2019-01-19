@@ -5,19 +5,22 @@ import java.util.Map;
 
 public class Emission {
     private int id;
+    private String company;
     private int amount;
     private float interest;
     private Map<String, Integer> subscriptions;
 
-    public Emission(int id, int amount, float interest) {
+    public Emission(int id, String company, int amount, float interest) {
         this.id = id;
+        this.company = company;
         this.amount = amount;
         this.interest = interest;
         this.subscriptions = new HashMap<String, Integer>();
     }
 
-    public Emission(int id, int amount, float interest, Map<String, Integer> subscriptions) {
+    public Emission(int id, String company, int amount, float interest, Map<String, Integer> subscriptions) {
         this.id = id;
+        this.company = company;
         this.amount = amount;
         this.interest = interest;
         this.subscriptions = subscriptions;
@@ -33,6 +36,14 @@ public class Emission {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public int getAmount() {
@@ -57,24 +68,5 @@ public class Emission {
 
     public void setSubscriptions(Map<String, Integer> subscriptions) {
         this.subscriptions = subscriptions;
-    }
-
-    @Override
-    public String toString() {
-        return "Emission{" +
-                "id=" + id +
-                ", amount=" + amount +
-                ", interest=" + interest +
-                ", subscriptions=" + subscriptions.toString() +
-                '}';
-    }
-
-    public String toJson() {
-        return "{" +
-                "id=" + id +
-                ", amount=" + amount +
-                ", interest=" + interest +
-                ", subscriptions=" + subscriptions.toString() +
-                '}';
     }
 }

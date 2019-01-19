@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import static java.lang.System.arraycopy;
+
+
+/* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
+
 
 public class Exchange implements Runnable{
     private int id;
@@ -38,8 +43,7 @@ public class Exchange implements Runnable{
         this.publisher = publisher;
         ZMQ.Context context = ZMQ.context(1);
         this.socket = context.socket(ZMQ.REP);
-        /* TODO: Verificar este endereço */
-        socket.bind("tcp://localhost:"+port);
+        this.socket.bind("tcp://localhost:"+port);
         System.out.println("Running " + this.id + "...");
 
         // Initialize companies structure
@@ -72,7 +76,7 @@ public class Exchange implements Runnable{
         try {
 
             while(true){
-                byte [] response = this.socket.recv();
+                byte[] response = this.recv(this.socket);
                 System.out.println(response);
                 ClientProtos.Message msg = ClientProtos.Message.parseFrom(response);
 
@@ -93,6 +97,17 @@ public class Exchange implements Runnable{
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
+    }
+
+    public byte[] recv(ZMQ.Socket socket) {
+        byte[] tmp;
+        int len;
+        tmp = socket.recv();
+        System.out.println("Exchange: Pedido recebido");
+        len = tmp.length;
+        byte[] response = new byte[len];
+        arraycopy(tmp, 0, response, 0, len);
+        return response;
     }
 
     public void handleSubscription (ClientProtos.Message msg) {
@@ -168,7 +183,7 @@ public class Exchange implements Runnable{
         // No auction available
         if(!this.availableAuctions.containsKey(msg.getCompany())){
             // Create new available auction
-            Auction auction = new Auction(this.auctionCounter, msg.getAmount(), msg.getInterest());
+            Auction auction = new Auction(this.auctionCounter, msg.getCompany(), msg.getAmount(), msg.getInterest());
             this.availableAuctions.put(msg.getCompany(), auction);
             success = true;
 
@@ -180,7 +195,7 @@ public class Exchange implements Runnable{
 
             // Set auction scheduler - 30 seconds
             AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies,"Auction", this.availableAuctions, this.availableEmissions, this.publisher);
-            this.timer.schedule(auctioneerTask, 30000);
+            this.timer.schedule(auctioneerTask, 60000);
         }
 
         if (success) {
@@ -219,25 +234,25 @@ public class Exchange implements Runnable{
                 // Increment emissionCounter
                 this.emissionCounter++;
             }
-        }
-        if(success) {
-            // Create new available emission
-            Emission emission = new Emission(this.emissionCounter, msg.getAmount(), interest);
-            this.availableEmissions.put(msg.getCompany(), emission);
 
-            // Update directory
-            sendHTTPRequest("add/emission", emission);
+            if(success) {
+                // Create new available emission
+                Emission emission = new Emission(this.emissionCounter, msg.getCompany(), msg.getAmount(), interest);
+                this.availableEmissions.put(msg.getCompany(), emission);
 
-            // Set emission scheduler - 30 seconds
-            AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
-            this.timer.schedule(auctioneerTask, 30000);
+                // Update directory
+                sendHTTPRequest("add/emission", emission);
 
+                // Set emission scheduler - 30 seconds
+                AuctioneerTask auctioneerTask = new AuctioneerTask(msg.getCompany(), this.companies, "Emission", this.availableAuctions, this.availableEmissions, this.publisher);
+                this.timer.schedule(auctioneerTask, 60000);
 
-            // Notify clients
-            String notification = "Emission:"+msg.getCompany()+":"+emission.getAmount()+":"+emission.getInterest();
-            this.publisher.sendNotification(notification);
-            notification = "Create" + notification;
-            this.publisher.sendNotification(notification);
+                // Notify clients
+                String notification = "Emission:" + msg.getCompany() + ":" + emission.getAmount() + ":" + emission.getInterest();
+                this.publisher.sendNotification(notification);
+                notification = "Create" + notification;
+                this.publisher.sendNotification(notification);
+            }
         }
 
         // Reply to frontendServer
@@ -339,7 +354,7 @@ public class Exchange implements Runnable{
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket socket = context.socket(ZMQ.PUB);
         /* TODO: Verificar este endereço */
-        socket.bind("tcp://localhost:1234");
+        socket.connect("tcp://localhost:6661");
         Publisher publisher = new Publisher(context, socket);
         Exchange e1 = new Exchange(5551, 1, publisher);
         Exchange e2 = new Exchange(5552, 2, publisher);

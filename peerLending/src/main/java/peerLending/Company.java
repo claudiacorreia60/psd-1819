@@ -50,14 +50,4 @@ public class Company {
     public void setEmissionHistory(Map<Integer, Emission> emissionHistory) {
         this.emissionHistory = emissionHistory;
     }
-
-
-    @Override
-    public String toString() {
-        return "Company{" +
-                "username='" + username + '\'' +
-                ", auctionHistory=" + auctionHistory.toString() +
-                ", emissionHistory=" + emissionHistory.toString() +
-                '}';
-    }
 }

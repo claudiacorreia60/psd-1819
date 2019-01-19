@@ -6,6 +6,7 @@ import peerLending.Emission;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Directory {
     private Map<String, Company> companies;
@@ -18,21 +19,21 @@ public class Directory {
         this.availableEmissions = new HashMap<String, Emission>();
     }
 
-    public void putAvailableAuction(Auction auction, String company){
+    public void putAvailableAuction(Auction auction){
         // Add available auction
-        this.availableAuctions.put(company, auction);
+        this.availableAuctions.put(auction.getCompany(), auction);
     }
 
-    public void putAvailableEmission(Emission emission, String company){
+    public void putAvailableEmission(Emission emission){
         // Add available emission
-        this.availableEmissions.put(company, emission);
+        this.availableEmissions.put(emission.getCompany(), emission);
     }
 
-    public int putAuctionHistory(Auction auction, String company){
+    public int putAuctionHistory(Auction auction){
         // Remove auction from availableAuctions
-        this.availableAuctions.remove(company);
+        this.availableAuctions.remove(auction.getCompany());
 
-        Company c = this.companies.get(company);
+        Company c = this.companies.get(auction.getCompany());
 
         // Company does not exist
         if(c == null){
@@ -44,11 +45,11 @@ public class Directory {
         return 0;
     }
 
-    public int putEmissionHistory(Emission emission, String company){
+    public int putEmissionHistory(Emission emission){
         // Remove emission from availableEmissions
-        this.availableEmissions.remove(company);
+        this.availableEmissions.remove(emission.getCompany());
 
-        Company c = this.companies.get(company);
+        Company c = this.companies.get(emission.getCompany());
 
         // Company does not exist
         if(c == null){
@@ -64,19 +65,19 @@ public class Directory {
         this.companies.put(company.getUsername(), company);
     }
 
-    public String getCompaniesNames(){
-        return this.companies.keySet().toString();
+    public Set<String> getCompaniesNames(){
+        return this.companies.keySet();
     }
 
-    public String getCompanyHistory(String company){
-        return this.companies.get(company).toString();
+    public Company getCompanyHistory(String company){
+        return this.companies.get(company);
     }
 
-    public String getAvailableAuctions(){
-        return this.availableAuctions.toString();
+    public Map<String, Auction> getAvailableAuctions(){
+        return this.availableAuctions;
     }
 
-    public String getAvailableEmissions(){
-        return this.availableEmissions.toString();
+    public Map<String, Emission> getAvailableEmissions(){
+        return this.availableEmissions;
     }
 }

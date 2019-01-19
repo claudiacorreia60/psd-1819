@@ -37,11 +37,11 @@
 -type 'Message'() ::
       #{type                    => iolist(),        % = 1
         amount                  => integer(),       % = 2, 32 bits
-        interest                => integer(),       % = 3, 32 bits
+        interest                => float() | integer() | infinity | '-infinity' | nan, % = 3
         company                 => iolist(),        % = 4
-        auth                    => 'Authentication'(), % = 5
-        res                     => 'Result'(),      % = 6
-        'not'                   => 'Notification'() % = 7
+        investor                => iolist(),        % = 5
+        auth                    => 'Authentication'(), % = 6
+        res                     => 'Result'()       % = 7
        }.
 
 -type 'Authentication'() ::
@@ -54,18 +54,13 @@
         entity                  => iolist()         % = 2
        }.
 
--type 'Notification'() ::
-      #{status                  => iolist(),        % = 1
-        action                  => iolist()         % = 2
-       }.
+-export_type(['Message'/0, 'Authentication'/0, 'Result'/0]).
 
--export_type(['Message'/0, 'Authentication'/0, 'Result'/0, 'Notification'/0]).
-
--spec encode_msg('Message'() | 'Authentication'() | 'Result'() | 'Notification'(), atom()) -> binary().
+-spec encode_msg('Message'() | 'Authentication'() | 'Result'(), atom()) -> binary().
 encode_msg(Msg, MsgName) when is_atom(MsgName) ->
     encode_msg(Msg, MsgName, []).
 
--spec encode_msg('Message'() | 'Authentication'() | 'Result'() | 'Notification'(), atom(), list()) -> binary().
+-spec encode_msg('Message'() | 'Authentication'() | 'Result'(), atom(), list()) -> binary().
 encode_msg(Msg, MsgName, Opts) ->
     case proplists:get_bool(verify, Opts) of
       true -> verify_msg(Msg, MsgName, Opts);
@@ -79,9 +74,7 @@ encode_msg(Msg, MsgName, Opts) ->
 	  encode_msg_Authentication(id(Msg, TrUserData),
 				    TrUserData);
       'Result' ->
-	  encode_msg_Result(id(Msg, TrUserData), TrUserData);
-      'Notification' ->
-	  encode_msg_Notification(id(Msg, TrUserData), TrUserData)
+	  encode_msg_Result(id(Msg, TrUserData), TrUserData)
     end.
 
 
@@ -110,7 +103,7 @@ encode_msg_Message(#{} = M, Bin, TrUserData) ->
 	   #{interest := F3} ->
 	       begin
 		 TrF3 = id(F3, TrUserData),
-		 e_type_int32(TrF3, <<B2/binary, 24>>, TrUserData)
+		 e_type_float(TrF3, <<B2/binary, 29>>, TrUserData)
 	       end;
 	   _ -> B2
 	 end,
@@ -123,28 +116,27 @@ encode_msg_Message(#{} = M, Bin, TrUserData) ->
 	   _ -> B3
 	 end,
     B5 = case M of
-	   #{auth := F5} ->
+	   #{investor := F5} ->
 	       begin
 		 TrF5 = id(F5, TrUserData),
-		 e_mfield_Message_auth(TrF5, <<B4/binary, 42>>,
-				       TrUserData)
+		 e_type_string(TrF5, <<B4/binary, 42>>, TrUserData)
 	       end;
 	   _ -> B4
 	 end,
     B6 = case M of
-	   #{res := F6} ->
+	   #{auth := F6} ->
 	       begin
 		 TrF6 = id(F6, TrUserData),
-		 e_mfield_Message_res(TrF6, <<B5/binary, 50>>,
-				      TrUserData)
+		 e_mfield_Message_auth(TrF6, <<B5/binary, 50>>,
+				       TrUserData)
 	       end;
 	   _ -> B5
 	 end,
     case M of
-      #{'not' := F7} ->
+      #{res := F7} ->
 	  begin
 	    TrF7 = id(F7, TrUserData),
-	    e_mfield_Message_not(TrF7, <<B6/binary, 58>>,
+	    e_mfield_Message_res(TrF7, <<B6/binary, 58>>,
 				 TrUserData)
 	  end;
       _ -> B6
@@ -194,28 +186,6 @@ encode_msg_Result(#{} = M, Bin, TrUserData) ->
       _ -> B1
     end.
 
-encode_msg_Notification(Msg, TrUserData) ->
-    encode_msg_Notification(Msg, <<>>, TrUserData).
-
-
-encode_msg_Notification(#{} = M, Bin, TrUserData) ->
-    B1 = case M of
-	   #{status := F1} ->
-	       begin
-		 TrF1 = id(F1, TrUserData),
-		 e_type_string(TrF1, <<Bin/binary, 10>>, TrUserData)
-	       end;
-	   _ -> Bin
-	 end,
-    case M of
-      #{action := F2} ->
-	  begin
-	    TrF2 = id(F2, TrUserData),
-	    e_type_string(TrF2, <<B1/binary, 18>>, TrUserData)
-	  end;
-      _ -> B1
-    end.
-
 e_mfield_Message_auth(Msg, Bin, TrUserData) ->
     SubBin = encode_msg_Authentication(Msg, <<>>,
 				       TrUserData),
@@ -224,11 +194,6 @@ e_mfield_Message_auth(Msg, Bin, TrUserData) ->
 
 e_mfield_Message_res(Msg, Bin, TrUserData) ->
     SubBin = encode_msg_Result(Msg, <<>>, TrUserData),
-    Bin2 = e_varint(byte_size(SubBin), Bin),
-    <<Bin2/binary, SubBin/binary>>.
-
-e_mfield_Message_not(Msg, Bin, TrUserData) ->
-    SubBin = encode_msg_Notification(Msg, <<>>, TrUserData),
     Bin2 = e_varint(byte_size(SubBin), Bin),
     <<Bin2/binary, SubBin/binary>>.
 
@@ -352,10 +317,7 @@ decode_msg_2_doit('Authentication', Bin, TrUserData) ->
     id(decode_msg_Authentication(Bin, TrUserData),
        TrUserData);
 decode_msg_2_doit('Result', Bin, TrUserData) ->
-    id(decode_msg_Result(Bin, TrUserData), TrUserData);
-decode_msg_2_doit('Notification', Bin, TrUserData) ->
-    id(decode_msg_Notification(Bin, TrUserData),
-       TrUserData).
+    id(decode_msg_Result(Bin, TrUserData), TrUserData).
 
 
 
@@ -379,7 +341,7 @@ dfp_read_field_def_Message(<<16, Rest/binary>>, Z1, Z2,
 			   TrUserData) ->
     d_field_Message_amount(Rest, Z1, Z2, F@_1, F@_2, F@_3,
 			   F@_4, F@_5, F@_6, F@_7, TrUserData);
-dfp_read_field_def_Message(<<24, Rest/binary>>, Z1, Z2,
+dfp_read_field_def_Message(<<29, Rest/binary>>, Z1, Z2,
 			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
 			   TrUserData) ->
     d_field_Message_interest(Rest, Z1, Z2, F@_1, F@_2, F@_3,
@@ -392,17 +354,17 @@ dfp_read_field_def_Message(<<34, Rest/binary>>, Z1, Z2,
 dfp_read_field_def_Message(<<42, Rest/binary>>, Z1, Z2,
 			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
 			   TrUserData) ->
-    d_field_Message_auth(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			 F@_4, F@_5, F@_6, F@_7, TrUserData);
+    d_field_Message_investor(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			     F@_4, F@_5, F@_6, F@_7, TrUserData);
 dfp_read_field_def_Message(<<50, Rest/binary>>, Z1, Z2,
 			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
 			   TrUserData) ->
-    d_field_Message_res(Rest, Z1, Z2, F@_1, F@_2, F@_3,
-			F@_4, F@_5, F@_6, F@_7, TrUserData);
+    d_field_Message_auth(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+			 F@_4, F@_5, F@_6, F@_7, TrUserData);
 dfp_read_field_def_Message(<<58, Rest/binary>>, Z1, Z2,
 			   F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
 			   TrUserData) ->
-    d_field_Message_not(Rest, Z1, Z2, F@_1, F@_2, F@_3,
+    d_field_Message_res(Rest, Z1, Z2, F@_1, F@_2, F@_3,
 			F@_4, F@_5, F@_6, F@_7, TrUserData);
 dfp_read_field_def_Message(<<>>, 0, 0, F@_1, F@_2, F@_3,
 			   F@_4, F@_5, F@_6, F@_7, _) ->
@@ -420,13 +382,13 @@ dfp_read_field_def_Message(<<>>, 0, 0, F@_1, F@_2, F@_3,
 	    true -> S4#{company => F@_4}
 	 end,
     S6 = if F@_5 == '$undef' -> S5;
-	    true -> S5#{auth => F@_5}
+	    true -> S5#{investor => F@_5}
 	 end,
     S7 = if F@_6 == '$undef' -> S6;
-	    true -> S6#{res => F@_6}
+	    true -> S6#{auth => F@_6}
 	 end,
     if F@_7 == '$undef' -> S7;
-       true -> S7#{'not' => F@_7}
+       true -> S7#{res => F@_7}
     end;
 dfp_read_field_def_Message(Other, Z1, Z2, F@_1, F@_2,
 			   F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData) ->
@@ -451,20 +413,20 @@ dg_read_field_def_Message(<<0:1, X:7, Rest/binary>>, N,
       16 ->
 	  d_field_Message_amount(Rest, 0, 0, F@_1, F@_2, F@_3,
 				 F@_4, F@_5, F@_6, F@_7, TrUserData);
-      24 ->
+      29 ->
 	  d_field_Message_interest(Rest, 0, 0, F@_1, F@_2, F@_3,
 				   F@_4, F@_5, F@_6, F@_7, TrUserData);
       34 ->
 	  d_field_Message_company(Rest, 0, 0, F@_1, F@_2, F@_3,
 				  F@_4, F@_5, F@_6, F@_7, TrUserData);
       42 ->
+	  d_field_Message_investor(Rest, 0, 0, F@_1, F@_2, F@_3,
+				   F@_4, F@_5, F@_6, F@_7, TrUserData);
+      50 ->
 	  d_field_Message_auth(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
 			       F@_5, F@_6, F@_7, TrUserData);
-      50 ->
-	  d_field_Message_res(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
-			      F@_5, F@_6, F@_7, TrUserData);
       58 ->
-	  d_field_Message_not(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
+	  d_field_Message_res(Rest, 0, 0, F@_1, F@_2, F@_3, F@_4,
 			      F@_5, F@_6, F@_7, TrUserData);
       _ ->
 	  case Key band 7 of
@@ -502,13 +464,13 @@ dg_read_field_def_Message(<<>>, 0, 0, F@_1, F@_2, F@_3,
 	    true -> S4#{company => F@_4}
 	 end,
     S6 = if F@_5 == '$undef' -> S5;
-	    true -> S5#{auth => F@_5}
+	    true -> S5#{investor => F@_5}
 	 end,
     S7 = if F@_6 == '$undef' -> S6;
-	    true -> S6#{res => F@_6}
+	    true -> S6#{auth => F@_6}
 	 end,
     if F@_7 == '$undef' -> S7;
-       true -> S7#{'not' => F@_7}
+       true -> S7#{res => F@_7}
     end.
 
 d_field_Message_type(<<1:1, X:7, Rest/binary>>, N, Acc,
@@ -546,24 +508,34 @@ d_field_Message_amount(<<0:1, X:7, Rest/binary>>, N,
     dfp_read_field_def_Message(RestF, 0, 0, F@_1, NewFValue,
 			       F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData).
 
-d_field_Message_interest(<<1:1, X:7, Rest/binary>>, N,
-			 Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			 TrUserData)
-    when N < 57 ->
-    d_field_Message_interest(Rest, N + 7, X bsl N + Acc,
-			     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
-			     TrUserData);
-d_field_Message_interest(<<0:1, X:7, Rest/binary>>, N,
-			 Acc, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
+d_field_Message_interest(<<0:16, 128, 127,
+			   Rest/binary>>,
+			 Z1, Z2, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
 			 TrUserData) ->
-    {NewFValue, RestF} = {begin
-			    <<Res:32/signed-native>> = <<(X bsl N +
-							    Acc):32/unsigned-native>>,
-			    id(Res, TrUserData)
-			  end,
-			  Rest},
-    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
-			       NewFValue, F@_4, F@_5, F@_6, F@_7, TrUserData).
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       id(infinity, TrUserData), F@_4, F@_5, F@_6, F@_7,
+			       TrUserData);
+d_field_Message_interest(<<0:16, 128, 255,
+			   Rest/binary>>,
+			 Z1, Z2, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       id('-infinity', TrUserData), F@_4, F@_5, F@_6,
+			       F@_7, TrUserData);
+d_field_Message_interest(<<_:16, 1:1, _:7, _:1, 127:7,
+			   Rest/binary>>,
+			 Z1, Z2, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       id(nan, TrUserData), F@_4, F@_5, F@_6, F@_7,
+			       TrUserData);
+d_field_Message_interest(<<Value:32/little-float,
+			   Rest/binary>>,
+			 Z1, Z2, F@_1, F@_2, _, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData) ->
+    dfp_read_field_def_Message(Rest, Z1, Z2, F@_1, F@_2,
+			       id(Value, TrUserData), F@_4, F@_5, F@_6, F@_7,
+			       TrUserData).
 
 d_field_Message_company(<<1:1, X:7, Rest/binary>>, N,
 			Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
@@ -585,13 +557,33 @@ d_field_Message_company(<<0:1, X:7, Rest/binary>>, N,
     dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
 			       F@_3, NewFValue, F@_5, F@_6, F@_7, TrUserData).
 
+d_field_Message_investor(<<1:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			 TrUserData)
+    when N < 57 ->
+    d_field_Message_investor(Rest, N + 7, X bsl N + Acc,
+			     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7,
+			     TrUserData);
+d_field_Message_investor(<<0:1, X:7, Rest/binary>>, N,
+			 Acc, F@_1, F@_2, F@_3, F@_4, _, F@_6, F@_7,
+			 TrUserData) ->
+    {NewFValue, RestF} = begin
+			   Len = X bsl N + Acc,
+			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
+			   {id(unicode:characters_to_list(Utf8, unicode),
+			       TrUserData),
+			    Rest2}
+			 end,
+    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
+			       F@_3, F@_4, NewFValue, F@_6, F@_7, TrUserData).
+
 d_field_Message_auth(<<1:1, X:7, Rest/binary>>, N, Acc,
 		     F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
     when N < 57 ->
     d_field_Message_auth(Rest, N + 7, X bsl N + Acc, F@_1,
 			 F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
 d_field_Message_auth(<<0:1, X:7, Rest/binary>>, N, Acc,
-		     F@_1, F@_2, F@_3, F@_4, Prev, F@_6, F@_7, TrUserData) ->
+		     F@_1, F@_2, F@_3, F@_4, F@_5, Prev, F@_7, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -600,13 +592,13 @@ d_field_Message_auth(<<0:1, X:7, Rest/binary>>, N, Acc,
 			    Rest2}
 			 end,
     dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
-			       F@_3, F@_4,
+			       F@_3, F@_4, F@_5,
 			       if Prev == '$undef' -> NewFValue;
 				  true ->
 				      merge_msg_Authentication(Prev, NewFValue,
 							       TrUserData)
 			       end,
-			       F@_6, F@_7, TrUserData).
+			       F@_7, TrUserData).
 
 d_field_Message_res(<<1:1, X:7, Rest/binary>>, N, Acc,
 		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
@@ -614,7 +606,7 @@ d_field_Message_res(<<1:1, X:7, Rest/binary>>, N, Acc,
     d_field_Message_res(Rest, N + 7, X bsl N + Acc, F@_1,
 			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
 d_field_Message_res(<<0:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, F@_3, F@_4, F@_5, Prev, F@_7, TrUserData) ->
+		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, Prev, TrUserData) ->
     {NewFValue, RestF} = begin
 			   Len = X bsl N + Acc,
 			   <<Bs:Len/binary, Rest2/binary>> = Rest,
@@ -622,34 +614,11 @@ d_field_Message_res(<<0:1, X:7, Rest/binary>>, N, Acc,
 			    Rest2}
 			 end,
     dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
-			       F@_3, F@_4, F@_5,
+			       F@_3, F@_4, F@_5, F@_6,
 			       if Prev == '$undef' -> NewFValue;
 				  true ->
 				      merge_msg_Result(Prev, NewFValue,
 						       TrUserData)
-			       end,
-			       F@_7, TrUserData).
-
-d_field_Message_not(<<1:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData)
-    when N < 57 ->
-    d_field_Message_not(Rest, N + 7, X bsl N + Acc, F@_1,
-			F@_2, F@_3, F@_4, F@_5, F@_6, F@_7, TrUserData);
-d_field_Message_not(<<0:1, X:7, Rest/binary>>, N, Acc,
-		    F@_1, F@_2, F@_3, F@_4, F@_5, F@_6, Prev, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Bs:Len/binary, Rest2/binary>> = Rest,
-			   {id(decode_msg_Notification(Bs, TrUserData),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Message(RestF, 0, 0, F@_1, F@_2,
-			       F@_3, F@_4, F@_5, F@_6,
-			       if Prev == '$undef' -> NewFValue;
-				  true ->
-				      merge_msg_Notification(Prev, NewFValue,
-							     TrUserData)
 			       end,
 			       TrUserData).
 
@@ -974,151 +943,6 @@ skip_64_Result(<<_:64, Rest/binary>>, Z1, Z2, F@_1,
     dfp_read_field_def_Result(Rest, Z1, Z2, F@_1, F@_2,
 			      TrUserData).
 
-decode_msg_Notification(Bin, TrUserData) ->
-    dfp_read_field_def_Notification(Bin, 0, 0,
-				    id('$undef', TrUserData),
-				    id('$undef', TrUserData), TrUserData).
-
-dfp_read_field_def_Notification(<<10, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, TrUserData) ->
-    d_field_Notification_status(Rest, Z1, Z2, F@_1, F@_2,
-				TrUserData);
-dfp_read_field_def_Notification(<<18, Rest/binary>>, Z1,
-				Z2, F@_1, F@_2, TrUserData) ->
-    d_field_Notification_action(Rest, Z1, Z2, F@_1, F@_2,
-				TrUserData);
-dfp_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
-				_) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{status => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{action => F@_2}
-    end;
-dfp_read_field_def_Notification(Other, Z1, Z2, F@_1,
-				F@_2, TrUserData) ->
-    dg_read_field_def_Notification(Other, Z1, Z2, F@_1,
-				   F@_2, TrUserData).
-
-dg_read_field_def_Notification(<<1:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, TrUserData)
-    when N < 32 - 7 ->
-    dg_read_field_def_Notification(Rest, N + 7,
-				   X bsl N + Acc, F@_1, F@_2, TrUserData);
-dg_read_field_def_Notification(<<0:1, X:7,
-				 Rest/binary>>,
-			       N, Acc, F@_1, F@_2, TrUserData) ->
-    Key = X bsl N + Acc,
-    case Key of
-      10 ->
-	  d_field_Notification_status(Rest, 0, 0, F@_1, F@_2,
-				      TrUserData);
-      18 ->
-	  d_field_Notification_action(Rest, 0, 0, F@_1, F@_2,
-				      TrUserData);
-      _ ->
-	  case Key band 7 of
-	    0 ->
-		skip_varint_Notification(Rest, 0, 0, F@_1, F@_2,
-					 TrUserData);
-	    1 ->
-		skip_64_Notification(Rest, 0, 0, F@_1, F@_2,
-				     TrUserData);
-	    2 ->
-		skip_length_delimited_Notification(Rest, 0, 0, F@_1,
-						   F@_2, TrUserData);
-	    3 ->
-		skip_group_Notification(Rest, Key bsr 3, 0, F@_1, F@_2,
-					TrUserData);
-	    5 ->
-		skip_32_Notification(Rest, 0, 0, F@_1, F@_2, TrUserData)
-	  end
-    end;
-dg_read_field_def_Notification(<<>>, 0, 0, F@_1, F@_2,
-			       _) ->
-    S1 = #{},
-    S2 = if F@_1 == '$undef' -> S1;
-	    true -> S1#{status => F@_1}
-	 end,
-    if F@_2 == '$undef' -> S2;
-       true -> S2#{action => F@_2}
-    end.
-
-d_field_Notification_status(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Notification_status(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, TrUserData);
-d_field_Notification_status(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, _, F@_2, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {id(unicode:characters_to_list(Utf8, unicode),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Notification(RestF, 0, 0, NewFValue,
-				    F@_2, TrUserData).
-
-d_field_Notification_action(<<1:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    d_field_Notification_action(Rest, N + 7, X bsl N + Acc,
-				F@_1, F@_2, TrUserData);
-d_field_Notification_action(<<0:1, X:7, Rest/binary>>,
-			    N, Acc, F@_1, _, TrUserData) ->
-    {NewFValue, RestF} = begin
-			   Len = X bsl N + Acc,
-			   <<Utf8:Len/binary, Rest2/binary>> = Rest,
-			   {id(unicode:characters_to_list(Utf8, unicode),
-			       TrUserData),
-			    Rest2}
-			 end,
-    dfp_read_field_def_Notification(RestF, 0, 0, F@_1,
-				    NewFValue, TrUserData).
-
-skip_varint_Notification(<<1:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, TrUserData) ->
-    skip_varint_Notification(Rest, Z1, Z2, F@_1, F@_2,
-			     TrUserData);
-skip_varint_Notification(<<0:1, _:7, Rest/binary>>, Z1,
-			 Z2, F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
-skip_length_delimited_Notification(<<1:1, X:7,
-				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, TrUserData)
-    when N < 57 ->
-    skip_length_delimited_Notification(Rest, N + 7,
-				       X bsl N + Acc, F@_1, F@_2, TrUserData);
-skip_length_delimited_Notification(<<0:1, X:7,
-				     Rest/binary>>,
-				   N, Acc, F@_1, F@_2, TrUserData) ->
-    Length = X bsl N + Acc,
-    <<_:Length/binary, Rest2/binary>> = Rest,
-    dfp_read_field_def_Notification(Rest2, 0, 0, F@_1, F@_2,
-				    TrUserData).
-
-skip_group_Notification(Bin, FNum, Z2, F@_1, F@_2,
-			TrUserData) ->
-    {_, Rest} = read_group(Bin, FNum),
-    dfp_read_field_def_Notification(Rest, 0, Z2, F@_1, F@_2,
-				    TrUserData).
-
-skip_32_Notification(<<_:32, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
-skip_64_Notification(<<_:64, Rest/binary>>, Z1, Z2,
-		     F@_1, F@_2, TrUserData) ->
-    dfp_read_field_def_Notification(Rest, Z1, Z2, F@_1,
-				    F@_2, TrUserData).
-
 read_group(Bin, FieldNum) ->
     {NumBytes, EndTagLen} = read_gr_b(Bin, 0, 0, 0, 0, FieldNum),
     <<Group:NumBytes/binary, _:EndTagLen/binary, Rest/binary>> = Bin,
@@ -1186,9 +1010,7 @@ merge_msgs(Prev, New, MsgName, Opts) ->
       'Message' -> merge_msg_Message(Prev, New, TrUserData);
       'Authentication' ->
 	  merge_msg_Authentication(Prev, New, TrUserData);
-      'Result' -> merge_msg_Result(Prev, New, TrUserData);
-      'Notification' ->
-	  merge_msg_Notification(Prev, New, TrUserData)
+      'Result' -> merge_msg_Result(Prev, New, TrUserData)
     end.
 
 -compile({nowarn_unused_function,merge_msg_Message/3}).
@@ -1219,26 +1041,25 @@ merge_msg_Message(PMsg, NMsg, TrUserData) ->
 	   _ -> S4
 	 end,
     S6 = case {PMsg, NMsg} of
-	   {#{auth := PFauth}, #{auth := NFauth}} ->
-	       S5#{auth =>
-		       merge_msg_Authentication(PFauth, NFauth, TrUserData)};
-	   {_, #{auth := NFauth}} -> S5#{auth => NFauth};
-	   {#{auth := PFauth}, _} -> S5#{auth => PFauth};
-	   {_, _} -> S5
+	   {_, #{investor := NFinvestor}} ->
+	       S5#{investor => NFinvestor};
+	   {#{investor := PFinvestor}, _} ->
+	       S5#{investor => PFinvestor};
+	   _ -> S5
 	 end,
     S7 = case {PMsg, NMsg} of
-	   {#{res := PFres}, #{res := NFres}} ->
-	       S6#{res => merge_msg_Result(PFres, NFres, TrUserData)};
-	   {_, #{res := NFres}} -> S6#{res => NFres};
-	   {#{res := PFres}, _} -> S6#{res => PFres};
+	   {#{auth := PFauth}, #{auth := NFauth}} ->
+	       S6#{auth =>
+		       merge_msg_Authentication(PFauth, NFauth, TrUserData)};
+	   {_, #{auth := NFauth}} -> S6#{auth => NFauth};
+	   {#{auth := PFauth}, _} -> S6#{auth => PFauth};
 	   {_, _} -> S6
 	 end,
     case {PMsg, NMsg} of
-      {#{'not' := PFnot}, #{'not' := NFnot}} ->
-	  S7#{'not' =>
-		  merge_msg_Notification(PFnot, NFnot, TrUserData)};
-      {_, #{'not' := NFnot}} -> S7#{'not' => NFnot};
-      {#{'not' := PFnot}, _} -> S7#{'not' => PFnot};
+      {#{res := PFres}, #{res := NFres}} ->
+	  S7#{res => merge_msg_Result(PFres, NFres, TrUserData)};
+      {_, #{res := NFres}} -> S7#{res => NFres};
+      {#{res := PFres}, _} -> S7#{res => PFres};
       {_, _} -> S7
     end.
 
@@ -1274,20 +1095,6 @@ merge_msg_Result(PMsg, NMsg, _) ->
       _ -> S2
     end.
 
--compile({nowarn_unused_function,merge_msg_Notification/3}).
-merge_msg_Notification(PMsg, NMsg, _) ->
-    S1 = #{},
-    S2 = case {PMsg, NMsg} of
-	   {_, #{status := NFstatus}} -> S1#{status => NFstatus};
-	   {#{status := PFstatus}, _} -> S1#{status => PFstatus};
-	   _ -> S1
-	 end,
-    case {PMsg, NMsg} of
-      {_, #{action := NFaction}} -> S2#{action => NFaction};
-      {#{action := PFaction}, _} -> S2#{action => PFaction};
-      _ -> S2
-    end.
-
 
 verify_msg(Msg, MsgName) when is_atom(MsgName) ->
     verify_msg(Msg, MsgName, []).
@@ -1299,8 +1106,6 @@ verify_msg(Msg, MsgName, Opts) ->
       'Authentication' ->
 	  v_msg_Authentication(Msg, [MsgName], TrUserData);
       'Result' -> v_msg_Result(Msg, [MsgName], TrUserData);
-      'Notification' ->
-	  v_msg_Notification(Msg, [MsgName], TrUserData);
       _ -> mk_type_error(not_a_known_message, Msg, [])
     end.
 
@@ -1320,7 +1125,7 @@ v_msg_Message(#{} = M, Path, TrUserData) ->
     end,
     case M of
       #{interest := F3} ->
-	  v_type_int32(F3, [interest | Path], TrUserData);
+	  v_type_float(F3, [interest | Path], TrUserData);
       _ -> ok
     end,
     case M of
@@ -1329,27 +1134,27 @@ v_msg_Message(#{} = M, Path, TrUserData) ->
       _ -> ok
     end,
     case M of
-      #{auth := F5} ->
-	  v_msg_Authentication(F5, [auth | Path], TrUserData);
+      #{investor := F5} ->
+	  v_type_string(F5, [investor | Path], TrUserData);
       _ -> ok
     end,
     case M of
-      #{res := F6} ->
-	  v_msg_Result(F6, [res | Path], TrUserData);
+      #{auth := F6} ->
+	  v_msg_Authentication(F6, [auth | Path], TrUserData);
       _ -> ok
     end,
     case M of
-      #{'not' := F7} ->
-	  v_msg_Notification(F7, ['not' | Path], TrUserData);
+      #{res := F7} ->
+	  v_msg_Result(F7, [res | Path], TrUserData);
       _ -> ok
     end,
     lists:foreach(fun (type) -> ok;
 		      (amount) -> ok;
 		      (interest) -> ok;
 		      (company) -> ok;
+		      (investor) -> ok;
 		      (auth) -> ok;
 		      (res) -> ok;
-		      ('not') -> ok;
 		      (OtherKey) ->
 			  mk_type_error({extraneous_key, OtherKey}, M, Path)
 		  end,
@@ -1418,34 +1223,6 @@ v_msg_Result(M, Path, _TrUserData) when is_map(M) ->
 v_msg_Result(X, Path, _TrUserData) ->
     mk_type_error({expected_msg, 'Result'}, X, Path).
 
--compile({nowarn_unused_function,v_msg_Notification/3}).
--dialyzer({nowarn_function,v_msg_Notification/3}).
-v_msg_Notification(#{} = M, Path, TrUserData) ->
-    case M of
-      #{status := F1} ->
-	  v_type_string(F1, [status | Path], TrUserData);
-      _ -> ok
-    end,
-    case M of
-      #{action := F2} ->
-	  v_type_string(F2, [action | Path], TrUserData);
-      _ -> ok
-    end,
-    lists:foreach(fun (status) -> ok;
-		      (action) -> ok;
-		      (OtherKey) ->
-			  mk_type_error({extraneous_key, OtherKey}, M, Path)
-		  end,
-		  maps:keys(M)),
-    ok;
-v_msg_Notification(M, Path, _TrUserData)
-    when is_map(M) ->
-    mk_type_error({missing_fields, [] -- maps:keys(M),
-		   'Notification'},
-		  M, Path);
-v_msg_Notification(X, Path, _TrUserData) ->
-    mk_type_error({expected_msg, 'Notification'}, X, Path).
-
 -compile({nowarn_unused_function,v_type_int32/3}).
 -dialyzer({nowarn_function,v_type_int32/3}).
 v_type_int32(N, _Path, _TrUserData)
@@ -1466,6 +1243,19 @@ v_type_bool(0, _Path, _TrUserData) -> ok;
 v_type_bool(1, _Path, _TrUserData) -> ok;
 v_type_bool(X, Path, _TrUserData) ->
     mk_type_error(bad_boolean_value, X, Path).
+
+-compile({nowarn_unused_function,v_type_float/3}).
+-dialyzer({nowarn_function,v_type_float/3}).
+v_type_float(N, _Path, _TrUserData) when is_float(N) ->
+    ok;
+v_type_float(N, _Path, _TrUserData)
+    when is_integer(N) ->
+    ok;
+v_type_float(infinity, _Path, _TrUserData) -> ok;
+v_type_float('-infinity', _Path, _TrUserData) -> ok;
+v_type_float(nan, _Path, _TrUserData) -> ok;
+v_type_float(X, Path, _TrUserData) ->
+    mk_type_error(bad_float_value, X, Path).
 
 -compile({nowarn_unused_function,v_type_string/3}).
 -dialyzer({nowarn_function,v_type_string/3}).
@@ -1528,18 +1318,17 @@ get_msg_defs() ->
 	 occurrence => optional, opts => []},
        #{name => amount, fnum => 2, rnum => 3, type => int32,
 	 occurrence => optional, opts => []},
-       #{name => interest, fnum => 3, rnum => 4, type => int32,
+       #{name => interest, fnum => 3, rnum => 4, type => float,
 	 occurrence => optional, opts => []},
        #{name => company, fnum => 4, rnum => 5, type => string,
 	 occurrence => optional, opts => []},
-       #{name => auth, fnum => 5, rnum => 6,
+       #{name => investor, fnum => 5, rnum => 6,
+	 type => string, occurrence => optional, opts => []},
+       #{name => auth, fnum => 6, rnum => 7,
 	 type => {msg, 'Authentication'}, occurrence => optional,
 	 opts => []},
-       #{name => res, fnum => 6, rnum => 7,
+       #{name => res, fnum => 7, rnum => 8,
 	 type => {msg, 'Result'}, occurrence => optional,
-	 opts => []},
-       #{name => 'not', fnum => 7, rnum => 8,
-	 type => {msg, 'Notification'}, occurrence => optional,
 	 opts => []}]},
      {{msg, 'Authentication'},
       [#{name => username, fnum => 1, rnum => 2,
@@ -1550,23 +1339,18 @@ get_msg_defs() ->
       [#{name => result, fnum => 1, rnum => 2, type => bool,
 	 occurrence => optional, opts => []},
        #{name => entity, fnum => 2, rnum => 3, type => string,
-	 occurrence => optional, opts => []}]},
-     {{msg, 'Notification'},
-      [#{name => status, fnum => 1, rnum => 2, type => string,
-	 occurrence => optional, opts => []},
-       #{name => action, fnum => 2, rnum => 3, type => string,
 	 occurrence => optional, opts => []}]}].
 
 
 get_msg_names() ->
-    ['Message', 'Authentication', 'Result', 'Notification'].
+    ['Message', 'Authentication', 'Result'].
 
 
 get_group_names() -> [].
 
 
 get_msg_or_group_names() ->
-    ['Message', 'Authentication', 'Result', 'Notification'].
+    ['Message', 'Authentication', 'Result'].
 
 
 get_enum_names() -> [].
@@ -1589,18 +1373,17 @@ find_msg_def('Message') ->
        occurrence => optional, opts => []},
      #{name => amount, fnum => 2, rnum => 3, type => int32,
        occurrence => optional, opts => []},
-     #{name => interest, fnum => 3, rnum => 4, type => int32,
+     #{name => interest, fnum => 3, rnum => 4, type => float,
        occurrence => optional, opts => []},
      #{name => company, fnum => 4, rnum => 5, type => string,
        occurrence => optional, opts => []},
-     #{name => auth, fnum => 5, rnum => 6,
+     #{name => investor, fnum => 5, rnum => 6,
+       type => string, occurrence => optional, opts => []},
+     #{name => auth, fnum => 6, rnum => 7,
        type => {msg, 'Authentication'}, occurrence => optional,
        opts => []},
-     #{name => res, fnum => 6, rnum => 7,
+     #{name => res, fnum => 7, rnum => 8,
        type => {msg, 'Result'}, occurrence => optional,
-       opts => []},
-     #{name => 'not', fnum => 7, rnum => 8,
-       type => {msg, 'Notification'}, occurrence => optional,
        opts => []}];
 find_msg_def('Authentication') ->
     [#{name => username, fnum => 1, rnum => 2,
@@ -1611,11 +1394,6 @@ find_msg_def('Result') ->
     [#{name => result, fnum => 1, rnum => 2, type => bool,
        occurrence => optional, opts => []},
      #{name => entity, fnum => 2, rnum => 3, type => string,
-       occurrence => optional, opts => []}];
-find_msg_def('Notification') ->
-    [#{name => status, fnum => 1, rnum => 2, type => string,
-       occurrence => optional, opts => []},
-     #{name => action, fnum => 2, rnum => 3, type => string,
        occurrence => optional, opts => []}];
 find_msg_def(_) -> error.
 

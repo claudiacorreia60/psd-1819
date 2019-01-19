@@ -6,15 +6,16 @@ import peerLending.Emission;
 import java.util.Map;
 
 public class EmissionRepresentation {
-    private int id;
-    private int amount;
-    private float interest;
-    private Map<String, Integer> subscriptions;
-    private String company;
+    public int id;
+    public String company;
+    public int amount;
+    public float interest;
+    public Map<String, Integer> subscriptions;
 
     @JsonCreator
-    public EmissionRepresentation(@JsonProperty("id") int id, @JsonProperty("amount") int amount, @JsonProperty("interest") float interest, @JsonProperty("subscriptions")  Map<String, Integer> subscriptions, @JsonProperty("company")  String company) {
+    public EmissionRepresentation(@JsonProperty("id") int id, @JsonProperty("company")  String company, @JsonProperty("amount") int amount, @JsonProperty("interest") float interest, @JsonProperty("subscriptions")  Map<String, Integer> subscriptions) {
         this.id = id;
+        this.company = company;
         this.amount = amount;
         this.interest = interest;
         this.subscriptions = subscriptions;
@@ -22,10 +23,6 @@ public class EmissionRepresentation {
     }
 
     public Emission build(){
-        return new Emission(this.id, this.amount, this.interest, this.subscriptions);
-    }
-
-    public String getCompany() {
-        return company;
+        return new Emission(this.id, this.company, this.amount, this.interest, this.subscriptions);
     }
 }
