@@ -58,7 +58,7 @@ notification_broker_proxy(Frontend, Backend) ->
     case erlzmq:recv(Frontend) of
         {ok, RecvMessage} ->
             io:format("Recv message: ~p\n", [RecvMessage]),
-            erlzmq:send(Backend, Data),
+            erlzmq:send(Backend, RecvMessage),
             notification_broker_proxy(Frontend, Backend);
         {error, RecvReason} ->
             io:format("Failed to recv, reason: ~p\n", [RecvReason])
