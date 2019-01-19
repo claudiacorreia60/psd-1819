@@ -1,16 +1,14 @@
 package peerLending;
 
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Company {
     private String username;
     private Map<Integer, Auction> auctionHistory; // auctions that are over
     private Map<Integer, Emission> emissionHistory; // emissions that are over
-
-
-    // TODO: Pensar no caso em que o cliente vai abaixo antes das notificações serem guardadas?
 
     public Company(String username) {
         this.username = username;

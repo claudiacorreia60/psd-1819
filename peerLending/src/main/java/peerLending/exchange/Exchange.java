@@ -12,7 +12,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.zeromq.ZMQ;
 import peerLending.*;
-import java.io.*;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -353,8 +354,7 @@ public class Exchange implements Runnable{
     public static void main (String[] args) throws IOException {
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket socket = context.socket(ZMQ.PUB);
-        /* TODO: Verificar este endereço */
-        socket.bind("tcp://localhost:6651");
+        socket.bind("tcp://localhost:6661");
         Publisher publisher = new Publisher(context, socket);
         Exchange e1 = new Exchange(5551, 1, publisher);
         Exchange e2 = new Exchange(5552, 2, publisher);

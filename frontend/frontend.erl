@@ -48,21 +48,21 @@ server(Investidores, Empresas, Enderecos) ->
 
 notification_broker() ->
     {ok, Context} = erlzmq:context(),
-    {ok, Frontend} = erlzmq:socket(Context, [xsub, {active, false}]),
-    {ok, Backend} = erlzmq:socket(Context, [xpub, {active, false}]),
-    erlzmq:bind(Frontend,"tcp://localhost:6661"),
-    erlzmq:bind(Backend,"tcp://localhost:6662"),
+    {ok, Frontend} = erlzmq:socket(Context, [sub, {active, false}]),
+    {ok, Backend} = erlzmq:socket(Context, [pub, {active, false}]),
+    erlzmq:connect(Frontend,"tcp://localhost:6661"),
+    erlzmq:bind(Backend,"tcp://*:6662"),
+    ok = erlzmq:setsockopt(Frontend, subscribe, <<>>),
     notification_broker_proxy(Frontend, Backend).
 
 notification_broker_proxy(Frontend, Backend) ->
-    case erlzmq:recv(Frontend) of
-        {ok, RecvMessage} ->
-            io:format("Recv notification: ~p\n", [RecvMessage]),
-            erlzmq:send(Backend, RecvMessage),
-            notification_broker_proxy(Frontend, Backend);
-        {error, RecvReason} ->
-            io:format("Failed to recv, reason: ~p\n", [RecvReason])
-    end.
+    {ok, Msg} = erlzmq:recv(Frontend),
+    io:fwrite("Recebi notificação\n"),
+    case erlzmq:getsockopt(Frontend, rcvmore) of
+        {ok, true} -> erlzmq:send(Backend, Msg, [sndmore]);
+        {ok, _} -> erlzmq:send(Backend, Msg)
+    end,
+    notification_broker_proxy(Frontend, Backend).
 
 client_acceptor(LSock, Investidores, Empresas, Enderecos) ->
     {ok, Sock} = gen_tcp:accept(LSock),

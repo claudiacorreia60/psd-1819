@@ -2,6 +2,7 @@ package peerLending.client;
 
 import org.zeromq.ZMQ;
 import peerLending.ClientProtos;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -85,7 +86,6 @@ public class Client {
         Boolean stop = false;
         boolean result = res.getResult();
         String entity = res.getEntity();
-        //System.out.println("RESULT: "+result+"\nENTITY: "+entity);
         if (!result)
             System.out.println("ERROR: Authentication failed!");
         else {
@@ -94,10 +94,6 @@ public class Client {
             Subscriber sub = new Subscriber(context, this.subscriber, stop);
             Thread t = new Thread(sub);
             t.start();
-            /* TODO: Ir buscar as notificações ativas às exchanges
-                 Fazer enable dessas notificações */
-            //enableNotifications("auction", enabledNotifications.get("auction"));
-            //enableNotifications("emission", enabledNotifications.get("emission"));
 
             if (entity.equals("investor")) {
                 handleInvestor();

@@ -5,14 +5,10 @@ public class Investor {
     private String username;
     private String password;
 
-
-    // TODO: Pensar no caso em que o cliente vai abaixo antes das notificações serem guardadas?
-
     public Investor(String username, String password) {
         this.username = username;
         this.password = password;
     }
-
 
     public String getUsername() {
         return username;

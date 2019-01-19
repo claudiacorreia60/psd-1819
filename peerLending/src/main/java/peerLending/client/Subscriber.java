@@ -16,8 +16,7 @@ public class Subscriber implements Runnable {
     }
 
     public void run() {
-        /* TODO: Verificar este endereço */
-        this.subscriber.connect("tcp://localhost:6651");
+        this.subscriber.connect("tcp://localhost:6662");
 
         try {
             while (!stop) {
