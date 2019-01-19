@@ -354,7 +354,7 @@ public class Exchange implements Runnable{
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket socket = context.socket(ZMQ.PUB);
         /* TODO: Verificar este endereço */
-        socket.connect("tcp://localhost:6661");
+        socket.bind("tcp://localhost:6651");
         Publisher publisher = new Publisher(context, socket);
         Exchange e1 = new Exchange(5551, 1, publisher);
         Exchange e2 = new Exchange(5552, 2, publisher);

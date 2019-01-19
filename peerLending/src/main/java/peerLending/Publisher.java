@@ -13,7 +13,8 @@ public class Publisher {
         this.publisher = publisher;
     }
 
-    public void sendNotification (String notification) {
+    public synchronized void sendNotification (String notification) {
+        System.out.println("Notification sent: " + notification);
         this.publisher.send(notification);
     }
 }

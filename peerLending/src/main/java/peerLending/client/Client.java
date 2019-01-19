@@ -4,10 +4,7 @@ import org.zeromq.ZMQ;
 import peerLending.ClientProtos;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Client {
@@ -34,6 +31,8 @@ public class Client {
         this.in = this.socket.getInputStream();
         this.out = this.socket.getOutputStream();
         this.reader = new BufferedReader(new InputStreamReader(System.in));
+
+        this.enabledNotifications = new HashMap<String, List<String>>();
     }
 
     public String getUsername() {
@@ -62,8 +61,6 @@ public class Client {
 
 
     public void startClient() throws IOException {
-        Thread t = null;
-
         System.out.println("\n################ LOGIN ################");
         System.out.print("\n> Username: ");
         this.username = this.reader.readLine();
@@ -95,7 +92,7 @@ public class Client {
             ZMQ.Context context = ZMQ.context(1);
             this.subscriber = context.socket(ZMQ.SUB);
             Subscriber sub = new Subscriber(context, this.subscriber, stop);
-            t = new Thread(sub);
+            Thread t = new Thread(sub);
             t.start();
             /* TODO: Ir buscar as notificações ativas às exchanges
                  Fazer enable dessas notificações */
@@ -111,6 +108,7 @@ public class Client {
         }
 
         stop = true;
+        this.subscriber.close();
     }
 
 
@@ -331,33 +329,36 @@ public class Client {
             status = "start";
         else
             status = "cancel";
-        int size = 0;
+        int size = this.enabledNotifications.size();
         List<String> companies = new ArrayList<String>();
-        while (size > 10) {
+        if (size <= 10) {
             System.out.print("\nInsert companies (separated by a comma, max. 10): ");
             companies = Arrays.asList(this.reader.readLine().split(","));
-            size = companies.size();
+            size += companies.size();
             if (size > 10) {
                 System.out.println("\nERROR: Max number of companies exceeded.");
+            } else {
+                this.enabledNotifications.put(action, companies);
             }
         }
+        else {
+            System.out.println("Limit of notifications reached!");
+        }
+
+        boolean result = true;
         for (String company : companies) {
             if (status.equals("start")) {
-                enableNotification("End"+action, company);
-                enableNotification("Create"+action, company);
-                enableNotification("Bid"+action, company);
+                result = result && enableNotification("End"+action, company);
+                result = result && enableNotification("Create"+action, company);
+                result = result && enableNotification("Bid"+action, company);
             }
             else {
-                disableNotification("End"+action, company);
-                disableNotification("Create"+action, company);
-                disableNotification("Bid"+action, company);
+                result = result && disableNotification("End"+action, company);
+                result = result && disableNotification("Create"+action, company);
+                result = result && disableNotification("Bid"+action, company);
             }
         }
 
-        byte [] response = this.receive();
-        ClientProtos.Message ans = ClientProtos.Message.parseFrom(response);
-        ClientProtos.Result res = ans.getRes();
-        boolean result = res.getResult();
         if (!result) {
             System.out.println("\nERROR: Failed to save notifications' options!");
         }
@@ -382,12 +383,12 @@ public class Client {
         return chosenOption;
     }
 
-    public void enableNotification (String action, String company) {
-        this.subscriber.subscribe(action + ":" + company);
+    public boolean enableNotification (String action, String company) {
+        return this.subscriber.subscribe(action + ":" + company);
     }
 
-    public void disableNotification (String action, String company) {
-        this.subscriber.unsubscribe(action + ":" + company);
+    public boolean disableNotification (String action, String company) {
+        return this.subscriber.unsubscribe(action + ":" + company);
     }
 
     public byte[] receive(){

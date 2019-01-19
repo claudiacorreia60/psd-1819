@@ -4,9 +4,9 @@ import org.zeromq.ZMQ;
 
 
 public class Subscriber implements Runnable {
-    ZMQ.Context context;
-    ZMQ.Socket subscriber;
-    private Boolean stop;
+    public ZMQ.Context context;
+    public ZMQ.Socket subscriber;
+    public Boolean stop;
 
 
     public Subscriber (ZMQ.Context context, ZMQ.Socket subscriber, Boolean stop) {
@@ -17,7 +17,7 @@ public class Subscriber implements Runnable {
 
     public void run() {
         /* TODO: Verificar este endereço */
-        this.subscriber.connect("tcp://localhost:6662");
+        this.subscriber.connect("tcp://localhost:6651");
 
         try {
             while (!stop) {
@@ -42,10 +42,8 @@ public class Subscriber implements Runnable {
             }
         }
         catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
-        finally {
-            this.subscriber.close();
+
+        } finally {
             this.context.term();
         }
     }
