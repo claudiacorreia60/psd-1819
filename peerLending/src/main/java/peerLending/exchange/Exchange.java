@@ -23,6 +23,8 @@ import static java.lang.System.arraycopy;
 
 
 /* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
+/* TODO: Atribuição de empresas por um critério */
+/* TODO: Dizer quais foram as bids */
 
 
 public class Exchange implements Runnable{
