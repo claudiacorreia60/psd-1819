@@ -78,7 +78,7 @@ public class Auction {
         return true;
     }
 
-    public float getHighestInterest(){
+    public float highestInterest(){
         float max = 0;
 
         for(Bid bid : this.bids.values()){

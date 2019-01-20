@@ -9,6 +9,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -64,6 +65,12 @@ public class AuctioneerTask extends TimerTask {
         this.publisher.sendNotification(notification);
 
         sendHTTPRequest("end/emission", emission);
+
+        // Remove available auction
+        this.availableEmissions.remove(this.company);
+
+        // Update company history
+        this.companies.get(this.company).putEmission(emission);
     }
 
     private Map<String, Bid> sortByInterest(Map<String, Bid> unsortBids) {

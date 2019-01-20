@@ -12,11 +12,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.zeromq.ZMQ;
 import peerLending.*;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
 
 import static java.lang.System.arraycopy;
-import static java.lang.System.in;
 
 
 public class Exchange implements Runnable{
@@ -281,7 +283,7 @@ public class Exchange implements Runnable{
             // Last emission successful
             else {
                 // Return lowest interest rate between all emissions and last successful auction
-                return Float.min(c.getLowestEmissionRate(), lastAuction.getHighestInterest());
+                return Float.min(c.getLowestEmissionRate(), lastAuction.highestInterest());
             }
         }
 
@@ -294,7 +296,7 @@ public class Exchange implements Runnable{
 
             // Interest of the last successful auction
             else {
-                return lastAuction.getHighestInterest();
+                return lastAuction.highestInterest();
             }
         }
     }

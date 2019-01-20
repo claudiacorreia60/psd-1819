@@ -50,8 +50,8 @@ public class Subscriber implements Runnable {
     public void handleAuctionResult (String[] notification) {
         String type = notification[0];
         if (type.equals("EndAuction"))
-            System.out.println("########### NEW NOTIFICATION ##########");
-        System.out.println("############ AUCTION RESULT ###########");
+            System.out.println("\n########### NEW NOTIFICATION ##########");
+        System.out.println("------------ AUCTION RESULT ------------");
         System.out.println("\nCompany: "+notification[1]);
         System.out.println("Amount: "+notification[2]);
         System.out.println("Interest: "+notification[3]);
@@ -72,8 +72,8 @@ public class Subscriber implements Runnable {
     public void handleEmissionResult (String[] notification) {
         String type = notification[0];
         if (type.equals("EndEmission"))
-            System.out.println("########### NEW NOTIFICATION ##########");
-        System.out.println("############ EMISSION RESULT ###########");
+            System.out.println("\n########### NEW NOTIFICATION ##########");
+        System.out.println("------------ EMISSION RESULT ------------");
         System.out.println("\nCompany: "+notification[1]);
         System.out.println("Amount: "+notification[2]);
         System.out.println("Interest: "+notification[3]);
@@ -92,8 +92,8 @@ public class Subscriber implements Runnable {
 
     public void handleCreation (String[] notification) {
         String type = notification[0].split("Create")[1].toUpperCase();
-        System.out.println("########### NEW NOTIFICATION ##########");
-        System.out.println("############## NEW "+type+" ############");
+        System.out.println("\n########### NEW NOTIFICATION ##########");
+        System.out.println("--------------- NEW "+type+" ---------------");
         System.out.println("\nCompany: "+notification[1]);
         System.out.println("Amount: "+notification[2]);
         System.out.println("Interest: "+notification[3]);
@@ -102,8 +102,8 @@ public class Subscriber implements Runnable {
     public void handleSubscription (String[] notification) {
         String type = notification[0];
         if (type.equals("BidEmission"))
-            System.out.println("########### NEW NOTIFICATION ##########");
-        System.out.println("########### NEW SUBSCRIPTION ##########");
+            System.out.println("\n########### NEW NOTIFICATION ##########");
+        System.out.println("---------- NEW SUBSCRIPTION ----------");
         System.out.println("\nCompany: "+notification[1]);
         System.out.println("Amount: "+notification[2]);
         System.out.println("Interest: "+notification[3]);
@@ -115,8 +115,8 @@ public class Subscriber implements Runnable {
     public void handleBid (String[] notification) {
         String type = notification[0];
         if (type.equals("BidAuction"))
-            System.out.println("########### NEW NOTIFICATION ##########");
-        System.out.println("############### NEW BID ###############");
+            System.out.println("\n########### NEW NOTIFICATION ##########");
+        System.out.println("--------------- NEW BID ---------------");
         System.out.println("\nCompany: "+notification[1]);
         System.out.println("Amount: "+notification[2]);
         System.out.println("Interest: "+notification[3]);
