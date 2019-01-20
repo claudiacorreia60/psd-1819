@@ -45,7 +45,6 @@ public class AuctioneerTask extends TimerTask {
     public void resultEmission (Emission emission) {
         Map<String, Integer> subscriptions = emission.getSubscriptions();
         int total = 0;
-        //total = subscriptions.values().stream().mapToInt(Integer::value).sum();
         for (Integer amount : subscriptions.values()) {
             total += amount;
         }

@@ -101,10 +101,10 @@ public class Client {
             else {
                 handleCompany();
             }
+            stop = true;
+            this.subscriber.close();
+            System.exit(0);
         }
-
-        stop = true;
-        this.subscriber.close();
     }
 
 
@@ -403,8 +403,6 @@ public class Client {
 
     public static void main (String[] args) throws IOException {
         Client c = new Client("localhost", 3000);
-        while(true) {
-            c.startClient();
-        }
+        c.startClient();
     }
 }
