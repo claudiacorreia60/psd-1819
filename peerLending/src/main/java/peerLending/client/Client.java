@@ -278,14 +278,11 @@ public class Client {
                 System.out.println("ERROR: Invalid amount!");
             }
         }
-        System.out.print("Interest: ");
-        float interest = Float.parseFloat(this.reader.readLine());
 
         ClientProtos.Message msg = ClientProtos.Message.newBuilder()
                 .setType("Emission")
                 .setAmount(amount)
                 .setCompany(this.username)
-                .setInterest(interest)
                 .build();
 
         this.out.write(msg.toByteArray());
