@@ -13,13 +13,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.zeromq.ZMQ;
 import peerLending.*;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 
 import static java.lang.System.arraycopy;
-
+import static java.lang.System.in;
 
 
 public class Exchange implements Runnable{
@@ -224,22 +221,18 @@ public class Exchange implements Runnable{
 
     public void handleEmission(ClientProtos.Message msg) {
         boolean success = false;
-        float interest = -1;
+
         // No emission available
         if(!this.availableEmissions.containsKey(msg.getCompany())){
-            interest = msg.getInterest();
-            float result = getEmissionInterest(msg.getCompany());
-            if (interest != result) {
-                success = checkEmissionInterest(interest, msg.getCompany());
-            }
-            else {
+            float interest = getEmissionInterest(msg.getCompany());
+
+            // An emission can be made
+            if(interest != -1) {
                 success = true;
 
                 // Increment emissionCounter
                 this.emissionCounter++;
-            }
 
-            if(success) {
                 // Create new available emission
                 Emission emission = new Emission(this.emissionCounter, msg.getCompany(), msg.getAmount(), interest);
                 this.availableEmissions.put(msg.getCompany(), emission);
@@ -273,66 +266,37 @@ public class Exchange implements Runnable{
         this.socket.send(reply.toByteArray());
     }
 
-    public float getEmissionInterest(String company){
-        Map<Integer, Auction> allAuctions =  this.companies.get(company).getAuctionHistory();
-        Map<Integer, Auction> successfulAuctions = new HashMap<Integer, Auction>();
+    public float getEmissionInterest (String company) {
+        Company c = this.companies.get(company);
+        Emission lastEmission = c.getLastEmission();
+        Auction lastAuction = c.getLastSuccessfulAuction();
 
-        for(Map.Entry<Integer, Auction> e : allAuctions.entrySet()){
-            // Check if auction was successful
-            if(e.getValue().getBids() != null){
-                successfulAuctions.put(e.getKey(), e.getValue());
+        // It was made at least one emission
+        if(lastEmission != null){
+            // Last emission unsuccessful
+            if(!lastEmission.successful()){
+                return lastEmission.getInterest() * (float) 1.1;
+            }
+
+            // Last emission successful
+            else {
+                // Return lowest interest rate between all emissions and last successful auction
+                return Float.min(c.getLowestEmissionRate(), lastAuction.getHighestInterest());
             }
         }
 
-        if(successfulAuctions.isEmpty()){
-            return -1;
-        }
+        // There are no auctions in the history
+        else {
+            // There are no auctions in the history
+            if(lastAuction == null){
+                return -1;
+            }
 
-        int maxId = Collections.max(successfulAuctions.keySet());
-
-        Map<String, Bid> bids = successfulAuctions.get(maxId).getBids();
-
-        float maxInterest = -1;
-
-        for(Map.Entry<String, Bid> e : bids.entrySet()){
-            if(e.getValue().getInterest() > maxInterest){
-                maxInterest = e.getValue().getInterest();
+            // Interest of the last successful auction
+            else {
+                return lastAuction.getHighestInterest();
             }
         }
-
-        return maxInterest;
-    }
-
-    public boolean checkEmissionInterest (float interest, String company) {
-        boolean result = false;
-        float maxInterest = -1;
-        Map<Integer, Emission> allEmissions = this.companies.get(company).getEmissionHistory();
-        Map<Integer, Emission> successfulEmissions = new HashMap<Integer, Emission>();
-        int maxId;
-        if (!allEmissions.isEmpty()) {
-            maxId = Collections.max(allEmissions.keySet());
-            for (Map.Entry<Integer, Emission> e : allEmissions.entrySet()) {
-                // Check if auction was successful
-                if (!e.getValue().getSubscriptions().isEmpty()) {
-                    successfulEmissions.put(e.getKey(), e.getValue());
-                }
-            }
-            if (!successfulEmissions.isEmpty()) {
-                if (!successfulEmissions.containsKey(maxId)) {
-                    maxInterest = (float) (maxInterest * 1.1);
-                    if (interest == maxInterest)
-                        result = true;
-                }
-                else {
-                    for (Map.Entry<Integer, Emission> e : successfulEmissions.entrySet()) {
-                        if (e.getValue().getInterest() == interest) {
-                            result = true;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     public void sendHTTPRequest(String uri, Object obj){

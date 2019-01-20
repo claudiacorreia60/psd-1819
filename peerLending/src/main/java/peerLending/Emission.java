@@ -69,4 +69,16 @@ public class Emission {
     public void setSubscriptions(Map<String, Integer> subscriptions) {
         this.subscriptions = subscriptions;
     }
+
+    public boolean successful(){
+        int total = 0;
+
+        for(int subs : subscriptions.values()){
+            total += subs;
+        }
+
+        if(total >= this.amount)
+            return true;
+        return false;
+    }
 }

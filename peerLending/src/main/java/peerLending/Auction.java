@@ -69,4 +69,24 @@ public class Auction {
     public void setBids(Map<String, Bid> bids) {
         this.bids = bids;
     }
+
+    public boolean successful(){
+        if(this.bids == null){
+            return false;
+        }
+
+        return true;
+    }
+
+    public float getHighestInterest(){
+        float max = 0;
+
+        for(Bid bid : this.bids.values()){
+            if(bid.getInterest() > max){
+                max = bid.getInterest();
+            }
+        }
+
+        return max;
+    }
 }

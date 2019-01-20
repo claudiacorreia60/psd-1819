@@ -66,7 +66,7 @@ public class AuctioneerTask extends TimerTask {
         sendHTTPRequest("end/emission", emission);
     }
 
-    private static Map<String, Bid> sortByInterest(Map<String, Bid> unsortBids) {
+    private Map<String, Bid> sortByInterest(Map<String, Bid> unsortBids) {
 
         // Convert Map to List of Map
         List<Map.Entry<String, Bid>> list =
