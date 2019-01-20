@@ -12,7 +12,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.zeromq.ZMQ;
 import peerLending.*;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,10 +20,6 @@ import java.util.Timer;
 
 import static java.lang.System.arraycopy;
 
-
-/* TODO: Fazer publicação mal façam bid, subscription, auction e emission*/
-/* TODO: Atribuição de empresas por um critério */
-/* TODO: Dizer quais foram as bids */
 
 
 public class Exchange implements Runnable{
@@ -132,10 +127,12 @@ public class Exchange implements Runnable{
 
         if (success) {
             // Notify clients
-            String notification = "Emission:"+msg.getCompany()+":"+emission.getAmount()+":"+emission.getInterest()+":"+msg.getInvestor()+":"+msg.getAmount();
-            this.publisher.sendNotification(notification);
-            notification = "Bid" + notification;
-            this.publisher.sendNotification(notification);
+            synchronized (this.publisher) {
+                String notification = "Emission:" + msg.getCompany() + ":" + emission.getAmount() + ":" + emission.getInterest() + ":" + msg.getInvestor() + ":" + msg.getAmount();
+                this.publisher.sendNotification(notification);
+                notification = "Bid" + notification;
+                this.publisher.sendNotification(notification);
+            }
         }
         // Reply to frontendServer
         ClientProtos.Result res = ClientProtos.Result.newBuilder()
@@ -162,10 +159,12 @@ public class Exchange implements Runnable{
 
         if (success) {
             // Notify clients
-            String notification = "Auction:"+msg.getCompany()+":"+auction.getAmount()+":"+auction.getInterest()+":"+msg.getInvestor()+":"+msg.getAmount()+":"+msg.getInterest();
-            this.publisher.sendNotification(notification);
-            notification = "Bid" + notification;
-            this.publisher.sendNotification(notification);
+            synchronized (this.publisher) {
+                String notification = "Auction:" + msg.getCompany() + ":" + auction.getAmount() + ":" + auction.getInterest() + ":" + msg.getInvestor() + ":" + msg.getAmount() + ":" + msg.getInterest();
+                this.publisher.sendNotification(notification);
+                notification = "Bid" + notification;
+                this.publisher.sendNotification(notification);
+            }
         }
         // Reply to frontendServer
         ClientProtos.Result res = ClientProtos.Result.newBuilder()
@@ -203,10 +202,12 @@ public class Exchange implements Runnable{
 
         if (success) {
             // Notify clients
-            String notification = "Auction:"+msg.getCompany()+":"+msg.getAmount()+":"+msg.getInterest();
-            this.publisher.sendNotification(notification);
-            notification = "Create" + notification;
-            this.publisher.sendNotification(notification);
+            synchronized (this.publisher) {
+                String notification = "Auction:" + msg.getCompany() + ":" + msg.getAmount() + ":" + msg.getInterest();
+                this.publisher.sendNotification(notification);
+                notification = "Create" + notification;
+                this.publisher.sendNotification(notification);
+            }
         }
 
         // Reply to frontendServer
@@ -251,10 +252,12 @@ public class Exchange implements Runnable{
                 this.timer.schedule(auctioneerTask, 60000);
 
                 // Notify clients
-                String notification = "Emission:" + msg.getCompany() + ":" + emission.getAmount() + ":" + emission.getInterest();
-                this.publisher.sendNotification(notification);
-                notification = "Create" + notification;
-                this.publisher.sendNotification(notification);
+                synchronized (this.publisher) {
+                    String notification = "Emission:" + msg.getCompany() + ":" + emission.getAmount() + ":" + emission.getInterest();
+                    this.publisher.sendNotification(notification);
+                    notification = "Create" + notification;
+                    this.publisher.sendNotification(notification);
+                }
             }
         }
 
