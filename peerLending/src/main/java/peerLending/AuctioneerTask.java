@@ -51,7 +51,7 @@ public class AuctioneerTask extends TimerTask {
         }
         // Notify clients of the result
         String notification = "Emission:"+this.company+":"+emission.getAmount()+":"+emission.getInterest()+":";
-        if (total >= emission.getAmount()) {
+        if (total == emission.getAmount()) {
             for (Map.Entry<String, Integer> e : emission.getSubscriptions().entrySet()) {
                 notification += e.getKey()+":"+e.getValue()+":";
             }
